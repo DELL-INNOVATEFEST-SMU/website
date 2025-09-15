@@ -32,6 +32,7 @@ const planets: PlanetData[] = [
       "No atmosphere",
       "Extreme temperature variations",
     ],
+    texturePath: "/textures/bodies/mercury.jpg",
   },
   {
     name: "Venus",
@@ -41,6 +42,7 @@ const planets: PlanetData[] = [
     speed: 1.6,
     description: "The hottest planet with a thick, toxic atmosphere.",
     facts: ["Hottest planet", "Thick atmosphere", "Rotates backwards"],
+    texturePath: "/textures/bodies/Venus.jpg",
   },
   {
     name: "Earth",
@@ -97,6 +99,7 @@ const planets: PlanetData[] = [
     speed: 0.2,
     description: "An ice giant that rotates on its side.",
     facts: ["Rotates on its side", "Made of ice and rock", "Faint ring system"],
+    texturePath: "/textures/bodies/uranus.jpg",
   },
   {
     name: "Neptune",
@@ -106,6 +109,7 @@ const planets: PlanetData[] = [
     speed: 0.15,
     description: "The windiest planet with supersonic winds.",
     facts: ["Windiest planet", "Supersonic winds", "Deep blue color"],
+    texturePath: "/textures/bodies/Neptune.jpg",
   },
 ];
 
