@@ -130,10 +130,58 @@ const SolarSystemScene: React.FC<{
       {/* Additional stars for depth */}
       <Stars radius={300} depth={50} count={500} factor={2} saturation={0} />
 
-      <ambientLight intensity={0.4} />
-      <pointLight position={[0, 0, 0]} intensity={3} />
-      <pointLight position={[10, 10, 10]} intensity={1} color="#ffffff" />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#4444ff" />
+      {/* Enhanced Lighting System */}
+      {/* Ambient light for overall scene illumination */}
+      <ambientLight intensity={0.15} color="#4A90E2" />
+
+      {/* Main sun light - primary directional light source */}
+      <directionalLight
+        position={[0, 0, 0]}
+        intensity={2.5}
+        color="#FFE55C"
+        castShadow
+        shadow-mapSize-width={2048}
+        shadow-mapSize-height={2048}
+        shadow-camera-far={100}
+        shadow-camera-left={-50}
+        shadow-camera-right={50}
+        shadow-camera-top={50}
+        shadow-camera-bottom={-50}
+      />
+
+      {/* Secondary sun light for fill lighting */}
+      <pointLight
+        position={[0, 0, 0]}
+        intensity={1.8}
+        color="#FDB813"
+        distance={100}
+        decay={2}
+      />
+
+      {/* Rim lighting for planet definition */}
+      <pointLight
+        position={[-20, 10, -20]}
+        intensity={0.8}
+        color="#87CEEB"
+        distance={80}
+        decay={2}
+      />
+
+      {/* Back lighting for depth */}
+      <pointLight
+        position={[15, -15, 15]}
+        intensity={0.6}
+        color="#FFB6C1"
+        distance={60}
+        decay={2}
+      />
+
+      {/* Space ambient lighting */}
+      <hemisphereLight
+        skyColor="#1E3A8A"
+        groundColor="#0F172A"
+        intensity={0.3}
+      />
 
       <Sun />
 
@@ -184,7 +232,11 @@ export const SolarSystem: React.FC = () => {
         }}
       />
 
-      <Canvas camera={{ position: [0, 15, 30], fov: 60 }}>
+      <Canvas
+        camera={{ position: [0, 15, 30], fov: 60 }}
+        shadows
+        gl={{ antialias: true, alpha: false }}
+      >
         <SolarSystemScene
           onPlanetClick={handlePlanetClick}
           focusedPlanet={focusedPlanet}

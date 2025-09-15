@@ -33,7 +33,7 @@ export const Sun: React.FC = () => {
   return (
     <group>
       {/* Main sun */}
-      <mesh ref={meshRef}>
+      <mesh ref={meshRef} castShadow>
         <sphereGeometry args={[1.5, 32, 32]} />
         <meshBasicMaterial map={sunTexture} color="#FDB813" />
       </mesh>

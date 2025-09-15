@@ -63,6 +63,8 @@ export const Planet: React.FC<PlanetProps> = ({
         ref={meshRef}
         position={[distance, 0, 0]}
         onClick={onClick}
+        castShadow
+        receiveShadow
         onPointerOver={(e) => {
           e.stopPropagation();
           document.body.style.cursor = "pointer";
