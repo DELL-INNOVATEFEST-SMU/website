@@ -89,14 +89,14 @@ export const Planet: React.FC<PlanetProps> = ({
         <meshStandardMaterial
           map={planetTexture}
           color={color}
-          roughness={0.8}
-          metalness={0.1}
+          roughness={0.7}
+          metalness={0.05}
           emissive={
             focused
-              ? new THREE.Color(color).multiplyScalar(0.2)
-              : new THREE.Color(color).multiplyScalar(0.05)
+              ? new THREE.Color(color).multiplyScalar(0.3)
+              : new THREE.Color(color).multiplyScalar(0.1)
           }
-          emissiveIntensity={focused ? 0.3 : 0.1}
+          emissiveIntensity={focused ? 0.4 : 0.15}
         />
 
         {/* Planet atmosphere effect */}

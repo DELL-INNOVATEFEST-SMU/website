@@ -42,7 +42,7 @@ export const Background: React.FC<BackgroundProps> = ({ textureType }) => {
         map={texture}
         side={THREE.BackSide}
         transparent={true}
-        opacity={0.6}
+        opacity={0.4}
       />
     </mesh>
   );

@@ -137,14 +137,14 @@ const SolarSystemScene: React.FC<{
       {/* Additional stars for depth */}
       <Stars radius={300} depth={50} count={500} factor={2} saturation={0} />
 
-      {/* Enhanced Lighting System - Optimized for Mental Health App */}
-      {/* Increased ambient light for better visibility and comfort */}
-      <ambientLight intensity={0.4} color="#87CEEB" />
+      {/* Enhanced Lighting System - Clear Planet Visibility */}
+      {/* Strong ambient light for consistent planet visibility */}
+      <ambientLight intensity={0.6} color="#B0E0E6" />
 
       {/* Main sun light - primary directional light source */}
       <directionalLight
         position={[0, 0, 0]}
-        intensity={3.2}
+        intensity={4.0}
         color="#FFE55C"
         castShadow
         shadow-mapSize-width={2048}
@@ -159,44 +159,53 @@ const SolarSystemScene: React.FC<{
       {/* Secondary sun light for fill lighting */}
       <pointLight
         position={[0, 0, 0]}
-        intensity={2.2}
+        intensity={2.8}
         color="#FDB813"
-        distance={120}
-        decay={1.5}
-      />
-
-      {/* Rim lighting for planet definition */}
-      <pointLight
-        position={[-20, 10, -20]}
-        intensity={1.2}
-        color="#B0E0E6"
-        distance={100}
-        decay={1.5}
-      />
-
-      {/* Back lighting for depth */}
-      <pointLight
-        position={[15, -15, 15]}
-        intensity={1.0}
-        color="#FFB6C1"
-        distance={80}
-        decay={1.5}
-      />
-
-      {/* Additional fill light for overall brightness */}
-      <pointLight
-        position={[0, 20, 0]}
-        intensity={1.5}
-        color="#FFFFFF"
         distance={150}
         decay={1.2}
       />
 
-      {/* Space ambient lighting - brighter and more welcoming */}
+      {/* Rim lighting for planet definition */}
+      <pointLight
+        position={[-25, 15, -25]}
+        intensity={1.8}
+        color="#E0F6FF"
+        distance={120}
+        decay={1.2}
+      />
+
+      {/* Back lighting for depth */}
+      <pointLight
+        position={[20, -20, 20]}
+        intensity={1.5}
+        color="#FFE4E1"
+        distance={100}
+        decay={1.2}
+      />
+
+      {/* Additional fill light for overall brightness */}
+      <pointLight
+        position={[0, 25, 0]}
+        intensity={2.0}
+        color="#FFFFFF"
+        distance={180}
+        decay={1.0}
+      />
+
+      {/* Side fill light for even illumination */}
+      <pointLight
+        position={[30, 0, 0]}
+        intensity={1.5}
+        color="#F0F8FF"
+        distance={120}
+        decay={1.2}
+      />
+
+      {/* Space ambient lighting - bright and clear */}
       <hemisphereLight
-        skyColor="#4A90E2"
-        groundColor="#2C5F8A"
-        intensity={0.6}
+        skyColor="#87CEEB"
+        groundColor="#4682B4"
+        intensity={0.8}
       />
 
       <Sun />
