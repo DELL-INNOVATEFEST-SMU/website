@@ -13,6 +13,8 @@ interface PlanetProps {
   focused: boolean;
   texturePath?: string;
   hasRings?: boolean;
+  rotationSpeed?: number;
+  tilt?: number;
 }
 
 export const Planet: React.FC<PlanetProps> = ({
@@ -25,6 +27,8 @@ export const Planet: React.FC<PlanetProps> = ({
   focused,
   texturePath,
   hasRings,
+  rotationSpeed = 0.5,
+  tilt = 0,
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
@@ -63,8 +67,11 @@ export const Planet: React.FC<PlanetProps> = ({
     }
 
     if (meshRef.current) {
-      // Planet self-rotation
-      meshRef.current.rotation.y = clock.getElapsedTime() * 0.5;
+      // Planet self-rotation with proper speed
+      meshRef.current.rotation.y = clock.getElapsedTime() * rotationSpeed;
+
+      // Apply axial tilt
+      meshRef.current.rotation.z = tilt;
 
       // Add gentle bobbing animation when focused
       if (focused) {

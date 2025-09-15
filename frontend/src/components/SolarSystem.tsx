@@ -18,15 +18,20 @@ interface PlanetData {
   facts: string[];
   texturePath?: string;
   hasRings?: boolean;
+  rotationSpeed?: number;
+  tilt?: number;
 }
+
+// Base orbit speed for calculations (Earth = 1.0)
+const baseOrbitSpeed = 0.6;
 
 const planets: PlanetData[] = [
   {
     name: "Mercury",
     color: "#8C7853",
-    size: 0.4,
-    distance: 4,
-    speed: 2.0,
+    size: 0.1,
+    distance: 1.5,
+    speed: baseOrbitSpeed / 0.24,
     description: "The smallest and innermost planet in our solar system.",
     facts: [
       "Closest planet to the Sun",
@@ -34,23 +39,27 @@ const planets: PlanetData[] = [
       "Extreme temperature variations",
     ],
     texturePath: "/textures/bodies/mercury.jpg",
+    rotationSpeed: 1,
+    tilt: 0.00017,
   },
   {
     name: "Venus",
     color: "#FFC649",
-    size: 0.9,
-    distance: 6,
-    speed: 1.6,
+    size: 0.15,
+    distance: 2.2,
+    speed: baseOrbitSpeed / 0.62,
     description: "The hottest planet with a thick, toxic atmosphere.",
     facts: ["Hottest planet", "Thick atmosphere", "Rotates backwards"],
     texturePath: "/textures/bodies/Venus.jpg",
+    rotationSpeed: 1,
+    tilt: 3.09639,
   },
   {
     name: "Earth",
     color: "#6B93D6",
-    size: 1,
-    distance: 8,
-    speed: 1.0,
+    size: 0.15,
+    distance: 3.0,
+    speed: baseOrbitSpeed,
     description: "Our home planet, the only known planet with life.",
     facts: [
       "Only planet with known life",
@@ -58,13 +67,15 @@ const planets: PlanetData[] = [
       "Has one moon",
     ],
     texturePath: "/textures/bodies/Earth.jpg",
+    rotationSpeed: 1,
+    tilt: 0.40928,
   },
   {
     name: "Mars",
     color: "#C1440E",
-    size: 0.7,
-    distance: 10,
-    speed: 0.8,
+    size: 0.13,
+    distance: 4.0,
+    speed: baseOrbitSpeed / 1.88,
     description: "The red planet with polar ice caps and the largest volcano.",
     facts: [
       "Red due to iron oxide",
@@ -72,47 +83,57 @@ const planets: PlanetData[] = [
       "Largest volcano in solar system",
     ],
     texturePath: "/textures/bodies/Mars.jpg",
+    rotationSpeed: 0.5,
+    tilt: 0.43965,
   },
   {
     name: "Jupiter",
     color: "#D8CA9D",
-    size: 2.5,
-    distance: 14,
-    speed: 0.4,
+    size: 0.25,
+    distance: 6.0,
+    speed: baseOrbitSpeed / 11.86,
     description: "The largest planet with a great red spot storm.",
     facts: ["Largest planet", "Great Red Spot storm", "Over 80 moons"],
     texturePath: "/textures/bodies/Jupiter.jpg",
+    rotationSpeed: 0.2,
+    tilt: 0.05463,
   },
   {
     name: "Saturn",
     color: "#FAD5A5",
-    size: 2.1,
-    distance: 18,
-    speed: 0.3,
+    size: 0.2,
+    distance: 9.0,
+    speed: baseOrbitSpeed / 29.46,
     description: "Famous for its prominent ring system.",
     facts: ["Prominent rings", "Less dense than water", "Over 80 moons"],
     texturePath: "/textures/bodies/saturn.jpg",
     hasRings: true,
+    rotationSpeed: 0.1,
+    tilt: 0.46653,
   },
   {
     name: "Uranus",
     color: "#4FD0E7",
-    size: 1.8,
-    distance: 22,
-    speed: 0.2,
+    size: 0.18,
+    distance: 13.0,
+    speed: baseOrbitSpeed / 84.01,
     description: "An ice giant that rotates on its side.",
     facts: ["Rotates on its side", "Made of ice and rock", "Faint ring system"],
     texturePath: "/textures/bodies/uranus.jpg",
+    rotationSpeed: 0.07,
+    tilt: 1.70622,
   },
   {
     name: "Neptune",
     color: "#4B70DD",
-    size: 1.7,
-    distance: 26,
-    speed: 0.15,
+    size: 0.18,
+    distance: 17.0,
+    speed: baseOrbitSpeed / 164.8,
     description: "The windiest planet with supersonic winds.",
     facts: ["Windiest planet", "Supersonic winds", "Deep blue color"],
     texturePath: "/textures/bodies/Neptune.jpg",
+    rotationSpeed: 0.06,
+    tilt: 0.49428,
   },
 ];
 
@@ -127,8 +148,8 @@ const SolarSystemScene: React.FC<{
         enablePan={true}
         enableZoom={true}
         enableRotate={true}
-        minDistance={5}
-        maxDistance={50}
+        minDistance={2}
+        maxDistance={25}
       />
 
       {/* Background texture */}
@@ -222,6 +243,8 @@ const SolarSystemScene: React.FC<{
           focused={focusedPlanet === planet.name}
           texturePath={planet.texturePath}
           hasRings={planet.hasRings}
+          rotationSpeed={planet.rotationSpeed}
+          tilt={planet.tilt}
         />
       ))}
     </>
@@ -260,7 +283,7 @@ export const SolarSystem: React.FC = () => {
       />
 
       <Canvas
-        camera={{ position: [0, 15, 30], fov: 60 }}
+        camera={{ position: [0, 8, 15], fov: 60 }}
         shadows
         gl={{ antialias: true, alpha: false }}
       >
