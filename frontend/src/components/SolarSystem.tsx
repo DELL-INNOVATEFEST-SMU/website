@@ -250,7 +250,7 @@ const SolarSystemScene: React.FC<{
       ))}
 
       {/* Moon orbiting Earth */}
-      <Moon earthPosition={[3.0, 0, 0]} earthDistance={3.0} />
+      <Moon earthPosition={[4.5, 0, 0]} earthDistance={4.5} />
     </>
   );
 };
