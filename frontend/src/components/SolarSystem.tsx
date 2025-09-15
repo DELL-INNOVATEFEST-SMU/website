@@ -16,6 +16,7 @@ interface PlanetData {
   speed: number;
   description: string;
   facts: string[];
+  texturePath?: string;
 }
 
 const planets: PlanetData[] = [
@@ -53,6 +54,7 @@ const planets: PlanetData[] = [
       "71% water coverage",
       "Has one moon",
     ],
+    texturePath: "/textures/bodies/Earth.jpg",
   },
   {
     name: "Mars",
@@ -66,6 +68,7 @@ const planets: PlanetData[] = [
       "Has two small moons",
       "Largest volcano in solar system",
     ],
+    texturePath: "/textures/bodies/Mars.jpg",
   },
   {
     name: "Jupiter",
@@ -75,6 +78,7 @@ const planets: PlanetData[] = [
     speed: 0.4,
     description: "The largest planet with a great red spot storm.",
     facts: ["Largest planet", "Great Red Spot storm", "Over 80 moons"],
+    texturePath: "/textures/bodies/Jupiter.jpg",
   },
   {
     name: "Saturn",
@@ -143,6 +147,7 @@ const SolarSystemScene: React.FC<{
           speed={planet.speed}
           onClick={() => onPlanetClick(planet)}
           focused={focusedPlanet === planet.name}
+          texturePath={planet.texturePath}
         />
       ))}
     </>
