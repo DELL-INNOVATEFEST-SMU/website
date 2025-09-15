@@ -42,14 +42,20 @@ export const Planet: React.FC<PlanetProps> = ({
     if (planetTexture) {
       planetTexture.wrapS = THREE.RepeatWrapping;
       planetTexture.wrapT = THREE.RepeatWrapping;
-      planetTexture.flipY = false;
+      // Try different approaches for Earth orientation
+      if (name === "Earth") {
+        planetTexture.flipY = false;
+        planetTexture.rotation = Math.PI; // Rotate 180 degrees
+      } else {
+        planetTexture.flipY = false;
+      }
     }
     if (ringTexture) {
       ringTexture.wrapS = THREE.RepeatWrapping;
       ringTexture.wrapT = THREE.RepeatWrapping;
       ringTexture.flipY = false;
     }
-  }, [planetTexture, ringTexture]);
+  }, [planetTexture, ringTexture, name]);
 
   useFrame(({ clock }) => {
     if (groupRef.current) {
