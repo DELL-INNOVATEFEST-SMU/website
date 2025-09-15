@@ -6,6 +6,7 @@ import { Planet } from "./Planet";
 import { Sun } from "./Sun";
 import { PlanetInfo } from "./PlanetInfo";
 import { Background } from "./Background";
+import { Moon } from "./Moon";
 import { Button } from "./ui/button";
 
 interface PlanetData {
@@ -247,6 +248,9 @@ const SolarSystemScene: React.FC<{
           tilt={planet.tilt}
         />
       ))}
+
+      {/* Moon orbiting Earth */}
+      <Moon earthPosition={[3.0, 0, 0]} earthDistance={3.0} />
     </>
   );
 };
