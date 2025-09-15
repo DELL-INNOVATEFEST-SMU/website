@@ -137,14 +137,14 @@ const SolarSystemScene: React.FC<{
       {/* Additional stars for depth */}
       <Stars radius={300} depth={50} count={500} factor={2} saturation={0} />
 
-      {/* Enhanced Lighting System */}
-      {/* Ambient light for overall scene illumination */}
-      <ambientLight intensity={0.15} color="#4A90E2" />
+      {/* Enhanced Lighting System - Optimized for Mental Health App */}
+      {/* Increased ambient light for better visibility and comfort */}
+      <ambientLight intensity={0.4} color="#87CEEB" />
 
       {/* Main sun light - primary directional light source */}
       <directionalLight
         position={[0, 0, 0]}
-        intensity={2.5}
+        intensity={3.2}
         color="#FFE55C"
         castShadow
         shadow-mapSize-width={2048}
@@ -159,35 +159,44 @@ const SolarSystemScene: React.FC<{
       {/* Secondary sun light for fill lighting */}
       <pointLight
         position={[0, 0, 0]}
-        intensity={1.8}
+        intensity={2.2}
         color="#FDB813"
-        distance={100}
-        decay={2}
+        distance={120}
+        decay={1.5}
       />
 
       {/* Rim lighting for planet definition */}
       <pointLight
         position={[-20, 10, -20]}
-        intensity={0.8}
-        color="#87CEEB"
-        distance={80}
-        decay={2}
+        intensity={1.2}
+        color="#B0E0E6"
+        distance={100}
+        decay={1.5}
       />
 
       {/* Back lighting for depth */}
       <pointLight
         position={[15, -15, 15]}
-        intensity={0.6}
+        intensity={1.0}
         color="#FFB6C1"
-        distance={60}
-        decay={2}
+        distance={80}
+        decay={1.5}
       />
 
-      {/* Space ambient lighting */}
+      {/* Additional fill light for overall brightness */}
+      <pointLight
+        position={[0, 20, 0]}
+        intensity={1.5}
+        color="#FFFFFF"
+        distance={150}
+        decay={1.2}
+      />
+
+      {/* Space ambient lighting - brighter and more welcoming */}
       <hemisphereLight
-        skyColor="#1E3A8A"
-        groundColor="#0F172A"
-        intensity={0.3}
+        skyColor="#4A90E2"
+        groundColor="#2C5F8A"
+        intensity={0.6}
       />
 
       <Sun />
@@ -232,11 +241,12 @@ export const SolarSystem: React.FC = () => {
   };
   return (
     <div className="w-full h-screen bg-background relative overflow-hidden">
-      {/* Space background gradient */}
+      {/* Space background gradient - brighter for mental health app */}
       <div
-        className="absolute inset-0 opacity-30"
+        className="absolute inset-0 opacity-20"
         style={{
-          background: "var(--gradient-space)",
+          background:
+            "linear-gradient(135deg, #1e3a8a 0%, #3b82f6 25%, #1e40af 50%, #1e3a8a 75%, #0f172a 100%)",
         }}
       />
 
