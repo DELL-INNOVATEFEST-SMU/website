@@ -12,6 +12,7 @@ interface PlanetProps {
   onClick: () => void;
   focused: boolean;
   texturePath?: string;
+  hasRings?: boolean;
 }
 
 export const Planet: React.FC<PlanetProps> = ({
@@ -23,12 +24,18 @@ export const Planet: React.FC<PlanetProps> = ({
   onClick,
   focused,
   texturePath,
+  hasRings,
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
 
   // Load planet texture if provided
   const planetTexture = texturePath ? useTexture(texturePath) : null;
+
+  // Load ring texture for Saturn
+  const ringTexture = hasRings
+    ? useTexture("/textures/bodies/saturn_ring_alpha.png")
+    : null;
 
   // Configure texture properties
   React.useEffect(() => {
@@ -37,7 +44,12 @@ export const Planet: React.FC<PlanetProps> = ({
       planetTexture.wrapT = THREE.RepeatWrapping;
       planetTexture.flipY = false;
     }
-  }, [planetTexture]);
+    if (ringTexture) {
+      ringTexture.wrapS = THREE.RepeatWrapping;
+      ringTexture.wrapT = THREE.RepeatWrapping;
+      ringTexture.flipY = false;
+    }
+  }, [planetTexture, ringTexture]);
 
   useFrame(({ clock }) => {
     if (groupRef.current) {
@@ -131,6 +143,20 @@ export const Planet: React.FC<PlanetProps> = ({
           </mesh>
         )}
       </mesh>
+
+      {/* Saturn's rings */}
+      {hasRings && ringTexture && (
+        <mesh position={[distance, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[size * 1.2, size * 2.5, 64]} />
+          <meshBasicMaterial
+            map={ringTexture}
+            transparent
+            alphaTest={0.1}
+            side={THREE.DoubleSide}
+            color="#FAD5A5"
+          />
+        </mesh>
+      )}
     </group>
   );
 };

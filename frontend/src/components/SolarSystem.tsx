@@ -17,6 +17,7 @@ interface PlanetData {
   description: string;
   facts: string[];
   texturePath?: string;
+  hasRings?: boolean;
 }
 
 const planets: PlanetData[] = [
@@ -90,6 +91,8 @@ const planets: PlanetData[] = [
     speed: 0.3,
     description: "Famous for its prominent ring system.",
     facts: ["Prominent rings", "Less dense than water", "Over 80 moons"],
+    texturePath: "/textures/bodies/saturn.jpg",
+    hasRings: true,
   },
   {
     name: "Uranus",
@@ -200,6 +203,7 @@ const SolarSystemScene: React.FC<{
           onClick={() => onPlanetClick(planet)}
           focused={focusedPlanet === planet.name}
           texturePath={planet.texturePath}
+          hasRings={planet.hasRings}
         />
       ))}
     </>
