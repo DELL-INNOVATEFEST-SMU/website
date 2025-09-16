@@ -1,3 +1,4 @@
+
 import React, { useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Stars } from "@react-three/drei";
@@ -8,6 +9,9 @@ import { PlanetInfo } from "./PlanetInfo";
 import { Background } from "./Background";
 import { Moon } from "./Moon";
 import { Button } from "./ui/button";
+
+import { useEffect } from "react";
+import { supabase } from "../lib/supabase";
 
 interface PlanetData {
   name: string;
@@ -127,7 +131,7 @@ const planets: PlanetData[] = [
   {
     name: "Neptune",
     color: "#4B70DD",
-    size: 0.18,
+    size: 0.8,
     distance: 17.0,
     speed: baseOrbitSpeed / 164.8,
     description: "The windiest planet with supersonic winds.",
@@ -256,12 +260,38 @@ const SolarSystemScene: React.FC<{
 };
 
 export const SolarSystem: React.FC = () => {
+  const [user, setUser] = useState<any>(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [email, setEmail] = useState("");
   const [selectedPlanet, setSelectedPlanet] = useState<PlanetData | null>(null);
   const [focusedPlanet, setFocusedPlanet] = useState<string | null>(null);
   const [backgroundType, setBackgroundType] = useState<"stars" | "milky_way">(
     "milky_way"
   );
+  useEffect(() => {
+    // Check session on mount
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
 
+    // Listen for auth changes
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
+  }, []);
+  const handleMagicLinkLogin = async () => {
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+    });
+    if (error) alert(error.message);
+    else alert("Check your email for the login link!");
+  };
   const handlePlanetClick = (planet: PlanetData) => {
     setSelectedPlanet(planet);
     setFocusedPlanet(planet.name);
@@ -316,13 +346,55 @@ export const SolarSystem: React.FC = () => {
             Switch to {backgroundType === "stars" ? "Milky Way" : "Stars"}{" "}
             Background
           </Button>
-        </div>
-      </div>
+          
 
+        </div>
+
+      </div>
+      <div className="absolute top-6 right-6 z-10">{!user && (
+        <Button
+          onClick={() => setShowLoginModal(true)}
+          className="mt-4 w-full bg-purple-600 text-white"
+        >
+          Log in with Magic Link
+        </Button>
+      )}</div>
       {/* Planet Info Overlay - Outside Canvas */}
       {selectedPlanet && (
         <PlanetInfo planet={selectedPlanet} onClose={handleBackToSystem} />
       )}
+      {showLoginModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4">Log in</h2>
+            <input
+              type="email"
+              placeholder="Your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="border p-2 w-full rounded mb-4"
+            />
+            <div className="flex flex-col gap-2">
+              <Button
+                onClick={handleMagicLinkLogin}
+                className="bg-purple-600 text-white w-full"
+              >
+                Send Magic Link
+              </Button>
+              
+              <Button
+                onClick={() => setShowLoginModal(false)}
+                variant="outline"
+                className="w-full"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
+
   );
 };
