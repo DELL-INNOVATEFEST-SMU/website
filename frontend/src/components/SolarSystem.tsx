@@ -231,7 +231,7 @@ const SolarSystemScene: React.FC<{
       <hemisphereLight
         skyColor="#87CEEB"
         groundColor="#4682B4"
-        intensity={0.8}
+        intensity={0.18}
       />
 
       <Sun />
