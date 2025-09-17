@@ -258,17 +258,96 @@ const SolarSystemScene: React.FC<{
     </>
   );
 };
+const thinkingTraps = [
+  { title: "All-or-Nothing Thinking", description: "Seeing things as all good or all bad." },
+  { title: "Overgeneralizing", description: "Assuming one event means it always happens." },
+  { title: "Catastrophizing", description: "Expecting the worst-case scenario." },
+];
 
 export const SolarSystem: React.FC = () => {
   const [user, setUser] = useState<any>(null);
+  const [showInnerModal, setShowInnerModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [selectedTraps, setSelectedTraps] = useState<string[]>([]);
+  const toggleTrap = (trapTitle: string) => {
+    setSelectedTraps((prev) =>
+      prev.includes(trapTitle)
+        ? prev.filter((t) => t !== trapTitle)
+        : [...prev, trapTitle]
+    );
+  };
   const [email, setEmail] = useState("");
+  const [showJournal, setShowJournal] = useState(false);
   const [selectedPlanet, setSelectedPlanet] = useState<PlanetData | null>(null);
   const [focusedPlanet, setFocusedPlanet] = useState<string | null>(null);
   const [backgroundType, setBackgroundType] = useState<"stars" | "milky_way">(
     "milky_way"
   );
+  const [journal, setJournal] = useState("");
+  const [imageBase64, setImageBase64] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const generateImage = async () => {
+    setLoading(true);
+    setError(null);
+    setImageBase64(null);
+
+    try {
+      console.log(JSON.stringify({ journal }));
+      const response = await fetch("http://localhost:5000/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ journal }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate image");
+      }
+      const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      setImageBase64(data.image_base64);
+      setShowImageModal(true);
+    } catch (err: any) {
+      setError(err.message || "Unknown error");
+    } finally {
+      setLoading(false);
+    }
+  };
   console.log("Current user:", user);
+  const [startDate, setStartDate] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() - 3); // show 3 days before today initially
+    return d;
+  });
+
+  const daysToShow = 7;
+
+  // Generate the array of 7 days from startDate
+  const days = Array.from({ length: daysToShow }, (_, i) => {
+    const d = new Date(startDate);
+    d.setDate(startDate.getDate() + i);
+    return d;
+  });
+
+  const handlePrev = () => {
+    const newDate = new Date(startDate);
+    newDate.setDate(startDate.getDate() - daysToShow);
+    setStartDate(newDate);
+  };
+
+  const handleNext = () => {
+    const newDate = new Date(startDate);
+    newDate.setDate(startDate.getDate() + daysToShow);
+    setStartDate(newDate);
+  };
+
   useEffect(() => {
     // Check session on mount
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -347,7 +426,7 @@ export const SolarSystem: React.FC = () => {
             Switch to {backgroundType === "stars" ? "Milky Way" : "Stars"}{" "}
             Background
           </Button>
-          
+
 
         </div>
 
@@ -364,6 +443,30 @@ export const SolarSystem: React.FC = () => {
       {selectedPlanet && (
         <PlanetInfo planet={selectedPlanet} onClose={handleBackToSystem} />
       )}
+      <div className="absolute top-6 right-6 z-10">
+        {user && (
+          <>
+            <Button
+              onClick={async () => {
+                await supabase.auth.signOut();
+                setUser(null);
+              }}
+              className="mt-4 w-full bg-red-600 text-white"
+            >
+              Log out
+            </Button>
+            <Button
+              onClick={() => setShowJournal(true)}
+              variant="outline"
+              className="mt-4 w-full"
+            >
+              Open Journal
+            </Button>
+          </>
+        )}
+
+      </div>
+
       {showLoginModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
@@ -382,7 +485,7 @@ export const SolarSystem: React.FC = () => {
               >
                 Send Magic Link
               </Button>
-              
+
               <Button
                 onClick={() => setShowLoginModal(false)}
                 variant="outline"
@@ -394,7 +497,130 @@ export const SolarSystem: React.FC = () => {
           </div>
         </div>
       )}
+      {showJournal && (
+        <div className="fixed inset-0  flex items-center justify-center z-50" style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-auto">
 
+            <h2 className="text-xl font-bold mb-4">Journal</h2>
+            <div className="flex items-center w-full max-w-4xl mx-auto overflow-hidden">
+              <button
+                onClick={handlePrev}
+                className=" text-lg px-2 py-1 rounded-l hover:bg-gray-300"
+              >
+                ‹
+              </button>
+
+              <div className="flex flex-1 overflow-hidden">
+                <div className="flex  w-full transition-transform duration-300 ease-in-out">
+                  {days.map((day, idx) => (
+                    <div
+                      key={idx}
+                      className={`flex-none text-center w-1/7 p-4 border border-gray-200 ${day.toDateString() === new Date().toDateString()
+                        ? "bg-blue-100"
+                        : ""
+                        }`}
+                    >
+                      <div className="font-bold">{day.toLocaleDateString()}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                onClick={handleNext}
+                className=" text-lg px-2 py-1 rounded-r hover:bg-gray-300"
+              >
+                ›
+              </button>
+            </div>
+            <p>This is the journal modal. Here is your prompt.</p>
+            <textarea
+              rows={6}
+              value={journal}
+              onChange={(e) => setJournal(e.target.value)}
+              placeholder="Enter your journal entry..."
+              className="w-full p-3 border border-gray-300 rounded resize-none"
+            />
+            <button
+              onClick={generateImage}
+              disabled={loading || journal.trim() === ""}
+              className="bg-blue-600 hover:bg-blue-700 text-white rounded px-6 py-2 disabled:opacity-50"
+            >{loading ? "Generating..." : "Generate Image"}
+            </button>
+            {error && <p className="text-red-600">{error}</p>}
+
+            <button
+              onClick={() => setShowInnerModal(true)}
+              className="bg-blue-600 text-white px-4 py-2 rounded"
+            >
+              Select Thinking Traps
+            </button>
+            {showInnerModal && (
+              <div className="absolute inset-0 flex items-center justify-center z-50" style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
+                <div className="bg-white p-6 rounded-lg shadow-lg w-96 max-h-[80vh] overflow-auto">
+                  <h3 className="text-lg font-semibold mb-2">Thinking Traps</h3>
+                  <p>This modal is inside the main modal.</p>
+                  <div className="grid gap-3">
+                    {thinkingTraps.map((trap) => {
+                      const isSelected = selectedTraps.includes(trap.title);
+                      console.log(selectedTraps, isSelected);
+                      return (
+                        <button
+                          key={trap.title}
+                          onClick={() => toggleTrap(trap.title)}
+                          className={`w-full text-left p-3 border rounded-lg transition-colors ${isSelected
+                            ? "!bg-purple-500 !text-white !border-purple-600"
+                            : "bg-gray-100 text-black hover:bg-purple-100"
+                            }`}
+                        >
+                          <strong>{trap.title}</strong>
+                          <p className="text-sm">{trap.description}</p>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <button
+                    onClick={() => setShowInnerModal(false)}
+                    className="mt-4 px-4 py-2 rounded border border-gray-400"
+                  >
+                    Close Image
+                  </button>
+                </div>
+              </div>
+            )}
+            {showImageModal && imageBase64 && (
+              <div className="absolute inset-0 flex items-center justify-center z-50" style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
+                <div className="bg-white p-6 rounded-lg shadow-lg w-96 max-h-[80vh] overflow-auto">
+                  <h3 className="text-lg font-semibold mb-2">Generated Image</h3>
+                  <p>This modal is inside the main modal.</p>
+                  
+            <img
+              src={`data:image/png;base64,${imageBase64}`}
+              alt="Generated"
+              className="max-w-full max-h-[80vh] mx-auto"
+            />
+                  
+
+                  <button
+                    onClick={() => setShowImageModal(false)}
+                    className="mt-4 px-4 py-2 rounded border border-gray-400"
+                  >
+                    Close Image
+                  </button>
+                </div>
+              </div>
+            )}
+            <Button
+              onClick={() => setShowJournal(false)}
+              variant="outline"
+              className="w-full mt-4"
+            >
+              Close
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
 
   );
