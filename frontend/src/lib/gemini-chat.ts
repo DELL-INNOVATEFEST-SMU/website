@@ -11,12 +11,13 @@ export class GeminiChatService {
   constructor() {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY
     if (!apiKey) {
-      throw new Error("VITE_GEMINI_API_KEY environment variable is required")
+      console.warn("VITE_GEMINI_API_KEY environment variable is not set. Chat will work in demo mode.")
+      // Don't throw error, allow chat to work in demo mode
     }
 
     this.config = {
       apiKey,
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       systemPrompt: `You are Commander Sam H., an experienced space exploration commander aboard a deep space vessel. You are knowledgeable, professional, and passionate about space exploration, astronomy, and planetary science. 
 
 Your personality traits:
@@ -41,6 +42,11 @@ Always stay in character as Commander Sam H. and maintain the space exploration 
     conversationHistory: ChatMessage[] = []
   ): Promise<string> {
     try {
+      // If no API key, return demo responses
+      if (!this.config.apiKey) {
+        return this.getDemoResponse(message)
+      }
+
       // Prepare the conversation context
       const messages = [
         {
@@ -106,6 +112,44 @@ Always stay in character as Commander Sam H. and maintain the space exploration 
   }
 
   /**
+   * Get demo response when API key is not available
+   */
+  private getDemoResponse(message: string): string {
+    const lowerMessage = message.toLowerCase()
+    
+    if (lowerMessage.includes("hello") || lowerMessage.includes("hi")) {
+      return "Commander Sam H. reporting for duty! Welcome aboard our deep space vessel. I'm here to guide you through our solar system exploration mission. What would you like to know about our celestial neighbors?"
+    }
+    
+    if (lowerMessage.includes("earth")) {
+      return "Ah, Earth - our beautiful blue marble! The third planet from the Sun and our home base. Earth is unique with its liquid water oceans, protective atmosphere, and diverse life forms. It's the only known planet to harbor life as we know it. What specific aspect of Earth interests you, Commander?"
+    }
+    
+    if (lowerMessage.includes("mars")) {
+      return "Mars, the Red Planet! Our next frontier for human exploration. Mars has polar ice caps, the largest volcano in the solar system (Olympus Mons), and evidence of ancient water flows. NASA and other space agencies are actively planning crewed missions there. The journey takes about 7 months with current technology."
+    }
+    
+    if (lowerMessage.includes("jupiter")) {
+      return "Jupiter - the king of planets! This gas giant is more massive than all other planets combined. It has over 80 moons, including the four Galilean moons: Io, Europa, Ganymede, and Callisto. Jupiter's Great Red Spot is a storm larger than Earth that's been raging for centuries!"
+    }
+    
+    if (lowerMessage.includes("saturn")) {
+      return "Saturn, the jewel of our solar system! Famous for its spectacular ring system made of ice and rock particles. Saturn has 146 known moons, including Titan with its thick atmosphere and methane lakes. The planet itself is less dense than water - it would float!"
+    }
+    
+    if (lowerMessage.includes("sun")) {
+      return "Our Sun - the heart of our solar system! This massive fusion reactor converts 600 million tons of hydrogen into helium every second, providing the energy that powers life on Earth. It's a middle-aged star that will shine for another 5 billion years."
+    }
+    
+    if (lowerMessage.includes("space") || lowerMessage.includes("exploration")) {
+      return "Space exploration is humanity's greatest adventure! We've sent probes to every planet, landed on the Moon, and have continuous human presence on the International Space Station. The next big steps include returning to the Moon, reaching Mars, and perhaps exploring the moons of Jupiter and Saturn."
+    }
+    
+    // Default response
+    return `Commander Sam H. here! I'm currently operating in demo mode without full AI capabilities, but I'm still ready to discuss space exploration with you. Try asking me about planets like Earth, Mars, Jupiter, or Saturn, or about space exploration in general. What celestial topic interests you most?`
+  }
+
+  /**
    * Generate a unique message ID
    */
   generateMessageId(): string {
@@ -125,5 +169,30 @@ Always stay in character as Commander Sam H. and maintain the space exploration 
   }
 }
 
-// Export a singleton instance
-export const geminiChatService = new GeminiChatService()
+// Export a singleton instance with error handling
+let geminiChatService: GeminiChatService
+try {
+  geminiChatService = new GeminiChatService()
+} catch (error) {
+  console.error("Failed to initialize GeminiChatService:", error)
+  // Create a fallback service that always works in demo mode
+  geminiChatService = {
+    generateMessageId: () => `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    createMessage: (content: string, role: "user" | "assistant") => ({
+      id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      content,
+      role,
+      timestamp: new Date(),
+    }),
+    sendMessage: async (message: string) => {
+      // Simple demo responses
+      const lowerMessage = message.toLowerCase()
+      if (lowerMessage.includes("hello") || lowerMessage.includes("hi")) {
+        return "Commander Sam H. reporting for duty! Welcome aboard our deep space vessel. What would you like to explore?"
+      }
+      return "Commander Sam H. here! I'm operating in demo mode. Try asking me about planets or space exploration!"
+    }
+  } as any
+}
+
+export { geminiChatService }

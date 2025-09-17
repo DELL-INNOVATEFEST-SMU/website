@@ -57,6 +57,8 @@ export function SpaceChatSystem({ className }: SpaceChatSystemProps) {
     return lastAssistantMessage?.content;
   };
 
+  console.log("SpaceChatSystem render - session.isActive:", session.isActive);
+
   return (
     <div className={cn("relative", className)}>
       {/* Chat Window */}

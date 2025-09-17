@@ -34,6 +34,8 @@ export function ChatWindow({
 }: ChatWindowProps) {
   const [inputMessage, setInputMessage] = useState("");
 
+  console.log("ChatWindow render - isOpen:", isOpen);
+
   if (!isOpen) return null;
 
   /**

@@ -44,12 +44,24 @@ export function ChatBubble({
         </div>
       )}
 
+      {/* Pulsing Ring Effect - Behind the button */}
+      <div
+        className={cn(
+          "absolute inset-0 rounded-full border-2 border-blue-400/50",
+          "animate-ping pointer-events-none -z-10",
+          hasUnreadMessages ? "opacity-75" : "opacity-0"
+        )}
+      />
+
       {/* Main Chat Bubble */}
       <Button
-        onClick={onClick}
+        onClick={() => {
+          console.log("ChatBubble clicked!");
+          onClick();
+        }}
         size="lg"
         className={cn(
-          "relative h-14 w-14 rounded-full shadow-lg",
+          "relative h-14 w-14 rounded-full shadow-lg z-10",
           "bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700",
           "hover:from-blue-500 hover:via-purple-500 hover:to-indigo-600",
           "border-2 border-white/20",
@@ -66,15 +78,6 @@ export function ChatBubble({
           </Badge>
         )}
       </Button>
-
-      {/* Pulsing Ring Effect */}
-      <div
-        className={cn(
-          "absolute inset-0 rounded-full border-2 border-blue-400/50",
-          "animate-ping",
-          hasUnreadMessages ? "opacity-75" : "opacity-0"
-        )}
-      />
     </div>
   );
 }
