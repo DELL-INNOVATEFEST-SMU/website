@@ -131,7 +131,7 @@ const planets: PlanetData[] = [
   {
     name: "Neptune",
     color: "#4B70DD",
-    size: 0.8,
+    size: 0.18,
     distance: 17.0,
     speed: baseOrbitSpeed / 164.8,
     description: "The windiest planet with supersonic winds.",
@@ -268,6 +268,7 @@ export const SolarSystem: React.FC = () => {
   const [backgroundType, setBackgroundType] = useState<"stars" | "milky_way">(
     "milky_way"
   );
+  console.log("Current user:", user);
   useEffect(() => {
     // Check session on mount
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -356,7 +357,7 @@ export const SolarSystem: React.FC = () => {
           onClick={() => setShowLoginModal(true)}
           className="mt-4 w-full bg-purple-600 text-white"
         >
-          Log in with Magic Link
+          Log in
         </Button>
       )}</div>
       {/* Planet Info Overlay - Outside Canvas */}
