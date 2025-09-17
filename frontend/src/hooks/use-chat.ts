@@ -32,47 +32,57 @@ export function useChat() {
   }, [])
 
   /**
-   * Simulate typing effect for bot responses
+   * Show typing indicator immediately
+   */
+  const showTypingIndicator = useCallback(() => {
+    const typingMessage: ChatMessage = {
+      id: "typing_indicator",
+      content: "",
+      role: "assistant",
+      timestamp: new Date(),
+      isTyping: true,
+    }
+
+    setSession(prev => ({
+      ...prev,
+      messages: [...prev.messages, typingMessage],
+      lastActivity: new Date(),
+    }))
+    
+    setIsTyping(true)
+  }, [])
+
+  /**
+   * Replace typing indicator with actual message
+   */
+  const replaceTypingWithMessage = useCallback((text: string) => {
+    setIsTyping(false)
+    
+    // Remove typing indicator and add actual message
+    setSession(prev => ({
+      ...prev,
+      messages: [
+        ...prev.messages.filter(msg => msg.id !== "typing_indicator"),
+        geminiChatService.createMessage(text, "assistant")
+      ],
+      lastActivity: new Date(),
+    }))
+  }, [])
+
+  /**
+   * Simulate typing effect for bot responses with realistic delay
    */
   const simulateTyping = useCallback(async (text: string): Promise<void> => {
     return new Promise((resolve) => {
-      setIsTyping(true)
-      
-      // Add typing indicator message
-      const typingMessage: ChatMessage = {
-        id: "typing_indicator",
-        content: "",
-        role: "assistant",
-        timestamp: new Date(),
-        isTyping: true,
-      }
-
-      setSession(prev => ({
-        ...prev,
-        messages: [...prev.messages, typingMessage],
-        lastActivity: new Date(),
-      }))
-
       // Simulate realistic typing delay based on message length
-      const typingDelay = Math.min(Math.max(text.length * 20, 1000), 3000)
+      const typingDelay = Math.min(Math.max(text.length * 15, 800), 2500)
       
       setTimeout(() => {
-        setIsTyping(false)
-        
-        // Remove typing indicator and add actual message
-        setSession(prev => ({
-          ...prev,
-          messages: [
-            ...prev.messages.filter(msg => msg.id !== "typing_indicator"),
-            geminiChatService.createMessage(text, "assistant")
-          ],
-          lastActivity: new Date(),
-        }))
-        
+        replaceTypingWithMessage(text)
         resolve()
       }, typingDelay)
     })
-  }, [])
+  }, [replaceTypingWithMessage])
 
   /**
    * Send a message and get AI response
@@ -92,10 +102,13 @@ export function useChat() {
         lastActivity: new Date(),
       }))
 
+      // Show typing indicator immediately (no delay)
+      showTypingIndicator()
+
       // Get conversation history for context (excluding typing indicators)
       const conversationHistory = session.messages.filter(msg => !msg.isTyping)
 
-      // Get AI response
+      // Get AI response in the background
       const aiResponse = await geminiChatService.sendMessage(content.trim(), conversationHistory)
       
       // Simulate typing and add AI response
@@ -104,13 +117,13 @@ export function useChat() {
     } catch (error) {
       console.error("Error sending message:", error)
       
-      // Add error message
+      // Add error message with typing simulation
       await simulateTyping("I'm experiencing some technical difficulties. Please try again, Commander!")
       
     } finally {
       setIsLoading(false)
     }
-  }, [isLoading, session.messages, simulateTyping])
+  }, [isLoading, session.messages, showTypingIndicator, simulateTyping])
 
   /**
    * Clear chat history
