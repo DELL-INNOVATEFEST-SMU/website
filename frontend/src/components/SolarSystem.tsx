@@ -7,10 +7,9 @@ import { PlanetInfo } from "./PlanetInfo";
 import { Background } from "./Background";
 import { Moon } from "./Moon";
 import { Button } from "./ui/button";
-import { LoginModal } from "./auth/LoginModal";
 import { useAuthContext } from "@/providers/AuthProvider";
 import { SpaceChatSystem } from "./SpaceChatSystem";
-import { supabase } from "@/services/supabase/client";
+import { supabase } from "@/lib/supabase";
 
 interface PlanetData {
   name: string;
@@ -270,14 +269,13 @@ const GuestModeIndicator: React.FC<{ onUpgrade: () => void }> = ({
       onClick={onUpgrade}
       className="text-xs p-0 h-auto text-blue-600 hover:text-blue-800"
     >
-      Save permanently
+      Sign in to save
     </Button>
   </div>
 );
 
 export const SolarSystem: React.FC = () => {
-  const { user, logout, isAnonymous, upgradeToAccount } = useAuthContext();
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const { user, signOut, isAnonymous } = useAuthContext();
   const [showSavePrompt, setShowSavePrompt] = useState(false);
 
   const [showImageModal, setShowImageModal] = useState(false);
@@ -489,7 +487,7 @@ export const SolarSystem: React.FC = () => {
 
   const handleSaveProgress = async () => {
     setShowSavePrompt(false);
-    setShowLoginModal(true);
+    signOut(); // This will clear the session and show AuthGate
   };
 
   const handleJournalChange = (content: string) => {
@@ -547,9 +545,7 @@ export const SolarSystem: React.FC = () => {
           </div>
 
           {/* Guest Mode Indicator */}
-          {isAnonymous && (
-            <GuestModeIndicator onUpgrade={() => setShowLoginModal(true)} />
-          )}
+          {isAnonymous && <GuestModeIndicator onUpgrade={signOut} />}
         </div>
 
         {/* Top Right Controls */}
@@ -557,7 +553,7 @@ export const SolarSystem: React.FC = () => {
           <div className="flex gap-2">
             {user ? (
               <>
-                <Button onClick={logout} variant="outline" size="sm">
+                <Button onClick={signOut} variant="outline" size="sm">
                   {isAnonymous ? "Switch User" : "Sign Out"}
                 </Button>
                 <Button
@@ -569,13 +565,7 @@ export const SolarSystem: React.FC = () => {
                 </Button>
               </>
             ) : (
-              <Button
-                onClick={() => setShowLoginModal(true)}
-                variant="default"
-                size="sm"
-              >
-                Sign In
-              </Button>
+              <div className="text-white text-sm">Loading...</div>
             )}
           </div>
         </div>
@@ -590,12 +580,6 @@ export const SolarSystem: React.FC = () => {
       {selectedPlanet && (
         <PlanetInfo planet={selectedPlanet} onClose={closePlanetInfo} />
       )}
-
-      {/* Login Modal */}
-      <LoginModal
-        open={showLoginModal}
-        onClose={() => setShowLoginModal(false)}
-      />
 
       {/* Journal Modal */}
       {showJournal && (

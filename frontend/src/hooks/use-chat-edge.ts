@@ -6,9 +6,10 @@ import { useAuthContext } from "@/providers/AuthProvider"
 /**
  * Custom hook for managing chat functionality with Edge Function
  * Uses main authentication system for proper auth handling
+ * Updated to work with AuthGate - users are guaranteed to be authenticated
  */
 export function useChatEdge() {
-  const { user, isAnonymous, ensureAuth } = useAuthContext()
+  const { user, isAnonymous } = useAuthContext()
   
   const [session, setSession] = useState<ChatSession>({
     id: `session_${Date.now()}`,
@@ -100,8 +101,11 @@ export function useChatEdge() {
     setIsLoading(true)
 
     try {
-      // Ensure user is authenticated (anonymous or regular) before sending
-      await ensureAuth()
+      // Check if user is authenticated (AuthGate ensures this, but good to verify)
+      if (!user) {
+        console.error("User not authenticated - this should not happen with AuthGate")
+        return
+      }
 
       // Add user message immediately
       const userMessage = edgeChatService.createMessage(content.trim(), "user")
@@ -133,7 +137,7 @@ export function useChatEdge() {
     } finally {
       setIsLoading(false)
     }
-  }, [isLoading, session.messages, showTypingIndicator, simulateTyping, ensureAuth])
+  }, [isLoading, session.messages, showTypingIndicator, simulateTyping, user])
 
   /**
    * Clear chat history
@@ -188,22 +192,23 @@ export function useChatEdge() {
     checkHealth()
   }, [checkHealth])
 
-  // Ensure authentication when component mounts or user changes
+  // Monitor user authentication state
   useEffect(() => {
     if (!user) {
-      ensureAuth().catch(error => {
-        console.error("Failed to ensure authentication:", error)
-        setIsOnline(false)
-      })
+      console.warn("User authentication lost - AuthGate should handle this")
+      setIsOnline(false)
+    } else {
+      // User is authenticated, ensure we're online for chat
+      checkHealth()
     }
-  }, [user, ensureAuth])
+  }, [user, checkHealth])
 
   return {
     session,
     isLoading,
     isTyping,
     isOnline,
-    isAuthenticated: user && !isAnonymous,
+    isAuthenticated: !!user && !isAnonymous,
     messagesEndRef,
     sendMessage,
     clearChat,

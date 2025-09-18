@@ -1,4 +1,5 @@
-import React, { useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useAuthContext } from "@/providers/AuthProvider";
 import {
   Dialog,
   DialogContent,
@@ -8,15 +9,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAuthContext } from "@/providers/AuthProvider";
 import { useToast } from "@/hooks/use-toast";
 
-interface LoginModalProps {
-  open: boolean;
-  onClose: () => void;
-}
-
-// Token Input Component for better UX
+// Token Input Component for OTP
 const TokenInput: React.FC<{
   value: string;
   onChange: (value: string) => void;
@@ -82,19 +77,62 @@ const TokenInput: React.FC<{
 };
 
 /**
- * Enhanced Login modal component with token-based OTP authentication and smart detection
+ * AuthGate component that shows a one-time authentication choice
+ * Users can either "Continue as guest" or "Sign in" with email
+ *
+ * Gate rules:
+ * - Show when no session exists and interstellar-gate-choice not set
+ * - Hide if a session exists (anon or logged-in) OR if the user just chose an option
+ * - After sign out, clear the choice so the gate returns
  */
-export function LoginModal({ open, onClose }: LoginModalProps) {
+export function AuthGate() {
+  const { session, login, verifyOTP, resendOTP, continueAsGuest, loading } =
+    useAuthContext();
+  const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [otpToken, setOtpToken] = useState("");
   const [showOTPInput, setShowOTPInput] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [isNewUser, setIsNewUser] = useState(false);
-
-  const { login, verifyOTP, resendOTP, loading } = useAuthContext();
   const { toast } = useToast();
 
-  const handleSendOTP = async () => {
+  useEffect(() => {
+    if (loading) return;
+    const choice = localStorage.getItem("interstellar-gate-choice");
+    setOpen(!session && !choice);
+  }, [session, loading]);
+
+  const handleGuest = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
+    try {
+      await continueAsGuest();
+      setOpen(false);
+      toast({
+        title: "Welcome, Guest!",
+        description:
+          "You're now exploring as a guest. Your data will be private and auto-purged later.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to continue as guest",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleEmail = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isSubmitting) return;
+
     if (!email.trim()) {
       toast({
         title: "Error",
@@ -114,6 +152,8 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
       });
       return;
     }
+
+    setIsSubmitting(true);
 
     try {
       const result = await login(email);
@@ -135,6 +175,8 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
             : "Failed to send verification code",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -148,15 +190,18 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
       return;
     }
 
+    setIsSubmitting(true);
+
     try {
       await verifyOTP(email, otpToken);
-      onClose();
+      localStorage.setItem("interstellar-gate-choice", "email");
+      setOpen(false);
       resetForm();
 
       toast({
         title: "Success!",
         description: isNewUser
-          ? "Account created successfully! Welcome to our platform."
+          ? "Account created successfully! Welcome to Interstellar."
           : "You have been signed in successfully",
       });
     } catch (error) {
@@ -166,6 +211,8 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
           error instanceof Error ? error.message : "Invalid verification code",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -207,67 +254,98 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
     setIsNewUser(false);
   };
 
-  const handleClose = () => {
-    onClose();
-    resetForm();
-  };
+  if (!open) return null;
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog open={open} onOpenChange={() => {}}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="text-center">
             {showOTPInput
               ? isNewUser
                 ? "Complete Your Signup"
                 : "Verify Your Email"
-              : "Sign In / Sign Up"}
+              : "Welcome to Interstellar"}
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           {!showOTPInput ? (
             <>
-              <div className="text-sm text-gray-600 mb-4">
-                Enter your email address and we'll send you a verification code
-                to sign in or create your account.
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={loading}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !loading) {
-                      handleSendOTP();
-                    }
-                  }}
-                />
+              <div className="text-center">
+                <p className="text-sm text-muted-foreground">
+                  Continue as a guest (private, auto-purged later) or sign in to
+                  save your progress.
+                </p>
               </div>
 
               <Button
-                onClick={handleSendOTP}
-                disabled={loading}
-                className="w-full"
+                onClick={handleGuest}
+                variant="outline"
+                className="w-full h-12"
+                disabled={isSubmitting}
               >
-                {loading ? "Sending..." : "Send Verification Code"}
+                {isSubmitting
+                  ? "Setting up guest session..."
+                  : "Continue as guest"}
               </Button>
+
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground">
+                    Or
+                  </span>
+                </div>
+              </div>
+
+              <form onSubmit={handleEmail} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email Address</Label>
+                  <Input
+                    id="email"
+                    placeholder="your@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    type="email"
+                    required
+                    disabled={isSubmitting}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !isSubmitting) {
+                        handleEmail(e);
+                      }
+                    }}
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  className="w-full h-12"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting
+                    ? "Sending verification code..."
+                    : "Send verification code"}
+                </Button>
+              </form>
+
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground">
+                  We'll only use your email to keep your data across devices.
+                </p>
+              </div>
             </>
           ) : (
             <>
-              <div className="space-y-4">
-                <div className="text-center">
-                  <div className="text-sm text-gray-600 mb-2">
+              <div className="text-center space-y-4">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-2">
                     {isNewUser
                       ? "We sent a 6-digit verification code to complete your signup:"
                       : "We sent a 6-digit verification code to sign you in:"}
-                  </div>
-                  <div className="font-medium text-blue-600">{email}</div>
+                  </p>
+                  <p className="font-medium text-blue-600">{email}</p>
                 </div>
 
                 <div className="space-y-2">
@@ -275,30 +353,30 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
                   <TokenInput
                     value={otpToken}
                     onChange={setOtpToken}
-                    disabled={loading}
+                    disabled={isSubmitting}
                   />
                 </div>
 
-                <div className="text-xs text-gray-500 text-center">
+                <p className="text-xs text-muted-foreground">
                   This code will expire in 10 minutes
-                </div>
+                </p>
               </div>
 
               <div className="flex space-x-2">
                 <Button
                   variant="outline"
                   onClick={handleBackToEmail}
-                  disabled={loading}
+                  disabled={isSubmitting}
                   className="flex-1"
                 >
                   Change Email
                 </Button>
                 <Button
                   onClick={handleVerifyOTP}
-                  disabled={loading || otpToken.length !== 6}
+                  disabled={isSubmitting || otpToken.length !== 6}
                   className="flex-1"
                 >
-                  {loading
+                  {isSubmitting
                     ? "Verifying..."
                     : isNewUser
                     ? "Create Account"
@@ -316,17 +394,15 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
                   ? "Resending..."
                   : "Didn't receive the code? Resend"}
               </Button>
+
+              <div className="text-xs text-muted-foreground text-center border-t pt-4">
+                {isNewUser
+                  ? "🎉 Creating your new account..."
+                  : "👋 Welcome back! Signing you in..."}
+              </div>
             </>
           )}
         </div>
-
-        {showOTPInput && (
-          <div className="text-xs text-gray-500 text-center mt-4 border-t pt-4">
-            {isNewUser
-              ? "🎉 Creating your new account..."
-              : "👋 Welcome back! Signing you in..."}
-          </div>
-        )}
       </DialogContent>
     </Dialog>
   );
