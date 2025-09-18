@@ -221,9 +221,64 @@ const thinkingTraps = [
   },
 ];
 
+// Save Progress Component for Guest Users
+const SaveProgressPrompt: React.FC<{
+  onSaveProgress: () => void;
+  onDismiss: () => void;
+}> = ({ onSaveProgress, onDismiss }) => (
+  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 mt-4 shadow-sm">
+    <div className="flex items-center gap-2 mb-2">
+      <span className="text-blue-600 text-lg">💾</span>
+      <h4 className="font-medium text-blue-900">Save Your Progress</h4>
+    </div>
+    <p className="text-sm text-blue-700 mb-3">
+      You're currently in guest mode. Your journal entries and progress will be
+      lost when you close this tab. Sign up to save your data permanently and
+      get unlimited image generations!
+    </p>
+    <div className="flex gap-2">
+      <Button
+        onClick={onSaveProgress}
+        variant="default"
+        size="sm"
+        className="bg-blue-600 hover:bg-blue-700 text-white"
+      >
+        Sign Up / Sign In
+      </Button>
+      <Button
+        onClick={onDismiss}
+        variant="outline"
+        size="sm"
+        className="text-blue-600 border-blue-300 hover:bg-blue-50"
+      >
+        Maybe Later
+      </Button>
+    </div>
+  </div>
+);
+
+// Guest Mode Indicator Component
+const GuestModeIndicator: React.FC<{ onUpgrade: () => void }> = ({
+  onUpgrade,
+}) => (
+  <div className="text-xs text-gray-500 flex items-center gap-2 bg-gray-50 px-2 py-1 rounded">
+    <span>🔒</span>
+    <span>Guest mode - data saves for this session only</span>
+    <Button
+      variant="link"
+      size="sm"
+      onClick={onUpgrade}
+      className="text-xs p-0 h-auto text-blue-600 hover:text-blue-800"
+    >
+      Save permanently
+    </Button>
+  </div>
+);
+
 export const SolarSystem: React.FC = () => {
-  const { user, logout } = useAuthContext();
+  const { user, logout, isAnonymous, upgradeToAccount } = useAuthContext();
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showSavePrompt, setShowSavePrompt] = useState(false);
 
   const [showImageModal, setShowImageModal] = useState(false);
   const [selectedTraps, setSelectedTraps] = useState<string[]>([]);
@@ -243,12 +298,19 @@ export const SolarSystem: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Show save progress prompt after user has done some activity
+  const [activityCount, setActivityCount] = useState(0);
+
   const toggleTrap = (trapTitle: string) => {
     setSelectedTraps((prev) =>
       prev.includes(trapTitle)
         ? prev.filter((t) => t !== trapTitle)
         : [...prev, trapTitle]
     );
+    // Track activity for save prompt
+    if (isAnonymous) {
+      setActivityCount((prev) => prev + 1);
+    }
   };
 
   const handleShareImage = () => {
@@ -333,6 +395,15 @@ export const SolarSystem: React.FC = () => {
       setImageBase64(data.imageBase64);
       setShowImageModal(true);
 
+      // Track activity and show save prompt for anonymous users
+      if (isAnonymous) {
+        setActivityCount((prev) => prev + 1);
+        // Show save prompt after significant activity
+        if (activityCount >= 2 && !showSavePrompt) {
+          setShowSavePrompt(true);
+        }
+      }
+
       // The edge function already handles recording the generation,
       // but we can update the local state for consistency
       if (user?.id) {
@@ -416,6 +487,23 @@ export const SolarSystem: React.FC = () => {
     setFocusedPlanet(null);
   };
 
+  const handleSaveProgress = async () => {
+    setShowSavePrompt(false);
+    setShowLoginModal(true);
+  };
+
+  const handleJournalChange = (content: string) => {
+    setJournals((prev) => ({
+      ...prev,
+      [selectedDay.toDateString()]: content,
+    }));
+
+    // Track activity for save prompt
+    if (isAnonymous && content.length > 50) {
+      setActivityCount((prev) => prev + 1);
+    }
+  };
+
   return (
     <div className="relative w-full h-screen bg-black overflow-hidden">
       {/* Solar System Canvas */}
@@ -457,6 +545,11 @@ export const SolarSystem: React.FC = () => {
               Milky Way
             </Button>
           </div>
+
+          {/* Guest Mode Indicator */}
+          {isAnonymous && (
+            <GuestModeIndicator onUpgrade={() => setShowLoginModal(true)} />
+          )}
         </div>
 
         {/* Top Right Controls */}
@@ -465,7 +558,7 @@ export const SolarSystem: React.FC = () => {
             {user ? (
               <>
                 <Button onClick={logout} variant="outline" size="sm">
-                  Sign Out
+                  {isAnonymous ? "Switch User" : "Sign Out"}
                 </Button>
                 <Button
                   onClick={() => setShowJournal(true)}
@@ -509,7 +602,14 @@ export const SolarSystem: React.FC = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold">Journal</h2>
+              <div className="flex items-center gap-3">
+                <h2 className="text-2xl font-bold">Journal</h2>
+                {isAnonymous && (
+                  <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">
+                    Guest Mode
+                  </span>
+                )}
+              </div>
               <Button
                 onClick={() => setShowJournal(false)}
                 variant="outline"
@@ -600,16 +700,19 @@ export const SolarSystem: React.FC = () => {
                 <h4 className="font-medium mb-2">Journal Entry:</h4>
                 <textarea
                   value={journals[selectedDay.toDateString()] || ""}
-                  onChange={(e) =>
-                    setJournals((prev) => ({
-                      ...prev,
-                      [selectedDay.toDateString()]: e.target.value,
-                    }))
-                  }
+                  onChange={(e) => handleJournalChange(e.target.value)}
                   placeholder="Write about your day, thoughts, feelings..."
                   className="w-full h-32 p-3 border rounded-lg resize-none"
                 />
               </div>
+
+              {/* Save Progress Prompt for Guest Users */}
+              {isAnonymous && showSavePrompt && (
+                <SaveProgressPrompt
+                  onSaveProgress={handleSaveProgress}
+                  onDismiss={() => setShowSavePrompt(false)}
+                />
+              )}
 
               {/* Image Generation */}
               <div className="border-t pt-4">
@@ -628,6 +731,12 @@ export const SolarSystem: React.FC = () => {
                 </div>
                 {error && (
                   <div className="text-red-600 text-sm mb-2">{error}</div>
+                )}
+                {isAnonymous && (
+                  <div className="text-xs text-amber-600 mt-1">
+                    🔒 Guest mode: Generated images are temporary and won't be
+                    saved permanently
+                  </div>
                 )}
               </div>
             </div>
@@ -667,6 +776,15 @@ export const SolarSystem: React.FC = () => {
                       Share
                     </Button>
                   </div>
+                  {isAnonymous && (
+                    <div className="text-xs text-amber-600 mt-2 flex items-center gap-1">
+                      <span>⚠️</span>
+                      <span>
+                        Remember to download - this image won't be saved
+                        permanently in guest mode
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -709,7 +827,7 @@ export const SolarSystem: React.FC = () => {
               variant="outline"
               className="w-full mt-4"
             >
-              Save
+              {isAnonymous ? "Save to Session (Temporary)" : "Save"}
             </Button>
           </div>
         </div>

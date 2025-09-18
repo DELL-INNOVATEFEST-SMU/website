@@ -34,4 +34,5 @@ export interface AuthContextType extends AuthState {
   resendOTP: (email: string) => Promise<void>;
   signInAnonymously: () => Promise<void>;
   ensureAuth: () => Promise<void>;
+  upgradeToAccount: (credentials: LoginCredentials) => Promise<void>;
 }

@@ -10,10 +10,12 @@ interface UseAuthReturn extends AuthState {
   resendOTP: (email: string) => Promise<void>;
   signInAnonymously: () => Promise<void>;
   ensureAuth: () => Promise<void>;
+  upgradeToAccount: (credentials: LoginCredentials) => Promise<void>;
 }
 
 /**
  * Custom hook for managing authentication state and operations
+ * Now supports guest mode with sessionStorage persistence
  */
 export function useAuth(): UseAuthReturn {
   const [state, setState] = useState<AuthState>({
@@ -72,19 +74,37 @@ export function useAuth(): UseAuthReturn {
   }, [transformUser, transformSession]);
 
   /**
-   * Initialize auth state on mount
+   * Initialize auth state on mount - with guest mode fallback
    */
   useEffect(() => {
     const initializeAuth = async () => {
       try {
+        // Try to get existing session (including stored anonymous)
         const session = await AuthService.getSession();
-        updateAuthState(session);
+        
+        if (session) {
+          updateAuthState(session);
+        } else {
+          // Create anonymous user for guest experience
+          console.log("No session found, creating guest session");
+          const user = await AuthService.ensureGuestAuth();
+          const newSession = await AuthService.getSession();
+          updateAuthState(newSession);
+        }
       } catch (error) {
-        setState(prev => ({
-          ...prev,
-          loading: false,
-          error: error instanceof Error ? error.message : "Authentication error",
-        }));
+        // Even on error, try to provide guest experience
+        try {
+          console.log("Auth error, falling back to guest session");
+          const user = await AuthService.ensureGuestAuth();
+          const newSession = await AuthService.getSession();
+          updateAuthState(newSession);
+        } catch (guestError) {
+          setState(prev => ({
+            ...prev,
+            loading: false,
+            error: error instanceof Error ? error.message : "Authentication error",
+          }));
+        }
       }
     };
 
@@ -185,6 +205,14 @@ export function useAuth(): UseAuthReturn {
   }, [state.user, signInAnonymously]);
 
   /**
+   * Upgrade anonymous user to real account (alias for login)
+   */
+  const upgradeToAccount = useCallback(async (credentials: LoginCredentials): Promise<void> => {
+    console.log("Upgrading guest to real account");
+    return login(credentials);
+  }, [login]);
+
+  /**
    * Resend OTP
    */
   const resendOTP = useCallback(async (email: string): Promise<void> => {
@@ -212,7 +240,10 @@ export function useAuth(): UseAuthReturn {
     
     try {
       await AuthService.signOut();
-      // Auth state will be updated via the listener
+      // After logout, create new guest session
+      const user = await AuthService.ensureGuestAuth();
+      const newSession = await AuthService.getSession();
+      updateAuthState(newSession);
     } catch (error) {
       setState(prev => ({
         ...prev,
@@ -221,7 +252,7 @@ export function useAuth(): UseAuthReturn {
       }));
       throw error;
     }
-  }, []);
+  }, [updateAuthState]);
 
   return {
     ...state,
@@ -231,5 +262,6 @@ export function useAuth(): UseAuthReturn {
     resendOTP,
     signInAnonymously,
     ensureAuth,
+    upgradeToAccount,
   };
 }
