@@ -29,9 +29,7 @@ Your personality traits:
 
 You are currently in a solar system explorer interface where users can interact with planets. Help them learn about space, answer questions about astronomy, celestial bodies, space exploration missions, and related topics. Keep responses engaging and educational, matching the space exploration theme.
 
-Always stay in character as Commander Sam H. and maintain the space exploration context.
-
-IMPORTANT: Do not include any thinking process or reasoning in your responses. Provide direct, engaging answers without showing your thought process.`
+Always stay in character as Commander Sam H. and maintain the space exploration context.`
     }
   }
 
@@ -75,8 +73,6 @@ IMPORTANT: Do not include any thinking process or reasoning in your responses. P
           topP: 0.95,
           maxOutputTokens: 1024,
           candidateCount: 1,
-          // Disable thinking and reasoning outputs
-          responseMimeType: "text/plain"
         },
         safetySettings: [
           {
@@ -95,7 +91,11 @@ IMPORTANT: Do not include any thinking process or reasoning in your responses. P
             category: "HARM_CATEGORY_DANGEROUS_CONTENT",
             threshold: "BLOCK_MEDIUM_AND_ABOVE"
           }
-        ]
+        ],
+        // Disable thinking output
+        thinkingConfig: {
+          thinkingBudget: 0
+        }
       }
 
       const response = await fetch(
@@ -126,12 +126,7 @@ IMPORTANT: Do not include any thinking process or reasoning in your responses. P
         throw new Error("Invalid response format from Gemini API")
       }
 
-      let responseText = candidate.content.parts[0].text
-
-      // Post-process to remove any thinking patterns that might slip through
-      responseText = this.removeThinkingPatterns(responseText)
-
-      return responseText
+      return candidate.content.parts[0].text
 
     } catch (error) {
       console.error("Error communicating with Gemini:", error)
@@ -146,36 +141,6 @@ IMPORTANT: Do not include any thinking process or reasoning in your responses. P
       
       throw new Error("Unexpected error occurred during communication.")
     }
-  }
-
-  /**
-   * Remove thinking patterns from response text
-   */
-  private removeThinkingPatterns(text: string): string {
-    // Remove common thinking patterns
-    const thinkingPatterns = [
-      /\*thinks?\*.*?\*/gi,
-      /\*reasoning\*.*?\*/gi,
-      /\*analysis\*.*?\*/gi,
-      /\*considering\*.*?\*/gi,
-      /Let me think.*?\n/gi,
-      /I think.*?\n/gi,
-      /My reasoning.*?\n/gi,
-      /Upon reflection.*?\n/gi,
-      /\(thinking:.*?\)/gi,
-      /\[thinking:.*?\]/gi,
-      /\<thinking\>.*?\<\/thinking\>/gis,
-    ]
-
-    let cleanText = text
-    thinkingPatterns.forEach(pattern => {
-      cleanText = cleanText.replace(pattern, '')
-    })
-
-    // Clean up extra whitespace
-    cleanText = cleanText.replace(/\n\s*\n/g, '\n').trim()
-    
-    return cleanText
   }
 
   /**
