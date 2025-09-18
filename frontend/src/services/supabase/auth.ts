@@ -1,4 +1,4 @@
-import { supabase } from "./client";
+import { supabase } from "@/lib/supabase";
 import type { AuthResponse, SupabaseUser, SupabaseSession } from "./types";
 
 // SessionStorage keys for anonymous user persistence (PDPA compliant)

@@ -4,7 +4,7 @@ import { corsHeaders } from "../_shared/cors.ts";
 
 /**
  * Purge Anonymous Users Edge Function
- * Deletes anonymous users older than 3 days
+ * Deletes anonymous users older than 1 day
  * Uses service role to access auth.users table
  */
 Deno.serve(async (req: Request) => {
@@ -31,13 +31,13 @@ Deno.serve(async (req: Request) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Find anonymous users older than 3 days
-    const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString();
+    // Find anonymous users older than 1 day
+    const oneDayAgo = new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString();
     
     const { data: oldUsers, error: queryError } = await supabase
       .from("auth.users")
       .select("id, created_at, email")
-      .lte("created_at", threeDaysAgo)
+      .lte("created_at", oneDayAgo)
       .eq("is_anonymous", true);
 
     if (queryError) {
