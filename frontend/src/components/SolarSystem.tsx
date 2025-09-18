@@ -11,7 +11,6 @@ import { Button } from "./ui/button";
 import { LoginModal } from "./auth/LoginModal";
 import { useAuthContext } from "@/providers/AuthProvider";
 import { SpaceChatSystem } from "./SpaceChatSystem";
-import { supabase } from "@/lib/supabaseClient";
 
 interface PlanetData {
   name: string;
@@ -38,7 +37,11 @@ const planets: PlanetData[] = [
     distance: 2.5,
     speed: baseOrbitSpeed / 0.24,
     description: "The smallest and innermost planet in our solar system.",
-    facts: ["Closest planet to the Sun", "No atmosphere", "Extreme temperature variations"],
+    facts: [
+      "Closest planet to the Sun",
+      "No atmosphere",
+      "Extreme temperature variations",
+    ],
     texturePath: "/textures/bodies/mercury.jpg",
     rotationSpeed: 1,
     tilt: 0.00017,
@@ -62,7 +65,11 @@ const planets: PlanetData[] = [
     distance: 4.5,
     speed: baseOrbitSpeed,
     description: "Our home planet, the only known planet with life.",
-    facts: ["Only planet with known life", "71% water coverage", "Has one moon"],
+    facts: [
+      "Only planet with known life",
+      "71% water coverage",
+      "Has one moon",
+    ],
     texturePath: "/textures/bodies/Earth.jpg",
     rotationSpeed: 1,
     tilt: 0.40928,
@@ -74,7 +81,11 @@ const planets: PlanetData[] = [
     distance: 6.0,
     speed: baseOrbitSpeed / 1.88,
     description: "The red planet with polar ice caps and the largest volcano.",
-    facts: ["Red due to iron oxide", "Has two small moons", "Largest volcano in solar system"],
+    facts: [
+      "Red due to iron oxide",
+      "Has two small moons",
+      "Largest volcano in solar system",
+    ],
     texturePath: "/textures/bodies/Mars.jpg",
     rotationSpeed: 0.5,
     tilt: 0.43965,
@@ -137,7 +148,13 @@ const SolarSystemScene: React.FC<{
 }> = ({ onPlanetClick, focusedPlanet, backgroundType }) => {
   return (
     <>
-      <OrbitControls enablePan enableZoom enableRotate minDistance={2} maxDistance={25} />
+      <OrbitControls
+        enablePan
+        enableZoom
+        enableRotate
+        minDistance={2}
+        maxDistance={25}
+      />
 
       {/* Background texture */}
       <Background textureType={backgroundType} />
@@ -160,12 +177,46 @@ const SolarSystemScene: React.FC<{
         shadow-camera-top={50}
         shadow-camera-bottom={-50}
       />
-      <pointLight position={[0, 0, 0]} intensity={2.8} color="#FDB813" distance={150} decay={1.2} />
-      <pointLight position={[-25, 15, -25]} intensity={1.8} color="#E0F6FF" distance={120} decay={1.2} />
-      <pointLight position={[20, -20, 20]} intensity={1.5} color="#FFE4E1" distance={100} decay={1.2} />
-      <pointLight position={[0, 25, 0]} intensity={2.0} color="#FFFFFF" distance={180} decay={1.0} />
-      <pointLight position={[30, 0, 0]} intensity={1.5} color="#F0F8FF" distance={120} decay={1.2} />
-      <hemisphereLight skyColor="#87CEEB" groundColor="#4682B4" intensity={0.18} />
+      <pointLight
+        position={[0, 0, 0]}
+        intensity={2.8}
+        color="#FDB813"
+        distance={150}
+        decay={1.2}
+      />
+      <pointLight
+        position={[-25, 15, -25]}
+        intensity={1.8}
+        color="#E0F6FF"
+        distance={120}
+        decay={1.2}
+      />
+      <pointLight
+        position={[20, -20, 20]}
+        intensity={1.5}
+        color="#FFE4E1"
+        distance={100}
+        decay={1.2}
+      />
+      <pointLight
+        position={[0, 25, 0]}
+        intensity={2.0}
+        color="#FFFFFF"
+        distance={180}
+        decay={1.0}
+      />
+      <pointLight
+        position={[30, 0, 0]}
+        intensity={1.5}
+        color="#F0F8FF"
+        distance={120}
+        decay={1.2}
+      />
+      <hemisphereLight
+        skyColor="#87CEEB"
+        groundColor="#4682B4"
+        intensity={0.18}
+      />
 
       <Sun />
 
@@ -193,9 +244,18 @@ const SolarSystemScene: React.FC<{
 };
 
 const thinkingTraps = [
-  { title: "All-or-Nothing Thinking", description: "Seeing things as all good or all bad." },
-  { title: "Overgeneralizing", description: "Assuming one event means it always happens." },
-  { title: "Catastrophizing", description: "Expecting the worst-case scenario." },
+  {
+    title: "All-or-Nothing Thinking",
+    description: "Seeing things as all good or all bad.",
+  },
+  {
+    title: "Overgeneralizing",
+    description: "Assuming one event means it always happens.",
+  },
+  {
+    title: "Catastrophizing",
+    description: "Expecting the worst-case scenario.",
+  },
 ];
 
 export const SolarSystem: React.FC = () => {
@@ -211,7 +271,9 @@ export const SolarSystem: React.FC = () => {
   const [showJournal, setShowJournal] = useState(false);
   const [selectedPlanet, setSelectedPlanet] = useState<PlanetData | null>(null);
   const [focusedPlanet, setFocusedPlanet] = useState<string | null>(null);
-  const [backgroundType, setBackgroundType] = useState<"stars" | "milky_way">("milky_way");
+  const [backgroundType, setBackgroundType] = useState<"stars" | "milky_way">(
+    "milky_way"
+  );
 
   // --- Journal feature (from main) ---
   const fetchedOnce = useRef(false);
@@ -220,7 +282,11 @@ export const SolarSystem: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const toggleTrap = (trapTitle: string) => {
-    setSelectedTraps((prev) => (prev.includes(trapTitle) ? prev.filter((t) => t !== trapTitle) : [...prev, trapTitle]));
+    setSelectedTraps((prev) =>
+      prev.includes(trapTitle)
+        ? prev.filter((t) => t !== trapTitle)
+        : [...prev, trapTitle]
+    );
   };
 
   const handleShareImage = () => {
@@ -276,7 +342,9 @@ export const SolarSystem: React.FC = () => {
       const response = await fetch("http://localhost:5000/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ journal: journals[selectedDay.toDateString()] || "" }),
+        body: JSON.stringify({
+          journal: journals[selectedDay.toDateString()] || "",
+        }),
       });
 
       if (!response.ok) throw new Error("Failed to generate image");
@@ -298,7 +366,8 @@ export const SolarSystem: React.FC = () => {
             },
             { onConflict: "user_id, created_at" }
           );
-        if (upsertErr) console.error("Error saving generation record:", upsertErr);
+        if (upsertErr)
+          console.error("Error saving generation record:", upsertErr);
       }
     } catch (err: any) {
       setError(err.message || "Unknown error");
@@ -384,17 +453,35 @@ export const SolarSystem: React.FC = () => {
         }}
       />
 
-      <Canvas camera={{ position: [0, 8, 15], fov: 60 }} shadows gl={{ antialias: true, alpha: false }}>
-        <SolarSystemScene onPlanetClick={handlePlanetClick} focusedPlanet={focusedPlanet} backgroundType={backgroundType} />
+      <Canvas
+        camera={{ position: [0, 8, 15], fov: 60 }}
+        shadows
+        gl={{ antialias: true, alpha: false }}
+      >
+        <SolarSystemScene
+          onPlanetClick={handlePlanetClick}
+          focusedPlanet={focusedPlanet}
+          backgroundType={backgroundType}
+        />
       </Canvas>
 
       {/* Left UI Overlay */}
       <div className="absolute top-6 left-6 z-10">
         <div className="bg-card/80 backdrop-blur-sm border border-border rounded-lg p-4">
-          <h1 className="text-2xl font-bold text-foreground mb-2">Solar System Explorer</h1>
-          <p className="text-muted-foreground text-sm mb-3">Click on planets to explore • Use mouse to navigate</p>
-          <Button onClick={toggleBackground} variant="outline" size="sm" className="w-full">
-            Switch to {backgroundType === "stars" ? "Milky Way" : "Stars"} Background
+          <h1 className="text-2xl font-bold text-foreground mb-2">
+            Solar System Explorer
+          </h1>
+          <p className="text-muted-foreground text-sm mb-3">
+            Click on planets to explore • Use mouse to navigate
+          </p>
+          <Button
+            onClick={toggleBackground}
+            variant="outline"
+            size="sm"
+            className="w-full"
+          >
+            Switch to {backgroundType === "stars" ? "Milky Way" : "Stars"}{" "}
+            Background
           </Button>
         </div>
       </div>
@@ -404,18 +491,36 @@ export const SolarSystem: React.FC = () => {
         <div className="bg-card/80 backdrop-blur-sm border border-border rounded-lg p-4 space-y-3 min-w-64">
           {user ? (
             <>
-              <p className="text-sm text-muted-foreground">Welcome, {user.email}</p>
-              <Button onClick={() => setShowJournal(true)} variant="outline" size="sm" className="w-full">
+              <p className="text-sm text-muted-foreground">
+                Welcome, {user.email}
+              </p>
+              <Button
+                onClick={() => setShowJournal(true)}
+                variant="outline"
+                size="sm"
+                className="w-full"
+              >
                 Open Journal
               </Button>
-              <Button onClick={logout} variant="outline" size="sm" className="w-full">
+              <Button
+                onClick={logout}
+                variant="outline"
+                size="sm"
+                className="w-full"
+              >
                 Sign Out
               </Button>
             </>
           ) : (
             <>
-              <p className="text-sm text-muted-foreground">Sign in to save your preferences</p>
-              <Button onClick={() => setShowLoginModal(true)} size="sm" className="w-full bg-purple-600 text-white hover:bg-purple-700">
+              <p className="text-sm text-muted-foreground">
+                Sign in to save your preferences
+              </p>
+              <Button
+                onClick={() => setShowLoginModal(true)}
+                size="sm"
+                className="w-full bg-purple-600 text-white hover:bg-purple-700"
+              >
                 Sign In
               </Button>
             </>
@@ -424,7 +529,9 @@ export const SolarSystem: React.FC = () => {
       </div>
 
       {/* Planet Info Overlay */}
-      {selectedPlanet && <PlanetInfo planet={selectedPlanet} onClose={handleBackToSystem} />}
+      {selectedPlanet && (
+        <PlanetInfo planet={selectedPlanet} onClose={handleBackToSystem} />
+      )}
 
       {/* Auth Modal (feat-isaiah) */}
       <LoginModal open={showLoginModal} onOpenChange={setShowLoginModal} />
@@ -442,14 +549,18 @@ export const SolarSystem: React.FC = () => {
             <h2 className="text-xl font-bold mb-4">Journal</h2>
 
             <div className="flex items-center w-full max-w-4xl mx-auto overflow-hidden">
-              <button onClick={handlePrev} className=" text-lg px-2 py-1 rounded-l hover:bg-gray-300">
+              <button
+                onClick={handlePrev}
+                className=" text-lg px-2 py-1 rounded-l hover:bg-gray-300"
+              >
                 ‹
               </button>
 
               <div className="flex flex-1 overflow-hidden">
                 <div className="flex  w-full transition-transform duration-300 ease-in-out">
                   {days.map((day, idx) => {
-                    const today = new Date().toDateString() === day.toDateString();
+                    const today =
+                      new Date().toDateString() === day.toDateString();
                     const disabled = isFutureDay(day);
                     return (
                       <button
@@ -457,9 +568,14 @@ export const SolarSystem: React.FC = () => {
                         disabled={disabled}
                         className={`flex-none w-1/7 text-center p-4 border border-gray-200
                           ${today ? "bg-blue-100 font-bold" : ""}
-                          ${disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-50"}
                           ${
-                            !disabled && day.toDateString() === selectedDay.toDateString()
+                            disabled
+                              ? "opacity-50 cursor-not-allowed"
+                              : "hover:bg-blue-50"
+                          }
+                          ${
+                            !disabled &&
+                            day.toDateString() === selectedDay.toDateString()
                               ? "bg-purple-500 text-white font-bold"
                               : ""
                           }`}
@@ -472,20 +588,29 @@ export const SolarSystem: React.FC = () => {
                 </div>
               </div>
 
-              <button onClick={handleNext} className=" text-lg px-2 py-1 rounded-r hover:bg-gray-300">
+              <button
+                onClick={handleNext}
+                className=" text-lg px-2 py-1 rounded-r hover:bg-gray-300"
+              >
                 ›
               </button>
             </div>
 
-            <p className="mt-4 text-sm text-gray-700">This is the journal modal. Here is your prompt.</p>
+            <p className="mt-4 text-sm text-gray-700">
+              This is the journal modal. Here is your prompt.
+            </p>
 
             {selectedDay && (
               <textarea
                 rows={6}
                 value={journals[selectedDay.toDateString()] || ""}
-                readOnly={selectedDay.toDateString() !== new Date().toDateString()}
+                readOnly={
+                  selectedDay.toDateString() !== new Date().toDateString()
+                }
                 onChange={(e) => {
-                  if (selectedDay.toDateString() === new Date().toDateString()) {
+                  if (
+                    selectedDay.toDateString() === new Date().toDateString()
+                  ) {
                     const updatedJournals = {
                       ...journals,
                       [selectedDay.toDateString()]: e.target.value,
@@ -505,7 +630,11 @@ export const SolarSystem: React.FC = () => {
             <div className="mt-4 flex flex-wrap gap-2">
               <Button
                 onClick={generateImage}
-                disabled={loading || Object.values(journals).join("").trim() === "" || !user}
+                disabled={
+                  loading ||
+                  Object.values(journals).join("").trim() === "" ||
+                  !user
+                }
               >
                 {loading ? "Generating..." : "Generate Image"}
               </Button>
@@ -524,7 +653,9 @@ export const SolarSystem: React.FC = () => {
               >
                 <div className="bg-white p-6 rounded-lg shadow-lg w-96 max-h-[80vh] overflow-auto">
                   <h3 className="text-lg font-semibold mb-2">Thinking Traps</h3>
-                  <p className="mb-3 text-sm text-gray-600">This modal is inside the main modal.</p>
+                  <p className="mb-3 text-sm text-gray-600">
+                    This modal is inside the main modal.
+                  </p>
                   <div className="grid gap-3">
                     {thinkingTraps.map((trap) => {
                       const isSelected = selectedTraps.includes(trap.title);
@@ -562,8 +693,12 @@ export const SolarSystem: React.FC = () => {
                 style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
               >
                 <div className="bg-white p-6 rounded-lg shadow-lg w-96 max-h-[80vh] overflow-auto">
-                  <h3 className="text-lg font-semibold mb-2">Generated Image</h3>
-                  <p className="text-sm text-gray-600 mb-2">This modal is inside the main modal.</p>
+                  <h3 className="text-lg font-semibold mb-2">
+                    Generated Image
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-2">
+                    This modal is inside the main modal.
+                  </p>
 
                   <img
                     src={`data:image/png;base64,${imageBase64}`}
@@ -571,10 +706,16 @@ export const SolarSystem: React.FC = () => {
                     className="max-w-full max-h-[80vh] mx-auto"
                   />
                   <div className="flex gap-2 mt-4">
-                    <button onClick={handleShareImage} className="px-4 py-2 rounded bg-blue-500 text-white">
+                    <button
+                      onClick={handleShareImage}
+                      className="px-4 py-2 rounded bg-blue-500 text-white"
+                    >
                       Share
                     </button>
-                    <button onClick={handleSaveImage} className="px-4 py-2 rounded bg-green-500 text-white">
+                    <button
+                      onClick={handleSaveImage}
+                      className="px-4 py-2 rounded bg-green-500 text-white"
+                    >
                       Save
                     </button>
                   </div>
@@ -601,12 +742,16 @@ export const SolarSystem: React.FC = () => {
                     user_id: user.id,
                     thinking_traps: JSON.stringify(selectedTraps),
                     journal_entry: journals[selectedDay.toDateString()] || "",
-                    created_at: new Date(selectedDay).toISOString().split("T")[0],
+                    created_at: new Date(selectedDay)
+                      .toISOString()
+                      .split("T")[0],
                   };
 
-                  const { error } = await supabase.from("journals").upsert(payload, {
-                    onConflict: "user_id, created_at",
-                  });
+                  const { error } = await supabase
+                    .from("journals")
+                    .upsert(payload, {
+                      onConflict: "user_id, created_at",
+                    });
 
                   if (error) {
                     console.error("Failed to save journal:", error);
