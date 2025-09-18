@@ -283,32 +283,6 @@ export class AuthService {
     return session;
   }
 
-  /**
-   * Ensure user has authentication (anonymous or regular) - Guest Mode
-   */
-  static async ensureGuestAuth(): Promise<SupabaseUser | null> {
-    let user = await this.getCurrentUser();
-    
-    if (!user) {
-      try {
-        console.log("No user found, creating anonymous session for guest experience");
-        const response = await this.signInAnonymously();
-        user = response.user;
-        console.log("Guest session ready (anonymous user created)");
-      } catch (error) {
-        console.error("Failed to create guest session:", error);
-      }
-    }
-    
-    return user;
-  }
-
-  /**
-   * Legacy method - now uses ensureGuestAuth
-   */
-  static async ensureAuth(): Promise<SupabaseUser | null> {
-    return this.ensureGuestAuth();
-  }
 
   // --- Private helper methods for sessionStorage persistence (PDPA compliant) ---
 

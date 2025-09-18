@@ -9,7 +9,7 @@ import { Moon } from "./Moon";
 import { Button } from "./ui/button";
 import { useAuthContext } from "@/providers/AuthProvider";
 import { SpaceChatSystem } from "./SpaceChatSystem";
-import { supabase } from "@/services/supabase/client";
+import { supabase } from "@/lib/supabase";
 
 interface PlanetData {
   name: string;
@@ -487,7 +487,7 @@ export const SolarSystem: React.FC = () => {
 
   const handleSaveProgress = async () => {
     setShowSavePrompt(false);
-    setShowLoginModal(true);
+    signOut(); // This will clear the session and show AuthGate
   };
 
   const handleJournalChange = (content: string) => {

@@ -1,5 +1,5 @@
 import type { ChatMessage } from "@/types/chat"
-import { supabase } from "@/services/supabase/client"
+import { supabase } from "@/lib/supabase"
 
 /**
  * Chat request interface for Edge Function

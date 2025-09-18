@@ -7,13 +7,16 @@ import {
   ReactNode,
 } from "react";
 import { supabase } from "@/lib/supabase";
+import { AuthService } from "@/services/supabase/auth";
 import type { User, Session } from "@supabase/supabase-js";
 
 type AuthContextType = {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signInWithEmail: (email: string) => Promise<void>;
+  login: (email: string) => Promise<{ isNewUser: boolean }>;
+  verifyOTP: (email: string, token: string) => Promise<void>;
+  resendOTP: (email: string) => Promise<{ isNewUser: boolean }>;
   signOut: () => Promise<void>;
   continueAsGuest: () => Promise<void>;
   isAnonymous: boolean;
@@ -61,14 +64,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   /**
-   * Sign in with email using magic link (OTP)
+   * Send OTP token to email for authentication
    */
-  const signInWithEmail = async (email: string) => {
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: { shouldCreateUser: true },
-    });
-    if (error) throw error;
+  const login = async (email: string): Promise<{ isNewUser: boolean }> => {
+    const result = await AuthService.sendOTP(email);
+    return result;
+  };
+
+  /**
+   * Verify OTP token and complete authentication
+   */
+  const verifyOTP = async (email: string, token: string): Promise<void> => {
+    const response = await AuthService.verifyOTP(email, token);
+    // The session will be updated via onAuthStateChange
+  };
+
+  /**
+   * Resend OTP token
+   */
+  const resendOTP = async (email: string): Promise<{ isNewUser: boolean }> => {
+    const result = await AuthService.sendOTP(email);
+    return result;
   };
 
   /**
@@ -102,7 +118,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       user,
       session,
       loading,
-      signInWithEmail,
+      login,
+      verifyOTP,
+      resendOTP,
       signOut,
       continueAsGuest,
       isAnonymous,

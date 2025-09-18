@@ -116,7 +116,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
     }
 
     try {
-      const result = await login({ email });
+      const result = await login(email);
       setIsNewUser(result.isNewUser);
       setShowOTPInput(true);
 
