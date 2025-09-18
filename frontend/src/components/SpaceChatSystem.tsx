@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ChatWindow } from "./ChatWindow";
 import { ChatBubble } from "./ChatBubble";
-import { useChat } from "@/hooks/use-chat";
+import { useChatEdge } from "@/hooks/use-chat-edge";
 import { cn } from "@/lib/utils";
 
 interface SpaceChatSystemProps {
@@ -17,11 +17,12 @@ export function SpaceChatSystem({ className }: SpaceChatSystemProps) {
     session,
     isLoading,
     isTyping,
+    isOnline,
     messagesEndRef,
     sendMessage,
     clearChat,
     toggleChat,
-  } = useChat();
+  } = useChatEdge();
 
   const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
 
@@ -61,6 +62,15 @@ export function SpaceChatSystem({ className }: SpaceChatSystemProps) {
 
   return (
     <div className={cn("relative", className)}>
+      {/* Connection Status Indicator */}
+      {!isOnline && session.isActive && (
+        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50">
+          <div className="bg-yellow-500/90 text-yellow-100 px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm">
+            ⚠️ Connection issues detected
+          </div>
+        </div>
+      )}
+
       {/* Chat Window */}
       <ChatWindow
         isOpen={session.isActive}
