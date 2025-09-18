@@ -4,18 +4,18 @@ import type { AuthState, LoginCredentials } from "@/types/auth";
 import type { SupabaseUser, SupabaseSession } from "@/services/supabase/types";
 
 interface UseAuthReturn extends AuthState {
-  login: (credentials: LoginCredentials) => Promise<void>;
+  login: (credentials: LoginCredentials) => Promise<{ isNewUser: boolean }>;
   logout: () => Promise<void>;
   verifyOTP: (email: string, token: string) => Promise<void>;
-  resendOTP: (email: string) => Promise<void>;
+  resendOTP: (email: string) => Promise<{ isNewUser: boolean }>;
   signInAnonymously: () => Promise<void>;
   ensureAuth: () => Promise<void>;
-  upgradeToAccount: (credentials: LoginCredentials) => Promise<void>;
+  upgradeToAccount: (credentials: LoginCredentials) => Promise<{ isNewUser: boolean }>;
 }
 
 /**
  * Custom hook for managing authentication state and operations
- * Now supports guest mode with sessionStorage persistence
+ * Now supports guest mode with sessionStorage persistence and token-based OTP
  */
 export function useAuth(): UseAuthReturn {
   const [state, setState] = useState<AuthState>({
@@ -87,18 +87,20 @@ export function useAuth(): UseAuthReturn {
         } else {
           // Create anonymous user for guest experience
           console.log("No session found, creating guest session");
-          const user = await AuthService.ensureGuestAuth();
+          await AuthService.ensureGuestAuth();
           const newSession = await AuthService.getSession();
           updateAuthState(newSession);
         }
       } catch (error) {
+        console.error("Auth initialization error:", error);
         // Even on error, try to provide guest experience
         try {
           console.log("Auth error, falling back to guest session");
-          const user = await AuthService.ensureGuestAuth();
+          await AuthService.ensureGuestAuth();
           const newSession = await AuthService.getSession();
           updateAuthState(newSession);
         } catch (guestError) {
+          console.error("Failed to create guest session:", guestError);
           setState(prev => ({
             ...prev,
             loading: false,
@@ -126,13 +128,15 @@ export function useAuth(): UseAuthReturn {
   }, [updateAuthState]);
 
   /**
-   * Send OTP for login
+   * Send OTP for login with smart detection
    */
-  const login = useCallback(async ({ email }: LoginCredentials): Promise<void> => {
+  const login = useCallback(async ({ email }: LoginCredentials): Promise<{ isNewUser: boolean }> => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     
     try {
-      await AuthService.sendOTP(email);
+      const result = await AuthService.sendOTP(email);
+      setState(prev => ({ ...prev, loading: false }));
+      return result;
     } catch (error) {
       setState(prev => ({
         ...prev,
@@ -141,8 +145,6 @@ export function useAuth(): UseAuthReturn {
       }));
       throw error;
     }
-    
-    setState(prev => ({ ...prev, loading: false }));
   }, []);
 
   /**
@@ -207,19 +209,21 @@ export function useAuth(): UseAuthReturn {
   /**
    * Upgrade anonymous user to real account (alias for login)
    */
-  const upgradeToAccount = useCallback(async (credentials: LoginCredentials): Promise<void> => {
+  const upgradeToAccount = useCallback(async (credentials: LoginCredentials): Promise<{ isNewUser: boolean }> => {
     console.log("Upgrading guest to real account");
     return login(credentials);
   }, [login]);
 
   /**
-   * Resend OTP
+   * Resend OTP with smart detection
    */
-  const resendOTP = useCallback(async (email: string): Promise<void> => {
+  const resendOTP = useCallback(async (email: string): Promise<{ isNewUser: boolean }> => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     
     try {
-      await AuthService.sendOTP(email);
+      const result = await AuthService.sendOTP(email);
+      setState(prev => ({ ...prev, loading: false }));
+      return result;
     } catch (error) {
       setState(prev => ({
         ...prev,
@@ -228,8 +232,6 @@ export function useAuth(): UseAuthReturn {
       }));
       throw error;
     }
-    
-    setState(prev => ({ ...prev, loading: false }));
   }, []);
 
   /**
@@ -241,7 +243,7 @@ export function useAuth(): UseAuthReturn {
     try {
       await AuthService.signOut();
       // After logout, create new guest session
-      const user = await AuthService.ensureGuestAuth();
+      await AuthService.ensureGuestAuth();
       const newSession = await AuthService.getSession();
       updateAuthState(newSession);
     } catch (error) {

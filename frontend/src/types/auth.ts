@@ -28,11 +28,11 @@ export interface LoginCredentials {
 }
 
 export interface AuthContextType extends AuthState {
-  login: (credentials: LoginCredentials) => Promise<void>;
+  login: (credentials: LoginCredentials) => Promise<{ isNewUser: boolean }>;
   logout: () => Promise<void>;
   verifyOTP: (email: string, token: string) => Promise<void>;
-  resendOTP: (email: string) => Promise<void>;
+  resendOTP: (email: string) => Promise<{ isNewUser: boolean }>;
   signInAnonymously: () => Promise<void>;
   ensureAuth: () => Promise<void>;
-  upgradeToAccount: (credentials: LoginCredentials) => Promise<void>;
+  upgradeToAccount: (credentials: LoginCredentials) => Promise<{ isNewUser: boolean }>;
 }
