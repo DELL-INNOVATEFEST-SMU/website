@@ -20,6 +20,7 @@ export interface ChatRequest {
   message: string
   conversationHistory?: ChatMessage[]
   userId?: string
+  isAnonymous?: boolean
 }
 
 /**

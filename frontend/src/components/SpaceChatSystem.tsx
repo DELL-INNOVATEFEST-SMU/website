@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { ChatWindow } from "./ChatWindow";
 import { ChatBubble } from "./ChatBubble";
 import { useChatEdge } from "@/hooks/use-chat-edge";
@@ -18,6 +18,7 @@ export function SpaceChatSystem({ className }: SpaceChatSystemProps) {
     isLoading,
     isTyping,
     isOnline,
+    isAuthenticated,
     messagesEndRef,
     sendMessage,
     clearChat,
@@ -62,12 +63,19 @@ export function SpaceChatSystem({ className }: SpaceChatSystemProps) {
 
   return (
     <div className={cn("relative", className)}>
-      {/* Connection Status Indicator */}
-      {!isOnline && session.isActive && (
-        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50">
-          <div className="bg-yellow-500/90 text-yellow-100 px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm">
-            ⚠️ Connection issues detected
-          </div>
+      {/* Status Indicators */}
+      {session.isActive && (
+        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50 flex flex-col items-center gap-2">
+          {!isOnline && (
+            <div className="bg-yellow-500/90 text-yellow-100 px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm">
+              ⚠️ Connection issues detected
+            </div>
+          )}
+          {!isAuthenticated && isOnline && (
+            <div className="bg-blue-500/90 text-blue-100 px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm">
+              👤 Anonymous mode - messages not saved
+            </div>
+          )}
         </div>
       )}
 
@@ -77,7 +85,7 @@ export function SpaceChatSystem({ className }: SpaceChatSystemProps) {
         messages={session.messages}
         isLoading={isLoading}
         isTyping={isTyping}
-        messagesEndRef={messagesEndRef}
+        messagesEndRef={messagesEndRef as React.RefObject<HTMLDivElement>}
         onSendMessage={sendMessage}
         onClose={toggleChat}
         onClear={clearChat}

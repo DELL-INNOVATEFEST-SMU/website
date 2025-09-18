@@ -23,13 +23,16 @@ export function useChatEdge() {
   const [isLoading, setIsLoading] = useState(false)
   const [isTyping, setIsTyping] = useState(false)
   const [isOnline, setIsOnline] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   /**
    * Scroll to bottom of messages
    */
   const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
+    }
   }, [])
 
   /**
@@ -174,9 +177,14 @@ export function useChatEdge() {
     scrollToBottom()
   }, [session.messages, scrollToBottom])
 
-  // Health check on mount
+  // Health check and auth status on mount
   useEffect(() => {
-    checkHealth()
+    const initializeChat = async () => {
+      await checkHealth()
+      const authenticated = await edgeChatService.isAuthenticated()
+      setIsAuthenticated(authenticated)
+    }
+    initializeChat()
   }, [checkHealth])
 
   return {
@@ -184,6 +192,7 @@ export function useChatEdge() {
     isLoading,
     isTyping,
     isOnline,
+    isAuthenticated,
     messagesEndRef,
     sendMessage,
     clearChat,

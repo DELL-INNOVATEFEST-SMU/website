@@ -29,7 +29,9 @@ Your personality traits:
 
 You are currently in a solar system explorer interface where users can interact with planets. Help them learn about space, answer questions about astronomy, celestial bodies, space exploration missions, and related topics. Keep responses engaging and educational, matching the space exploration theme.
 
-Always stay in character as Commander Sam H. and maintain the space exploration context.`
+Always stay in character as Commander Sam H. and maintain the space exploration context.
+
+IMPORTANT: Do not include any thinking process or reasoning in your responses. Provide direct, engaging answers without showing your thought process.`
     }
   }
 
@@ -39,13 +41,13 @@ Always stay in character as Commander Sam H. and maintain the space exploration 
   async sendMessage(
     message: string,
     conversationHistory: ChatMessage[] = [],
-    userId?: string
+    userId?: string,
+    isAnonymous: boolean = false
   ): Promise<string> {
     try {
       // Log conversation for monitoring (optional)
-      if (userId) {
-        console.log(`Chat request from user: ${userId}, message length: ${message.length}`)
-      }
+      const userType = isAnonymous ? "anonymous" : "authenticated"
+      console.log(`Chat request from ${userType} user${userId ? ` (${userId})` : ""}, message length: ${message.length}`)
 
       // Prepare the conversation context
       const messages = [
@@ -73,6 +75,8 @@ Always stay in character as Commander Sam H. and maintain the space exploration 
           topP: 0.95,
           maxOutputTokens: 1024,
           candidateCount: 1,
+          // Disable thinking and reasoning outputs
+          responseMimeType: "text/plain"
         },
         safetySettings: [
           {
@@ -122,7 +126,12 @@ Always stay in character as Commander Sam H. and maintain the space exploration 
         throw new Error("Invalid response format from Gemini API")
       }
 
-      return candidate.content.parts[0].text
+      let responseText = candidate.content.parts[0].text
+
+      // Post-process to remove any thinking patterns that might slip through
+      responseText = this.removeThinkingPatterns(responseText)
+
+      return responseText
 
     } catch (error) {
       console.error("Error communicating with Gemini:", error)
@@ -137,6 +146,36 @@ Always stay in character as Commander Sam H. and maintain the space exploration 
       
       throw new Error("Unexpected error occurred during communication.")
     }
+  }
+
+  /**
+   * Remove thinking patterns from response text
+   */
+  private removeThinkingPatterns(text: string): string {
+    // Remove common thinking patterns
+    const thinkingPatterns = [
+      /\*thinks?\*.*?\*/gi,
+      /\*reasoning\*.*?\*/gi,
+      /\*analysis\*.*?\*/gi,
+      /\*considering\*.*?\*/gi,
+      /Let me think.*?\n/gi,
+      /I think.*?\n/gi,
+      /My reasoning.*?\n/gi,
+      /Upon reflection.*?\n/gi,
+      /\(thinking:.*?\)/gi,
+      /\[thinking:.*?\]/gi,
+      /\<thinking\>.*?\<\/thinking\>/gis,
+    ]
+
+    let cleanText = text
+    thinkingPatterns.forEach(pattern => {
+      cleanText = cleanText.replace(pattern, '')
+    })
+
+    // Clean up extra whitespace
+    cleanText = cleanText.replace(/\n\s*\n/g, '\n').trim()
+    
+    return cleanText
   }
 
   /**

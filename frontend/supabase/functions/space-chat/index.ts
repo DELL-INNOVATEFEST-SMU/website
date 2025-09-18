@@ -6,6 +6,7 @@ import type { ChatMessage, ChatRequest, ChatResponse } from "./types.ts"
 /**
  * Space Chat Edge Function
  * Handles AI-powered space exploration conversations using Gemini API
+ * Supports both authenticated and anonymous users
  */
 Deno.serve(async (req: Request) => {
   // Handle CORS preflight requests
@@ -26,7 +27,7 @@ Deno.serve(async (req: Request) => {
     }
 
     // Parse request body
-    const { message, conversationHistory, userId }: ChatRequest = await req.json()
+    const { message, conversationHistory, userId, isAnonymous }: ChatRequest = await req.json()
 
     // Validate required fields
     if (!message || typeof message !== "string" || !message.trim()) {
@@ -46,7 +47,8 @@ Deno.serve(async (req: Request) => {
     const aiResponse = await geminiService.sendMessage(
       message.trim(),
       conversationHistory || [],
-      userId
+      userId,
+      isAnonymous || false
     )
 
     // Create response message

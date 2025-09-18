@@ -8,6 +8,7 @@ interface ChatRequest {
   message: string
   conversationHistory?: ChatMessage[]
   userId?: string
+  isAnonymous?: boolean
 }
 
 /**
@@ -23,6 +24,7 @@ interface ChatResponse {
 /**
  * Edge Function Chat Service
  * Handles communication with Supabase Edge Function for space exploration conversations
+ * Supports both authenticated and anonymous users
  */
 export class EdgeChatService {
   private readonly functionName = "space-chat"
@@ -35,23 +37,63 @@ export class EdgeChatService {
     conversationHistory: ChatMessage[] = []
   ): Promise<string> {
     try {
-      // Get current user for context (optional)
-      const { data: { user } } = await supabase.auth.getUser()
+      // Try to get current user (non-blocking)
+      let user = null
+      let isAnonymous = true
+      
+      try {
+        const { data: { user: currentUser }, error } = await supabase.auth.getUser()
+        if (!error && currentUser) {
+          user = currentUser
+          isAnonymous = false
+        }
+      } catch (authError) {
+        // Auth error is non-critical for chat functionality
+        console.log("Auth check failed, proceeding as anonymous user:", authError)
+      }
 
       // Prepare request payload
       const requestPayload: ChatRequest = {
         message: message.trim(),
         conversationHistory: conversationHistory.filter(msg => !msg.isTyping),
-        userId: user?.id
+        userId: user?.id,
+        isAnonymous
       }
 
-      // Call the Edge Function
+      // Call the Edge Function with anonymous access
       const { data, error } = await supabase.functions.invoke(this.functionName, {
         body: requestPayload,
       })
 
       if (error) {
         console.error("Edge Function Error:", error)
+        
+        // Handle specific auth-related errors gracefully
+        if (error.message?.includes("JWT") || error.message?.includes("auth")) {
+          console.log("Auth-related error, retrying as anonymous...")
+          // Retry with explicit anonymous flag
+          const retryPayload: ChatRequest = {
+            message: message.trim(),
+            conversationHistory: conversationHistory.filter(msg => !msg.isTyping),
+            isAnonymous: true
+          }
+          
+          const { data: retryData, error: retryError } = await supabase.functions.invoke(this.functionName, {
+            body: retryPayload,
+          })
+          
+          if (retryError) {
+            throw new Error(`Edge Function failed: ${retryError.message}`)
+          }
+          
+          const retryResponse: ChatResponse = retryData
+          if (!retryResponse.success) {
+            throw new Error(retryResponse.error || "Unknown error occurred")
+          }
+          
+          return retryResponse.message.content
+        }
+        
         throw new Error(`Edge Function failed: ${error.message}`)
       }
 
@@ -71,6 +113,9 @@ export class EdgeChatService {
       if (error instanceof Error) {
         if (error.message.includes("Edge Function") || error.message.includes("network")) {
           return "Commander Sam H. here - I'm experiencing some communication difficulties with the main computer. Please try again in a moment, or feel free to ask me about any specific planets or space phenomena you'd like to explore!"
+        }
+        if (error.message.includes("auth") || error.message.includes("JWT")) {
+          return "Commander Sam H. reporting - Communication systems are operational for all crew members. What would you like to explore in our solar system?"
         }
       }
       
@@ -103,9 +148,24 @@ export class EdgeChatService {
   async healthCheck(): Promise<boolean> {
     try {
       const { error } = await supabase.functions.invoke(this.functionName, {
-        body: { message: "health_check" },
+        body: { 
+          message: "health_check",
+          isAnonymous: true 
+        },
       })
       return !error
+    } catch {
+      return false
+    }
+  }
+
+  /**
+   * Check if user is authenticated
+   */
+  async isAuthenticated(): Promise<boolean> {
+    try {
+      const { data: { user }, error } = await supabase.auth.getUser()
+      return !error && !!user
     } catch {
       return false
     }
