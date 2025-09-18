@@ -73,7 +73,7 @@ export function SpaceChatSystem({ className }: SpaceChatSystemProps) {
           )}
           {!isAuthenticated && isOnline && (
             <div className="bg-blue-500/90 text-blue-100 px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm">
-              👤 Anonymous mode - messages not saved
+              🌟 Traveller mode - save progress to keep messages
             </div>
           )}
         </div>

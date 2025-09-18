@@ -259,7 +259,7 @@ const thinkingTraps = [
 ];
 
 export const SolarSystem: React.FC = () => {
-  const { user, logout } = useAuthContext(); // feat-isaiah login (source of truth)
+  const { user, logout, isAnonymous } = useAuthContext(); // feat-isaiah login (source of truth)
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   const [showInnerModal, setShowInnerModal] = useState(false);
@@ -492,7 +492,7 @@ export const SolarSystem: React.FC = () => {
           {user ? (
             <>
               <p className="text-sm text-muted-foreground">
-                Welcome, {user.email}
+                {isAnonymous ? "Welcome Traveller" : `Welcome, ${user.email}`}
               </p>
               <Button
                 onClick={() => setShowJournal(true)}
@@ -503,12 +503,11 @@ export const SolarSystem: React.FC = () => {
                 Open Journal
               </Button>
               <Button
-                onClick={logout}
-                variant="outline"
+                onClick={isAnonymous ? () => setShowLoginModal(true) : logout}
                 size="sm"
-                className="w-full"
+                className="w-full bg-purple-600 text-white hover:bg-purple-700full"
               >
-                Sign Out
+                {isAnonymous ? "Save your Progress" : "Sign Out"}
               </Button>
             </>
           ) : (
