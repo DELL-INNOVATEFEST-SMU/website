@@ -266,6 +266,7 @@ const thinkingTraps = [
 
 export const SolarSystem: React.FC = () => {
   const [user, setUser] = useState<any>(null);
+  const today = new Date().toDateString();
   const [showInnerModal, setShowInnerModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
@@ -277,7 +278,10 @@ export const SolarSystem: React.FC = () => {
         : [...prev, trapTitle]
     );
   };
+  const [selectedDay, setSelectedDay] = useState<Date>(new Date());
+  const isFutureDay = (day: Date) => day > new Date();
   const [email, setEmail] = useState("");
+  const [journals, setJournals] = useState<{ [date: string]: string }>({});
   const [showJournal, setShowJournal] = useState(false);
   const [selectedPlanet, setSelectedPlanet] = useState<PlanetData | null>(null);
   const [focusedPlanet, setFocusedPlanet] = useState<string | null>(null);
@@ -288,9 +292,43 @@ export const SolarSystem: React.FC = () => {
   const [imageBase64, setImageBase64] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const handleShareImage = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: "My Journal Image",
+        url: `data:image/png;base64,${imageBase64}`,
+      });
+    } else {
+      alert("Sharing is not supported.");
+    }
+  };
+  const handleSaveImage = () => {
+    const a = document.createElement("a");
+    a.href = `data:image/png;base64,${imageBase64}`;
+    a.download = `journal-${selectedDay.toLocaleDateString()}.png`;
+    a.click();
+  };
+  const canGenerate = async () => {
+    const { data, error } = await supabase
+      .from('has_generated_image')
+      .select('has_generated')
+      .eq('user_id', user.id)
+      .eq('created_at', todayStr)
+      .single();
+
+    return !data || data.has_generated === false;
+  };
+
   const generateImage = async () => {
     setLoading(true);
     setError(null);
+
+    if (!(await canGenerate())) {
+      setError("Already generated image today.");
+      setLoading(false);
+      return;
+    }
+
     setImageBase64(null);
 
     try {
@@ -314,13 +352,27 @@ export const SolarSystem: React.FC = () => {
 
       setImageBase64(data.image_base64);
       setShowImageModal(true);
+      const todayStr = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+      console.log(user.id)
+    const { error } = await supabase.from("has_generated_image").upsert({
+      user_id: user.id,
+      created_at: todayStr,
+      has_generated: true,
+    }, {
+      onConflict: "user_id, created_at",
+    });
+
+    if (error) {
+      console.error("Error saving generation record:", error);
+    }
     } catch (err: any) {
       setError(err.message || "Unknown error");
     } finally {
       setLoading(false);
     }
   };
-  console.log("Current user:", user);
+  const todayStr = new Date().toISOString().split("T")[0];
+
   const [startDate, setStartDate] = useState(() => {
     const d = new Date();
     d.setDate(d.getDate() - 3); // show 3 days before today initially
@@ -347,6 +399,28 @@ export const SolarSystem: React.FC = () => {
     newDate.setDate(startDate.getDate() + daysToShow);
     setStartDate(newDate);
   };
+  useEffect(() => {
+    const fetchJournals = async () => {
+      const { data, error } = await supabase
+        .from("journals")
+        .select("journal_entry, created_at")
+        .eq("user_id", user.id);
+
+      if (error) {
+        console.error("Error fetching journals:", error);
+        return;
+      }
+
+      // Convert array to map: { toDateString: journal_entry }
+      const journalMap: { [date: string]: string } = {};
+      data.forEach((entry: { journal_entry: string; created_at: string }) => {
+        const dateStr = new Date(entry.created_at).toDateString();
+        journalMap[dateStr] = entry.journal_entry;
+      });
+      setJournals(journalMap);
+    };
+    if ((user && user.id)) fetchJournals();
+  }, [user]);
 
   useEffect(() => {
     // Check session on mount
@@ -512,17 +586,27 @@ export const SolarSystem: React.FC = () => {
 
               <div className="flex flex-1 overflow-hidden">
                 <div className="flex  w-full transition-transform duration-300 ease-in-out">
-                  {days.map((day, idx) => (
-                    <div
-                      key={idx}
-                      className={`flex-none text-center w-1/7 p-4 border border-gray-200 ${day.toDateString() === new Date().toDateString()
-                        ? "bg-blue-100"
-                        : ""
-                        }`}
-                    >
-                      <div className="font-bold">{day.toLocaleDateString()}</div>
-                    </div>
-                  ))}
+                  {days.map((day, idx) => {
+                    const today = new Date().toDateString() === day.toDateString();
+                    const disabled = isFutureDay(day);
+                    return (
+                      <button
+                        key={idx}
+                        disabled={disabled}
+                        className={`flex-none w-1/7 text-center p-4 border border-gray-200
+            ${today ? "bg-blue-100 font-bold" : ""}
+            ${disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-50"}
+            ${!disabled && day.toDateString() === selectedDay.toDateString()
+                            ? "bg-purple-500 text-white font-bold"
+                            : ""
+                          }
+          `}
+                        onClick={() => setSelectedDay(day)}
+                      >
+                        <div>{day.toLocaleDateString('en-GB')}</div>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -534,16 +618,32 @@ export const SolarSystem: React.FC = () => {
               </button>
             </div>
             <p>This is the journal modal. Here is your prompt.</p>
-            <textarea
-              rows={6}
-              value={journal}
-              onChange={(e) => setJournal(e.target.value)}
-              placeholder="Enter your journal entry..."
-              className="w-full p-3 border border-gray-300 rounded resize-none"
-            />
+            {selectedDay && (
+              <textarea
+                rows={6}
+                value={journals[selectedDay.toDateString()] || ""}
+                readOnly={selectedDay.toDateString() !== new Date().toDateString()}
+                onChange={(e) => {
+                  if (selectedDay.toDateString() === new Date().toDateString()) {
+                    const updatedJournals = {
+                      ...journals,
+                      [selectedDay.toDateString()]: e.target.value,
+                    };
+                    setJournals(updatedJournals);
+                  }
+                }}
+                placeholder={
+                  selectedDay.toDateString() === new Date().toDateString()
+                    ? "Enter your journal entry..."
+                    : "No journal for this day."
+                }
+                className="w-full p-3 border border-gray-300 rounded resize-none"
+              />
+            )}
+
             <button
               onClick={generateImage}
-              disabled={loading || journal.trim() === ""}
+              disabled={loading || Object.values(journals).join("").trim() === ""}
               className="bg-blue-600 hover:bg-blue-700 text-white rounded px-6 py-2 disabled:opacity-50"
             >{loading ? "Generating..." : "Generate Image"}
             </button>
@@ -584,7 +684,7 @@ export const SolarSystem: React.FC = () => {
                     onClick={() => setShowInnerModal(false)}
                     className="mt-4 px-4 py-2 rounded border border-gray-400"
                   >
-                    Close Image
+                    Save Thinking Traps
                   </button>
                 </div>
               </div>
@@ -594,13 +694,26 @@ export const SolarSystem: React.FC = () => {
                 <div className="bg-white p-6 rounded-lg shadow-lg w-96 max-h-[80vh] overflow-auto">
                   <h3 className="text-lg font-semibold mb-2">Generated Image</h3>
                   <p>This modal is inside the main modal.</p>
-                  
-            <img
-              src={`data:image/png;base64,${imageBase64}`}
-              alt="Generated"
-              className="max-w-full max-h-[80vh] mx-auto"
-            />
-                  
+
+                  <img
+                    src={`data:image/png;base64,${imageBase64}`}
+                    alt="Generated"
+                    className="max-w-full max-h-[80vh] mx-auto"
+                  />
+                  <div className="flex gap-2 mt-4">
+                    <button
+                      onClick={handleShareImage}
+                      className="px-4 py-2 rounded bg-blue-500 text-white"
+                    >
+                      Share
+                    </button>
+                    <button
+                      onClick={handleSaveImage}
+                      className="px-4 py-2 rounded bg-green-500 text-white"
+                    >
+                      Save
+                    </button>
+                  </div>
 
                   <button
                     onClick={() => setShowImageModal(false)}
@@ -612,12 +725,46 @@ export const SolarSystem: React.FC = () => {
               </div>
             )}
             <Button
-              onClick={() => setShowJournal(false)}
+              onClick={async () => {
+                try {
+                  const { data: { session } } = await supabase.auth.getSession();
+
+                  console.log(session?.user?.id);
+                  // Prepare data to save
+                  const payload = {
+                    user_id: user.id,
+                    thinking_traps: JSON.stringify(selectedTraps), // assuming this is an array or suitable format
+                    journal_entry: journals[selectedDay.toDateString()] || "",
+                    created_at: new Date(selectedDay).toISOString().split("T")[0],
+                  };
+                  console.log("User ID:", user);
+                  console.log("Payload to save:", payload);
+
+                  // Insert or update your journals table
+                  // Adjust table name and field names as per your schema
+                  const { error } = await supabase.from("journals").upsert(payload, {
+                    onConflict: "user_id, created_at", // assuming unique constraint on this composite key
+                  });
+
+                  if (error) {
+                    console.error("Failed to save journal:", error);
+                    alert("Failed to save journal.");
+                    return;
+                  }
+
+                  // Close modal only if save succeeded
+                  setShowJournal(false);
+                } catch (err) {
+                  console.error(err);
+                  alert("Unexpected error saving journal.");
+                }
+              }}
               variant="outline"
               className="w-full mt-4"
             >
-              Close
+              Save
             </Button>
+
           </div>
         </div>
       )}
