@@ -73,6 +73,9 @@ Always stay in character as Commander Sam H. and maintain the space exploration 
           topP: 0.95,
           maxOutputTokens: 1024,
           candidateCount: 1,
+          thinkingConfig: {
+            thinkingBudget: 0
+            }
         },
         safetySettings: [
           {
@@ -92,10 +95,6 @@ Always stay in character as Commander Sam H. and maintain the space exploration 
             threshold: "BLOCK_MEDIUM_AND_ABOVE"
           }
         ],
-        // Disable thinking output
-        thinkingConfig: {
-          thinkingBudget: 0
-        }
       }
 
       const response = await fetch(

@@ -1,11 +1,15 @@
 import { useState, useCallback, useRef, useEffect } from "react"
 import type { ChatMessage, ChatSession } from "@/types/chat"
 import { edgeChatService } from "@/lib/gemini-chat-edge"
+import { useAuthContext } from "@/providers/AuthProvider"
 
 /**
  * Custom hook for managing chat functionality with Edge Function
+ * Uses main authentication system for proper auth handling
  */
 export function useChatEdge() {
+  const { user, isAnonymous, ensureAuth } = useAuthContext()
+  
   const [session, setSession] = useState<ChatSession>({
     id: `session_${Date.now()}`,
     messages: [
@@ -23,7 +27,6 @@ export function useChatEdge() {
   const [isLoading, setIsLoading] = useState(false)
   const [isTyping, setIsTyping] = useState(false)
   const [isOnline, setIsOnline] = useState(true)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   /**
@@ -97,6 +100,9 @@ export function useChatEdge() {
     setIsLoading(true)
 
     try {
+      // Ensure user is authenticated (anonymous or regular) before sending
+      await ensureAuth()
+
       // Add user message immediately
       const userMessage = edgeChatService.createMessage(content.trim(), "user")
       
@@ -127,7 +133,7 @@ export function useChatEdge() {
     } finally {
       setIsLoading(false)
     }
-  }, [isLoading, session.messages, showTypingIndicator, simulateTyping])
+  }, [isLoading, session.messages, showTypingIndicator, simulateTyping, ensureAuth])
 
   /**
    * Clear chat history
@@ -177,22 +183,27 @@ export function useChatEdge() {
     scrollToBottom()
   }, [session.messages, scrollToBottom])
 
-  // Health check and auth status on mount
+  // Health check on mount
   useEffect(() => {
-    const initializeChat = async () => {
-      await checkHealth()
-      const authenticated = await edgeChatService.isAuthenticated()
-      setIsAuthenticated(authenticated)
-    }
-    initializeChat()
+    checkHealth()
   }, [checkHealth])
+
+  // Ensure authentication when component mounts or user changes
+  useEffect(() => {
+    if (!user) {
+      ensureAuth().catch(error => {
+        console.error("Failed to ensure authentication:", error)
+        setIsOnline(false)
+      })
+    }
+  }, [user, ensureAuth])
 
   return {
     session,
     isLoading,
     isTyping,
     isOnline,
-    isAuthenticated,
+    isAuthenticated: user && !isAnonymous,
     messagesEndRef,
     sendMessage,
     clearChat,

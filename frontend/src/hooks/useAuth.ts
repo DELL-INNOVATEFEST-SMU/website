@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { AuthService } from "@/services";
-import type { AuthState, LoginCredentials, AuthUser, AuthSession } from "@/types/auth";
+import { AuthService } from "@/services/supabase/auth";
+import type { AuthState, LoginCredentials } from "@/types/auth";
 import type { SupabaseUser, SupabaseSession } from "@/services/supabase/types";
 
 interface UseAuthReturn extends AuthState {
@@ -8,6 +8,8 @@ interface UseAuthReturn extends AuthState {
   logout: () => Promise<void>;
   verifyOTP: (email: string, token: string) => Promise<void>;
   resendOTP: (email: string) => Promise<void>;
+  signInAnonymously: () => Promise<void>;
+  ensureAuth: () => Promise<void>;
 }
 
 /**
@@ -19,12 +21,13 @@ export function useAuth(): UseAuthReturn {
     session: null,
     loading: true,
     error: null,
+    isAnonymous: false,
   });
 
   /**
    * Transform Supabase user to our AuthUser type
    */
-  const transformUser = useCallback((user: SupabaseUser | null): AuthUser | null => {
+  const transformUser = useCallback((user: SupabaseUser | null) => {
     if (!user) return null;
 
     return {
@@ -32,13 +35,14 @@ export function useAuth(): UseAuthReturn {
       email: user.email,
       created_at: user.created_at,
       updated_at: user.updated_at,
+      is_anonymous: user.is_anonymous || false,
     };
   }, []);
 
   /**
    * Transform Supabase session to our AuthSession type
    */
-  const transformSession = useCallback((session: SupabaseSession | null): AuthSession | null => {
+  const transformSession = useCallback((session: SupabaseSession | null) => {
     if (!session) return null;
 
     return {
@@ -47,7 +51,7 @@ export function useAuth(): UseAuthReturn {
       expires_in: session.expires_in,
       expires_at: session.expires_at,
       token_type: session.token_type,
-      user: transformUser(session.user),
+      user: transformUser(session.user)!,
     };
   }, [transformUser]);
 
@@ -55,11 +59,15 @@ export function useAuth(): UseAuthReturn {
    * Update auth state
    */
   const updateAuthState = useCallback((session: SupabaseSession | null) => {
+    const user = transformUser(session?.user ?? null);
+    const isAnonymous = user?.is_anonymous || false;
+    
     setState({
-      user: transformUser(session?.user ?? null),
+      user,
       session: transformSession(session),
       loading: false,
       error: null,
+      isAnonymous,
     });
   }, [transformUser, transformSession]);
 
@@ -88,6 +96,7 @@ export function useAuth(): UseAuthReturn {
    */
   useEffect(() => {
     const { data: { subscription } } = AuthService.onAuthStateChange((_event, session) => {
+      console.log("Auth state changed:", _event, session?.user?.is_anonymous ? "anonymous" : "authenticated");
       updateAuthState(session);
     });
 
@@ -136,6 +145,46 @@ export function useAuth(): UseAuthReturn {
   }, [updateAuthState]);
 
   /**
+   * Sign in anonymously
+   */
+  const signInAnonymously = useCallback(async (): Promise<void> => {
+    // Don't set loading if already authenticated
+    if (state.user && !state.loading) {
+      console.log("User already authenticated, skipping anonymous sign-in");
+      return;
+    }
+
+    setState(prev => ({ ...prev, loading: true, error: null }));
+    
+    try {
+      const response = await AuthService.signInAnonymously();
+      updateAuthState(response.session);
+    } catch (error) {
+      setState(prev => ({
+        ...prev,
+        loading: false,
+        error: error instanceof Error ? error.message : "Anonymous sign-in failed",
+      }));
+      throw error;
+    }
+  }, [updateAuthState, state.user, state.loading]);
+
+  /**
+   * Ensure user has authentication (anonymous or regular)
+   */
+  const ensureAuth = useCallback(async (): Promise<void> => {
+    if (state.user) {
+      return; // Already authenticated
+    }
+
+    try {
+      await signInAnonymously();
+    } catch (error) {
+      console.error("Failed to ensure authentication:", error);
+    }
+  }, [state.user, signInAnonymously]);
+
+  /**
    * Resend OTP
    */
   const resendOTP = useCallback(async (email: string): Promise<void> => {
@@ -163,7 +212,7 @@ export function useAuth(): UseAuthReturn {
     
     try {
       await AuthService.signOut();
-      updateAuthState(null);
+      // Auth state will be updated via the listener
     } catch (error) {
       setState(prev => ({
         ...prev,
@@ -172,7 +221,7 @@ export function useAuth(): UseAuthReturn {
       }));
       throw error;
     }
-  }, [updateAuthState]);
+  }, []);
 
   return {
     ...state,
@@ -180,5 +229,7 @@ export function useAuth(): UseAuthReturn {
     logout,
     verifyOTP,
     resendOTP,
+    signInAnonymously,
+    ensureAuth,
   };
 }

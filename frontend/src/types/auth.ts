@@ -3,6 +3,7 @@ export interface AuthUser {
   email?: string;
   created_at?: string;
   updated_at?: string;
+  is_anonymous?: boolean;
 }
 
 export interface AuthSession {
@@ -19,6 +20,7 @@ export interface AuthState {
   session: AuthSession | null;
   loading: boolean;
   error: string | null;
+  isAnonymous: boolean;
 }
 
 export interface LoginCredentials {
@@ -30,4 +32,6 @@ export interface AuthContextType extends AuthState {
   logout: () => Promise<void>;
   verifyOTP: (email: string, token: string) => Promise<void>;
   resendOTP: (email: string) => Promise<void>;
+  signInAnonymously: () => Promise<void>;
+  ensureAuth: () => Promise<void>;
 }

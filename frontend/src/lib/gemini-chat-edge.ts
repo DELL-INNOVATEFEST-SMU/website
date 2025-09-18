@@ -24,77 +24,45 @@ interface ChatResponse {
 /**
  * Edge Function Chat Service
  * Handles communication with Supabase Edge Function for space exploration conversations
- * Supports both authenticated and anonymous users
+ * Uses the main authentication system - no duplicate auth logic
  */
 export class EdgeChatService {
   private readonly functionName = "space-chat"
 
   /**
    * Send a message to the Edge Function and get a response
+   * Assumes user is already authenticated (anonymous or regular) via main auth system
    */
   async sendMessage(
     message: string,
     conversationHistory: ChatMessage[] = []
   ): Promise<string> {
     try {
-      // Try to get current user (non-blocking)
-      let user = null
-      let isAnonymous = true
+      // Get current user from main auth system
+      const { data: { user }, error: userError } = await supabase.auth.getUser()
       
-      try {
-        const { data: { user: currentUser }, error } = await supabase.auth.getUser()
-        if (!error && currentUser) {
-          user = currentUser
-          isAnonymous = false
-        }
-      } catch (authError) {
-        // Auth error is non-critical for chat functionality
-        console.log("Auth check failed, proceeding as anonymous user:", authError)
+      if (userError || !user) {
+        throw new Error("Authentication required for chat functionality")
       }
 
       // Prepare request payload
       const requestPayload: ChatRequest = {
         message: message.trim(),
         conversationHistory: conversationHistory.filter(msg => !msg.isTyping),
-        userId: user?.id,
-        isAnonymous
+        userId: user.id,
+        isAnonymous: user.is_anonymous || false
       }
 
-      // Call the Edge Function with anonymous access
+      console.log(`Making Edge Function call for ${user.is_anonymous ? 'anonymous' : 'authenticated'} user`)
+      
+      // Call Edge Function using Supabase client
       const { data, error } = await supabase.functions.invoke(this.functionName, {
         body: requestPayload,
       })
 
       if (error) {
         console.error("Edge Function Error:", error)
-        
-        // Handle specific auth-related errors gracefully
-        if (error.message?.includes("JWT") || error.message?.includes("auth")) {
-          console.log("Auth-related error, retrying as anonymous...")
-          // Retry with explicit anonymous flag
-          const retryPayload: ChatRequest = {
-            message: message.trim(),
-            conversationHistory: conversationHistory.filter(msg => !msg.isTyping),
-            isAnonymous: true
-          }
-          
-          const { data: retryData, error: retryError } = await supabase.functions.invoke(this.functionName, {
-            body: retryPayload,
-          })
-          
-          if (retryError) {
-            throw new Error(`Edge Function failed: ${retryError.message}`)
-          }
-          
-          const retryResponse: ChatResponse = retryData
-          if (!retryResponse.success) {
-            throw new Error(retryResponse.error || "Unknown error occurred")
-          }
-          
-          return retryResponse.message.content
-        }
-        
-        throw new Error(`Edge Function failed: ${error.message}`)
+        throw new Error(`Edge Function failed: ${error.message || error}`)
       }
 
       // Parse response
@@ -111,11 +79,11 @@ export class EdgeChatService {
       
       // Return fallback response that stays in character
       if (error instanceof Error) {
+        if (error.message.includes("Authentication required")) {
+          return "Commander Sam H. reporting - Authentication systems are initializing. Please try again in a moment!"
+        }
         if (error.message.includes("Edge Function") || error.message.includes("network")) {
           return "Commander Sam H. here - I'm experiencing some communication difficulties with the main computer. Please try again in a moment, or feel free to ask me about any specific planets or space phenomena you'd like to explore!"
-        }
-        if (error.message.includes("auth") || error.message.includes("JWT")) {
-          return "Commander Sam H. reporting - Communication systems are operational for all crew members. What would you like to explore in our solar system?"
         }
       }
       
@@ -154,18 +122,6 @@ export class EdgeChatService {
         },
       })
       return !error
-    } catch {
-      return false
-    }
-  }
-
-  /**
-   * Check if user is authenticated
-   */
-  async isAuthenticated(): Promise<boolean> {
-    try {
-      const { data: { user }, error } = await supabase.auth.getUser()
-      return !error && !!user
     } catch {
       return false
     }
