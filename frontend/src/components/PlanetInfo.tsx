@@ -65,7 +65,7 @@ export const PlanetInfo: React.FC<PlanetInfoProps> = ({ planet, onClose }) => {
           <div className="grid grid-cols-2 gap-4 text-xs">
             <div>
               <span className="text-muted-foreground">Relative Size:</span>
-              <p className="font-medium">{planet.size}x Earth</p>
+              <p className="font-medium">{(planet.size / 0.15).toFixed(2)}x Earth</p>
             </div>
             <div>
               <span className="text-muted-foreground">Distance:</span>
