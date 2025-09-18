@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Stars } from "@react-three/drei";
-import * as THREE from "three";
 import { Planet } from "./Planet";
 import { Sun } from "./Sun";
 import { PlanetInfo } from "./PlanetInfo";
@@ -11,6 +10,7 @@ import { Button } from "./ui/button";
 import { LoginModal } from "./auth/LoginModal";
 import { useAuthContext } from "@/providers/AuthProvider";
 import { SpaceChatSystem } from "./SpaceChatSystem";
+import { supabase } from "@/services/supabase/client";
 
 interface PlanetData {
   name: string;
@@ -339,22 +339,31 @@ export const SolarSystem: React.FC = () => {
 
       setImageBase64(null);
 
-      const response = await fetch("http://localhost:5000/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          journal: journals[selectedDay.toDateString()] || "",
-        }),
-      });
+      // Use the new Supabase edge function instead of localhost
+      const { data, error } = await supabase.functions.invoke(
+        "journal-image-generator",
+        {
+          body: {
+            journalEntry: journals[selectedDay.toDateString()] || "",
+            thinkingTraps: selectedTraps,
+          },
+        }
+      );
 
-      if (!response.ok) throw new Error("Failed to generate image");
+      if (error) {
+        console.error("Edge Function Error:", error);
+        throw new Error(`Failed to generate image: ${error.message || error}`);
+      }
 
-      const data = await response.json();
-      if (data.error) throw new Error(data.error);
+      if (!data.success) {
+        throw new Error(data.error || "Unknown error occurred");
+      }
 
-      setImageBase64(data.image_base64);
+      setImageBase64(data.imageBase64);
       setShowImageModal(true);
 
+      // The edge function already handles recording the generation,
+      // but we can update the local state for consistency
       if (user?.id) {
         const { error: upsertErr } = await supabase
           .from("has_generated_image")
@@ -369,8 +378,8 @@ export const SolarSystem: React.FC = () => {
         if (upsertErr)
           console.error("Error saving generation record:", upsertErr);
       }
-    } catch (err: any) {
-      setError(err.message || "Unknown error");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Unknown error");
     } finally {
       setLoading(false);
     }
