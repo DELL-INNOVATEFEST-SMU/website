@@ -31,7 +31,7 @@ Deno.serve(async (req: Request) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Find anonymous users older than 1 day
+    // Find anonymous users older than 1 day ago
     const oneDayAgo = new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString();
     
     const { data: oldUsers, error: queryError } = await supabase
