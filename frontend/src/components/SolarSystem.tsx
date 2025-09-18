@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Stars } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import { Planet } from "./Planet";
 import { Sun } from "./Sun";
 import { PlanetInfo } from "./PlanetInfo";
@@ -26,9 +26,9 @@ interface PlanetData {
   tilt?: number;
 }
 
-// Base orbit speed for calculations (Earth = 1.0)
 const baseOrbitSpeed = 0.6;
 
+// Planet data with realistic relative sizes, distances, and orbital speeds
 const planets: PlanetData[] = [
   {
     name: "Mercury",
@@ -36,12 +36,8 @@ const planets: PlanetData[] = [
     size: 0.1,
     distance: 2.5,
     speed: baseOrbitSpeed / 0.24,
-    description: "The smallest and innermost planet in our solar system.",
-    facts: [
-      "Closest planet to the Sun",
-      "No atmosphere",
-      "Extreme temperature variations",
-    ],
+    description: "The smallest and fastest planet, closest to the Sun.",
+    facts: ["Closest to the Sun", "No atmosphere", "Extreme temperatures"],
     texturePath: "/textures/bodies/mercury.jpg",
     rotationSpeed: 1,
     tilt: 0.00017,
@@ -65,11 +61,7 @@ const planets: PlanetData[] = [
     distance: 4.5,
     speed: baseOrbitSpeed,
     description: "Our home planet, the only known planet with life.",
-    facts: [
-      "Only planet with known life",
-      "71% water coverage",
-      "Has one moon",
-    ],
+    facts: ["Only planet with life", "71% water coverage", "One natural moon"],
     texturePath: "/textures/bodies/Earth.jpg",
     rotationSpeed: 1,
     tilt: 0.40928,
@@ -80,12 +72,8 @@ const planets: PlanetData[] = [
     size: 0.13,
     distance: 6.0,
     speed: baseOrbitSpeed / 1.88,
-    description: "The red planet with polar ice caps and the largest volcano.",
-    facts: [
-      "Red due to iron oxide",
-      "Has two small moons",
-      "Largest volcano in solar system",
-    ],
+    description: "The red planet with the largest volcano in the solar system.",
+    facts: ["Red planet", "Largest volcano", "Two small moons"],
     texturePath: "/textures/bodies/Mars.jpg",
     rotationSpeed: 0.5,
     tilt: 0.43965,
@@ -148,21 +136,9 @@ const SolarSystemScene: React.FC<{
 }> = ({ onPlanetClick, focusedPlanet, backgroundType }) => {
   return (
     <>
-      <OrbitControls
-        enablePan
-        enableZoom
-        enableRotate
-        minDistance={2}
-        maxDistance={25}
-      />
+      <Background type={backgroundType} />
 
-      {/* Background texture */}
-      <Background textureType={backgroundType} />
-
-      {/* Additional stars for depth */}
-      <Stars radius={300} depth={50} count={500} factor={2} saturation={0} />
-
-      {/* Enhanced Lighting System - Clear Planet Visibility */}
+      {/* Lighting setup */}
       <ambientLight intensity={0.6} color="#B0E0E6" />
       <directionalLight
         position={[0, 0, 0]}
@@ -177,6 +153,8 @@ const SolarSystemScene: React.FC<{
         shadow-camera-top={50}
         shadow-camera-bottom={-50}
       />
+
+      {/* Point lights for each planet */}
       <pointLight
         position={[0, 0, 0]}
         intensity={2.8}
@@ -199,45 +177,30 @@ const SolarSystemScene: React.FC<{
         decay={1.2}
       />
       <pointLight
-        position={[0, 25, 0]}
-        intensity={2.0}
-        color="#FFFFFF"
-        distance={180}
-        decay={1.0}
+        position={[3.5, 0, 0]}
+        intensity={0.3}
+        color="#CD5C5C"
+        distance={2}
       />
       <pointLight
-        position={[30, 0, 0]}
-        intensity={1.5}
-        color="#F0F8FF"
-        distance={120}
-        decay={1.2}
+        position={[8.0, 0, 0]}
+        intensity={0.6}
+        color="#D8CA9D"
+        distance={4}
       />
-      <hemisphereLight
-        skyColor="#87CEEB"
-        groundColor="#4682B4"
-        intensity={0.18}
-      />
+      <hemisphereLight args={["#ffffff", "#60666C"]} intensity={0.2} />
 
       <Sun />
 
       {planets.map((planet) => (
         <Planet
           key={planet.name}
-          name={planet.name}
-          color={planet.color}
-          size={planet.size}
-          distance={planet.distance}
-          speed={planet.speed}
+          {...planet}
           onClick={() => onPlanetClick(planet)}
-          focused={focusedPlanet === planet.name}
-          texturePath={planet.texturePath}
-          hasRings={planet.hasRings}
-          rotationSpeed={planet.rotationSpeed}
-          tilt={planet.tilt}
+          isHighlighted={focusedPlanet === planet.name}
         />
       ))}
 
-      {/* Moon orbiting Earth */}
       <Moon earthPosition={[4.5, 0, 0]} earthDistance={4.5} />
     </>
   );
@@ -259,10 +222,9 @@ const thinkingTraps = [
 ];
 
 export const SolarSystem: React.FC = () => {
-  const { user, logout, isAnonymous } = useAuthContext(); // feat-isaiah login (source of truth)
+  const { user, logout } = useAuthContext();
   const [showLoginModal, setShowLoginModal] = useState(false);
 
-  const [showInnerModal, setShowInnerModal] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
   const [selectedTraps, setSelectedTraps] = useState<string[]>([]);
   const [selectedDay, setSelectedDay] = useState<Date>(new Date());
@@ -312,17 +274,26 @@ export const SolarSystem: React.FC = () => {
 
   const canGenerate = async () => {
     if (!user?.id) return false;
+
     const { data, error } = await supabase
       .from("has_generated_image")
       .select("has_generated")
       .eq("user_id", user.id)
       .eq("created_at", todayStr)
-      .single();
+      .maybeSingle(); // Changed from .single() to .maybeSingle()
 
-    if (error && error.code !== "PGRST116") {
-      // ignore "No rows" error; otherwise log
-      console.error(error);
+    if (error) {
+      console.error("Error checking generation limit:", error);
+      // For anonymous users, allow generation if database has issues
+      if (user.is_anonymous) {
+        console.log(
+          "Anonymous user - allowing generation despite database error"
+        );
+        return true;
+      }
+      return false; // For authenticated users, be more cautious
     }
+
     return !data || data.has_generated === false;
   };
 
@@ -411,6 +382,7 @@ export const SolarSystem: React.FC = () => {
 
   useEffect(() => {
     if (!user?.id || fetchedOnce.current) return;
+    fetchedOnce.current = true;
 
     const fetchJournals = async () => {
       const { data, error } = await supabase
@@ -419,54 +391,45 @@ export const SolarSystem: React.FC = () => {
         .eq("user_id", user.id);
 
       if (error) {
-        console.error("Error fetching journals:", error);
+        console.error(error);
         return;
       }
 
       const journalMap: { [date: string]: string } = {};
-      data?.forEach((entry: { journal_entry: string; created_at: string }) => {
-        const dateStr = new Date(entry.created_at).toDateString();
-        journalMap[dateStr] = entry.journal_entry;
+      data.forEach((entry) => {
+        const date = new Date(entry.created_at).toDateString();
+        journalMap[date] = entry.journal_entry;
       });
       setJournals(journalMap);
-      fetchedOnce.current = true;
     };
 
     fetchJournals();
-  }, [user]);
-
-  // --- end journal feature (from main) ---
+  }, [user?.id]);
 
   const handlePlanetClick = (planet: PlanetData) => {
     setSelectedPlanet(planet);
     setFocusedPlanet(planet.name);
   };
 
-  const handleBackToSystem = () => {
+  const closePlanetInfo = () => {
     setSelectedPlanet(null);
     setFocusedPlanet(null);
   };
 
-  const toggleBackground = () => {
-    setBackgroundType((prev) => (prev === "stars" ? "milky_way" : "stars"));
-  };
-
   return (
-    <div className="w-full h-screen bg-background relative overflow-hidden">
-      {/* Space background gradient - brighter for mental health app */}
-      <div
-        className="absolute inset-0 opacity-20"
-        style={{
-          background:
-            "linear-gradient(135deg, #1e3a8a 0%, #3b82f6 25%, #1e40af 50%, #1e3a8a 75%, #0f172a 100%)",
-        }}
-      />
-
+    <div className="relative w-full h-screen bg-black overflow-hidden">
+      {/* Solar System Canvas */}
       <Canvas
-        camera={{ position: [0, 8, 15], fov: 60 }}
-        shadows
-        gl={{ antialias: true, alpha: false }}
+        camera={{ position: [0, 5, 20], fov: 60 }}
+        className="absolute inset-0"
       >
+        <OrbitControls
+          enablePan={true}
+          enableZoom={true}
+          enableRotate={true}
+          minDistance={10}
+          maxDistance={50}
+        />
         <SolarSystemScene
           onPlanetClick={handlePlanetClick}
           focusedPlanet={focusedPlanet}
@@ -474,266 +437,236 @@ export const SolarSystem: React.FC = () => {
         />
       </Canvas>
 
-      {/* Left UI Overlay */}
-      <div className="absolute top-6 left-6 z-10">
-        <div className="bg-card/80 backdrop-blur-sm border border-border rounded-lg p-4">
-          <h1 className="text-2xl font-bold text-foreground mb-2">
-            Solar System Explorer
-          </h1>
-          <p className="text-muted-foreground text-sm mb-3">
-            Click on planets to explore • Use mouse to navigate
-          </p>
-          <Button
-            onClick={toggleBackground}
-            variant="outline"
-            size="sm"
-            className="w-full"
-          >
-            Switch to {backgroundType === "stars" ? "Milky Way" : "Stars"}{" "}
-            Background
-          </Button>
+      {/* UI Overlay */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Top Controls */}
+        <div className="absolute top-4 left-4 pointer-events-auto">
+          <div className="flex gap-2 mb-4">
+            <Button
+              onClick={() => setBackgroundType("stars")}
+              variant={backgroundType === "stars" ? "default" : "outline"}
+              size="sm"
+            >
+              Stars
+            </Button>
+            <Button
+              onClick={() => setBackgroundType("milky_way")}
+              variant={backgroundType === "milky_way" ? "default" : "outline"}
+              size="sm"
+            >
+              Milky Way
+            </Button>
+          </div>
         </div>
-      </div>
 
-      {/* Right UI Overlay (feat-isaiah login + journal button from main) */}
-      <div className="absolute top-6 right-6 z-10">
-        <div className="bg-card/80 backdrop-blur-sm border border-border rounded-lg p-4 space-y-3 min-w-64">
-          {user ? (
-            <>
-              <p className="text-sm text-muted-foreground">
-                {isAnonymous ? "Welcome Traveller" : `Welcome, ${user.email}`}
-              </p>
-              <Button
-                onClick={() => setShowJournal(true)}
-                variant="outline"
-                size="sm"
-                className="w-full"
-              >
-                Open Journal
-              </Button>
-              <Button
-                onClick={isAnonymous ? () => setShowLoginModal(true) : logout}
-                size="sm"
-                className="w-full bg-purple-600 text-white hover:bg-purple-700full"
-              >
-                {isAnonymous ? "Save your Progress" : "Sign Out"}
-              </Button>
-            </>
-          ) : (
-            <>
-              <p className="text-sm text-muted-foreground">
-                Sign in to save your preferences
-              </p>
+        {/* Top Right Controls */}
+        <div className="absolute top-4 right-4 pointer-events-auto">
+          <div className="flex gap-2">
+            {user ? (
+              <>
+                <Button onClick={logout} variant="outline" size="sm">
+                  Sign Out
+                </Button>
+                <Button
+                  onClick={() => setShowJournal(true)}
+                  variant="default"
+                  size="sm"
+                >
+                  Journal
+                </Button>
+              </>
+            ) : (
               <Button
                 onClick={() => setShowLoginModal(true)}
+                variant="default"
                 size="sm"
-                className="w-full bg-purple-600 text-white hover:bg-purple-700"
               >
                 Sign In
               </Button>
-            </>
-          )}
+            )}
+          </div>
+        </div>
+
+        {/* Bottom Chat */}
+        <div className="absolute bottom-4 left-4 right-4 pointer-events-auto">
+          <SpaceChatSystem />
         </div>
       </div>
 
-      {/* Planet Info Overlay */}
+      {/* Planet Info Modal */}
       {selectedPlanet && (
-        <PlanetInfo planet={selectedPlanet} onClose={handleBackToSystem} />
+        <PlanetInfo planet={selectedPlanet} onClose={closePlanetInfo} />
       )}
 
-      {/* Auth Modal (feat-isaiah) */}
-      <LoginModal open={showLoginModal} onOpenChange={setShowLoginModal} />
+      {/* Login Modal */}
+      <LoginModal
+        open={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+      />
 
-      {/* Space Chat System */}
-      <SpaceChatSystem />
-
-      {/* Journal Modal (main) */}
+      {/* Journal Modal */}
       {showJournal && (
-        <div
-          className="fixed inset-0  flex items-center justify-center z-50"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-        >
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-auto">
-            <h2 className="text-xl font-bold mb-4">Journal</h2>
-
-            <div className="flex items-center w-full max-w-4xl mx-auto overflow-hidden">
-              <button
-                onClick={handlePrev}
-                className=" text-lg px-2 py-1 rounded-l hover:bg-gray-300"
-              >
-                ‹
-              </button>
-
-              <div className="flex flex-1 overflow-hidden">
-                <div className="flex  w-full transition-transform duration-300 ease-in-out">
-                  {days.map((day, idx) => {
-                    const today =
-                      new Date().toDateString() === day.toDateString();
-                    const disabled = isFutureDay(day);
-                    return (
-                      <button
-                        key={idx}
-                        disabled={disabled}
-                        className={`flex-none w-1/7 text-center p-4 border border-gray-200
-                          ${today ? "bg-blue-100 font-bold" : ""}
-                          ${
-                            disabled
-                              ? "opacity-50 cursor-not-allowed"
-                              : "hover:bg-blue-50"
-                          }
-                          ${
-                            !disabled &&
-                            day.toDateString() === selectedDay.toDateString()
-                              ? "bg-purple-500 text-white font-bold"
-                              : ""
-                          }`}
-                        onClick={() => setSelectedDay(day)}
-                      >
-                        <div>{day.toLocaleDateString("en-GB")}</div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <button
-                onClick={handleNext}
-                className=" text-lg px-2 py-1 rounded-r hover:bg-gray-300"
-              >
-                ›
-              </button>
-            </div>
-
-            <p className="mt-4 text-sm text-gray-700">
-              This is the journal modal. Here is your prompt.
-            </p>
-
-            {selectedDay && (
-              <textarea
-                rows={6}
-                value={journals[selectedDay.toDateString()] || ""}
-                readOnly={
-                  selectedDay.toDateString() !== new Date().toDateString()
-                }
-                onChange={(e) => {
-                  if (
-                    selectedDay.toDateString() === new Date().toDateString()
-                  ) {
-                    const updatedJournals = {
-                      ...journals,
-                      [selectedDay.toDateString()]: e.target.value,
-                    };
-                    setJournals(updatedJournals);
-                  }
-                }}
-                placeholder={
-                  selectedDay.toDateString() === new Date().toDateString()
-                    ? "Enter your journal entry..."
-                    : "No journal for this day."
-                }
-                className="w-full p-3 border border-gray-300 rounded resize-none mt-3"
-              />
-            )}
-
-            <div className="mt-4 flex flex-wrap gap-2">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold">Journal</h2>
               <Button
-                onClick={generateImage}
-                disabled={
-                  loading ||
-                  Object.values(journals).join("").trim() === "" ||
-                  !user
-                }
+                onClick={() => setShowJournal(false)}
+                variant="outline"
+                size="sm"
               >
-                {loading ? "Generating..." : "Generate Image"}
-              </Button>
-              <Button variant="outline" onClick={() => setShowInnerModal(true)}>
-                Select Thinking Traps
+                Close
               </Button>
             </div>
 
-            {error && <p className="text-red-600 mt-2">{error}</p>}
+            {/* Calendar Navigation */}
+            <div className="mb-6">
+              <div className="flex justify-between items-center mb-4">
+                <Button onClick={handlePrev} variant="outline" size="sm">
+                  Previous Week
+                </Button>
+                <span className="font-medium">
+                  {startDate.toDateString()} -{" "}
+                  {new Date(
+                    startDate.getTime() + (daysToShow - 1) * 24 * 60 * 60 * 1000
+                  ).toDateString()}
+                </span>
+                <Button onClick={handleNext} variant="outline" size="sm">
+                  Next Week
+                </Button>
+              </div>
 
-            {/* Thinking Traps Inner Modal */}
-            {showInnerModal && (
-              <div
-                className="absolute inset-0 flex items-center justify-center z-50"
-                style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-              >
-                <div className="bg-white p-6 rounded-lg shadow-lg w-96 max-h-[80vh] overflow-auto">
-                  <h3 className="text-lg font-semibold mb-2">Thinking Traps</h3>
-                  <p className="mb-3 text-sm text-gray-600">
-                    This modal is inside the main modal.
-                  </p>
-                  <div className="grid gap-3">
-                    {thinkingTraps.map((trap) => {
-                      const isSelected = selectedTraps.includes(trap.title);
-                      return (
-                        <button
-                          key={trap.title}
-                          onClick={() => toggleTrap(trap.title)}
-                          className={`w-full text-left p-3 border rounded-lg transition-colors ${
-                            isSelected
-                              ? "!bg-purple-500 !text-white !border-purple-600"
-                              : "bg-gray-100 text-black hover:bg-purple-100"
-                          }`}
-                        >
-                          <strong>{trap.title}</strong>
-                          <p className="text-sm">{trap.description}</p>
-                        </button>
-                      );
-                    })}
-                  </div>
+              <div className="grid grid-cols-7 gap-2">
+                {days.map((day) => {
+                  const isSelected =
+                    selectedDay.toDateString() === day.toDateString();
+                  const hasEntry = journals[day.toDateString()];
+                  const isFuture = isFutureDay(day);
 
-                  <button
-                    onClick={() => setShowInnerModal(false)}
-                    className="mt-4 px-4 py-2 rounded border border-gray-400"
-                  >
-                    Save Thinking Traps
-                  </button>
+                  return (
+                    <Button
+                      key={day.toDateString()}
+                      onClick={() => setSelectedDay(day)}
+                      variant={isSelected ? "default" : "outline"}
+                      size="sm"
+                      className={`h-16 flex flex-col ${
+                        hasEntry ? "bg-green-100" : ""
+                      } ${isFuture ? "opacity-50 cursor-not-allowed" : ""}`}
+                      disabled={isFuture}
+                    >
+                      <span className="text-xs">
+                        {day.toLocaleDateString("en", { weekday: "short" })}
+                      </span>
+                      <span className="text-lg">{day.getDate()}</span>
+                    </Button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Selected Day Content */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">
+                {selectedDay.toDateString()}
+              </h3>
+
+              {/* Thinking Traps Selection */}
+              <div>
+                <h4 className="font-medium mb-2">
+                  Thinking Traps (select any that apply):
+                </h4>
+                <div className="space-y-2">
+                  {thinkingTraps.map((trap) => (
+                    <label
+                      key={trap.title}
+                      className="flex items-center space-x-2"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedTraps.includes(trap.title)}
+                        onChange={() => toggleTrap(trap.title)}
+                        className="rounded"
+                      />
+                      <span className="text-sm">
+                        <strong>{trap.title}:</strong> {trap.description}
+                      </span>
+                    </label>
+                  ))}
                 </div>
               </div>
-            )}
 
-            {/* Generated Image Modal */}
+              {/* Journal Entry */}
+              <div>
+                <h4 className="font-medium mb-2">Journal Entry:</h4>
+                <textarea
+                  value={journals[selectedDay.toDateString()] || ""}
+                  onChange={(e) =>
+                    setJournals((prev) => ({
+                      ...prev,
+                      [selectedDay.toDateString()]: e.target.value,
+                    }))
+                  }
+                  placeholder="Write about your day, thoughts, feelings..."
+                  className="w-full h-32 p-3 border rounded-lg resize-none"
+                />
+              </div>
+
+              {/* Image Generation */}
+              <div className="border-t pt-4">
+                <div className="flex justify-between items-center mb-2">
+                  <h4 className="font-medium">Generate Image</h4>
+                  <Button
+                    onClick={generateImage}
+                    disabled={
+                      loading || !journals[selectedDay.toDateString()]?.trim()
+                    }
+                    variant="default"
+                    size="sm"
+                  >
+                    {loading ? "Generating..." : "Generate Image"}
+                  </Button>
+                </div>
+                {error && (
+                  <div className="text-red-600 text-sm mb-2">{error}</div>
+                )}
+              </div>
+            </div>
+
+            {/* Image Modal */}
             {showImageModal && imageBase64 && (
-              <div
-                className="absolute inset-0 flex items-center justify-center z-50"
-                style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-              >
-                <div className="bg-white p-6 rounded-lg shadow-lg w-96 max-h-[80vh] overflow-auto">
-                  <h3 className="text-lg font-semibold mb-2">
-                    Generated Image
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-2">
-                    This modal is inside the main modal.
-                  </p>
-
+              <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-60">
+                <div className="bg-white rounded-lg p-6 max-w-2xl max-h-[90vh] overflow-auto">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-lg font-semibold">Generated Image</h3>
+                    <Button
+                      onClick={() => setShowImageModal(false)}
+                      variant="outline"
+                      size="sm"
+                    >
+                      Close
+                    </Button>
+                  </div>
                   <img
                     src={`data:image/png;base64,${imageBase64}`}
-                    alt="Generated"
-                    className="max-w-full max-h-[80vh] mx-auto"
+                    alt="Generated journal visualization"
+                    className="w-full h-auto rounded-lg mb-4"
                   />
-                  <div className="flex gap-2 mt-4">
-                    <button
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={handleSaveImage}
+                      variant="default"
+                      size="sm"
+                    >
+                      Download
+                    </Button>
+                    <Button
                       onClick={handleShareImage}
-                      className="px-4 py-2 rounded bg-blue-500 text-white"
+                      variant="outline"
+                      size="sm"
                     >
                       Share
-                    </button>
-                    <button
-                      onClick={handleSaveImage}
-                      className="px-4 py-2 rounded bg-green-500 text-white"
-                    >
-                      Save
-                    </button>
+                    </Button>
                   </div>
-
-                  <button
-                    onClick={() => setShowImageModal(false)}
-                    className="mt-4 px-4 py-2 rounded border border-gray-400"
-                  >
-                    Close Image
-                  </button>
                 </div>
               </div>
             )}
