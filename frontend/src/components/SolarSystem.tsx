@@ -266,18 +266,10 @@ const thinkingTraps = [
 
 export const SolarSystem: React.FC = () => {
   const [user, setUser] = useState<any>(null);
-  const today = new Date().toDateString();
   const [showInnerModal, setShowInnerModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
   const [selectedTraps, setSelectedTraps] = useState<string[]>([]);
-  const toggleTrap = (trapTitle: string) => {
-    setSelectedTraps((prev) =>
-      prev.includes(trapTitle)
-        ? prev.filter((t) => t !== trapTitle)
-        : [...prev, trapTitle]
-    );
-  };
   const [selectedDay, setSelectedDay] = useState<Date>(new Date());
   const isFutureDay = (day: Date) => day > new Date();
   const [email, setEmail] = useState("");
@@ -288,10 +280,17 @@ export const SolarSystem: React.FC = () => {
   const [backgroundType, setBackgroundType] = useState<"stars" | "milky_way">(
     "milky_way"
   );
-  const [journal, setJournal] = useState("");
+  const fetchedOnce = useRef(false);
   const [imageBase64, setImageBase64] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const toggleTrap = (trapTitle: string) => {
+    setSelectedTraps((prev) =>
+      prev.includes(trapTitle)
+        ? prev.filter((t) => t !== trapTitle)
+        : [...prev, trapTitle]
+    );
+  };
   const handleShareImage = () => {
     if (navigator.share) {
       navigator.share({
@@ -332,13 +331,13 @@ export const SolarSystem: React.FC = () => {
     setImageBase64(null);
 
     try {
-      console.log(JSON.stringify({ journal }));
+      
       const response = await fetch("http://localhost:5000/generate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ journal }),
+        body: JSON.stringify({ journal: journals[selectedDay.toDateString()] || "" }),
       });
 
       if (!response.ok) {
@@ -400,6 +399,7 @@ export const SolarSystem: React.FC = () => {
     setStartDate(newDate);
   };
   useEffect(() => {
+    if (!user?.id || fetchedOnce.current) return;
     const fetchJournals = async () => {
       const { data, error } = await supabase
         .from("journals")
@@ -418,6 +418,7 @@ export const SolarSystem: React.FC = () => {
         journalMap[dateStr] = entry.journal_entry;
       });
       setJournals(journalMap);
+      fetchedOnce.current = true;;
     };
     if ((user && user.id)) fetchJournals();
   }, [user]);
