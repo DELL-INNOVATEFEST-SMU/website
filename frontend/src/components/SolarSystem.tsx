@@ -650,7 +650,7 @@ export const SolarSystem: React.FC = () => {
                       variant={isSelected ? "default" : "outline"}
                       size="sm"
                       className={`h-16 flex flex-col ${
-                        hasEntry ? "bg-green-100" : ""
+                        hasEntry ? "bg-purple-100 text-black" : ""
                       } ${isFuture ? "opacity-50 cursor-not-allowed" : ""}`}
                       disabled={isFuture}
                     >
