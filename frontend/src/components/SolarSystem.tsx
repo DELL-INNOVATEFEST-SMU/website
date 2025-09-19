@@ -10,7 +10,12 @@ import { Button } from "./ui/button";
 import { useAuthContext } from "@/providers/AuthProvider";
 import { SpaceChatSystem } from "./SpaceChatSystem";
 import { supabase } from "@/lib/supabase";
-
+import BoxBreathingModal from "@/PlanetActivities/BoxBreathingModal";
+interface PlanetActivity {
+  name: string;
+  description: string;
+  component: React.FC<{ onClose: () => void }>; // or simpler if just modal content
+}
 interface PlanetData {
   name: string;
   color: string;
@@ -21,11 +26,17 @@ interface PlanetData {
   facts: string[];
   texturePath?: string;
   hasRings?: boolean;
+  activities?: PlanetActivity[];
   rotationSpeed?: number;
   tilt?: number;
 }
 
 const baseOrbitSpeed = 0.6;
+const boxBreathingActivity: PlanetActivity = {
+  name: "Box Breathing",
+  description: "Practice calm breathing for stress relief.",
+  component: BoxBreathingModal, // reference to your component for the modal content
+};
 
 // Planet data with realistic relative sizes, distances, and orbital speeds
 const planets: PlanetData[] = [
@@ -64,6 +75,7 @@ const planets: PlanetData[] = [
     texturePath: "/textures/bodies/Earth.jpg",
     rotationSpeed: 1,
     tilt: 0.40928,
+    activities: [boxBreathingActivity],
   },
   {
     name: "Mars",
@@ -277,7 +289,7 @@ const GuestModeIndicator: React.FC<{ onUpgrade: () => void }> = ({
 export const SolarSystem: React.FC = () => {
   const { user, signOut, isAnonymous } = useAuthContext();
   const [showSavePrompt, setShowSavePrompt] = useState(false);
-
+  const [activeActivity, setActiveActivity] = useState<PlanetActivity | null>(null);
   const [showImageModal, setShowImageModal] = useState(false);
   const [selectedTraps, setSelectedTraps] = useState<string[]>([]);
   const [selectedDay, setSelectedDay] = useState<Date>(new Date());
@@ -565,18 +577,18 @@ export const SolarSystem: React.FC = () => {
             {user ? (
               <>
                 <Button onClick={signOut} variant="outline" size="sm">
-                  {isAnonymous ? "Switch User" : "Sign Out"}
+                  {isAnonymous ? "Launch Sequence" : "Leave Spacecraft"}
                 </Button>
                 <Button
                   onClick={() => setShowJournal(true)}
                   variant="default"
                   size="sm"
                 >
-                  Journal
+                  Space Diary
                 </Button>
               </>
             ) : (
-              <div className="text-white text-sm">Loading...</div>
+              <div className="text-white text-sm"></div>
             )}
           </div>
         </div>
@@ -589,7 +601,23 @@ export const SolarSystem: React.FC = () => {
 
       {/* Planet Info Modal */}
       {selectedPlanet && (
-        <PlanetInfo planet={selectedPlanet} onClose={closePlanetInfo} />
+        <PlanetInfo planet={selectedPlanet} onClose={closePlanetInfo} onStartActivity={setActiveActivity} />
+      )}
+      {activeActivity && (
+        <div className="fixed inset-0  flex items-center justify-center z-50" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md">
+            <h3 className="text-lg font-semibold mb-2">{activeActivity.name}</h3>
+            <p className="mb-4">{activeActivity.description}</p>
+            <activeActivity.component onClose={() => setActiveActivity(null)} />
+            <Button
+              onClick={() => setActiveActivity(null)}
+              variant="outline"
+              className="mt-4 w-full"
+            >
+              Close Activity
+            </Button>
+          </div>
+        </div>
       )}
 
       {/* Journal Modal */}
@@ -644,9 +672,8 @@ export const SolarSystem: React.FC = () => {
                       onClick={() => setSelectedDay(day)}
                       variant={isSelected ? "default" : "outline"}
                       size="sm"
-                      className={`h-16 flex flex-col ${
-                        hasEntry ? "bg-purple-100 text-black" : ""
-                      } ${isFuture ? "opacity-50 cursor-not-allowed" : ""}`}
+                      className={`h-16 flex flex-col ${hasEntry ? "bg-purple-100 text-black" : ""
+                        } ${isFuture ? "opacity-50 cursor-not-allowed" : ""}`}
                       disabled={isFuture}
                     >
                       <span className="text-xs">

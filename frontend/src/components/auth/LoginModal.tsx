@@ -255,7 +255,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
                 disabled={loading}
                 className="w-full"
               >
-                {loading ? "Sending..." : "Send Verification Code"}
+                {loading ? "Sending..." : "Send Launch Code"}
               </Button>
             </>
           ) : (
@@ -264,8 +264,8 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
                 <div className="text-center">
                   <div className="text-sm text-gray-600 mb-2">
                     {isNewUser
-                      ? "We sent a 6-digit verification code to complete your signup:"
-                      : "We sent a 6-digit verification code to sign you in:"}
+                      ? "We sent a 6-digit code to complete initiation:"
+                      : "We sent a 6-digit code to your email:"}
                   </div>
                   <div className="font-medium text-blue-600">{email}</div>
                 </div>
@@ -280,7 +280,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
                 </div>
 
                 <div className="text-xs text-gray-500 text-center">
-                  This code will expire in 10 minutes
+                  T-10 minutes to launch! (This code will expire in 10 minutes.)
                 </div>
               </div>
 
@@ -301,8 +301,8 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
                   {loading
                     ? "Verifying..."
                     : isNewUser
-                    ? "Create Account"
-                    : "Sign In"}
+                    ? "Initiate Launch!"
+                    : "Launch!"}
                 </Button>
               </div>
 
