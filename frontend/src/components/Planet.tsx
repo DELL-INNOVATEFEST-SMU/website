@@ -137,17 +137,6 @@ export const Planet: React.FC<PlanetProps> = ({
           </mesh>
         )}
 
-        {/* Orbital trail */}
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-distance, 0, 0]}>
-          <ringGeometry args={[distance - 0.02, distance + 0.02, 64]} />
-          <meshBasicMaterial
-            color="#444"
-            transparent
-            opacity={0.2}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-
         {/* Glow effect - always visible with enhanced effect when highlighted */}
         <mesh>
           <sphereGeometry args={[size * 1.15, 32, 32]} />
