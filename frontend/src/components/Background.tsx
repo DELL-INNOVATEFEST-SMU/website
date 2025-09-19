@@ -13,7 +13,7 @@ export const Background: React.FC<BackgroundProps> = ({ textureType }) => {
   // Load the appropriate texture based on the type
   const texturePath =
     textureType === "milky_way"
-      ? "/textures/background/stars_milky_way.jpg"
+      ? "/textures/background/Vibrant_Night_Sky_with_Stars_and_Nebula.jpg"
       : "/textures/background/stars.jpg";
 
   const texture = useTexture(texturePath);

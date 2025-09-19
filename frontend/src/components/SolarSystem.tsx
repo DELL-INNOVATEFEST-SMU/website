@@ -135,7 +135,7 @@ const SolarSystemScene: React.FC<{
 }> = ({ onPlanetClick, focusedPlanet, backgroundType }) => {
   return (
     <>
-      <Background type={backgroundType} />
+      <Background textureType={backgroundType} />
 
       {/* Lighting setup */}
       <ambientLight intensity={0.6} color="#B0E0E6" />
@@ -532,15 +532,25 @@ export const SolarSystem: React.FC = () => {
               onClick={() => setBackgroundType("stars")}
               variant={backgroundType === "stars" ? "default" : "outline"}
               size="sm"
+              className={
+                backgroundType === "stars"
+                  ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
+                  : "text-gray-600 border-gray-300 hover:bg-gray-50"
+              }
             >
-              Stars
+              ✨ Stars
             </Button>
             <Button
               onClick={() => setBackgroundType("milky_way")}
               variant={backgroundType === "milky_way" ? "default" : "outline"}
               size="sm"
+              className={
+                backgroundType === "milky_way"
+                  ? "bg-purple-600 hover:bg-purple-700 text-white border-purple-600"
+                  : "text-gray-600 border-gray-300 hover:bg-gray-50"
+              }
             >
-              Milky Way
+              🌌 Nebula
             </Button>
           </div>
 
