@@ -549,6 +549,7 @@ export const SolarSystem: React.FC = () => {
                   ? "bg-purple-600 hover:bg-purple-700 text-white border-purple-600"
                   : "text-gray-600 border-gray-300 hover:bg-gray-50"
               }
+              title="Image by standret on Freepik"
             >
               🌌 Nebula
             </Button>
@@ -823,6 +824,22 @@ export const SolarSystem: React.FC = () => {
             >
               {isAnonymous ? "Save to Session (Temporary)" : "Save"}
             </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Attribution for Nebula Background */}
+      {backgroundType === "milky_way" && (
+        <div className="absolute bottom-4 left-4 pointer-events-auto">
+          <div className="text-xs text-gray-400 bg-black bg-opacity-50 px-2 py-1 rounded">
+            <a
+              href="https://www.freepik.com/free-photo/vibrant-night-sky-with-stars-nebula-galaxy_10181166.htm#fromView=keyword&page=1&position=12&uuid=a31885a9-83c2-46bf-8492-c4b345e4bf64&query=High+resolution+milky+way"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-300 hover:text-white underline"
+            >
+              Image by standret on Freepik
+            </a>
           </div>
         </div>
       )}

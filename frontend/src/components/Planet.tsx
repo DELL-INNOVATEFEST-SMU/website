@@ -143,7 +143,7 @@ export const Planet: React.FC<PlanetProps> = ({
           <meshBasicMaterial
             color={color}
             transparent
-            opacity={isHighlighted ? 0.4 : 0.25}
+            opacity={isHighlighted ? 0.6 : 0.45}
           />
         </mesh>
 
@@ -153,7 +153,17 @@ export const Planet: React.FC<PlanetProps> = ({
           <meshBasicMaterial
             color={color}
             transparent
-            opacity={isHighlighted ? 0.15 : 0.08}
+            opacity={isHighlighted ? 0.3 : 0.2}
+          />
+        </mesh>
+
+        {/* Third outer glow layer for better visibility at distance */}
+        <mesh>
+          <sphereGeometry args={[size * 1.5, 32, 32]} />
+          <meshBasicMaterial
+            color={color}
+            transparent
+            opacity={isHighlighted ? 0.15 : 0.1}
           />
         </mesh>
       </mesh>
