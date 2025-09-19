@@ -135,7 +135,7 @@ const SolarSystemScene: React.FC<{
 }> = ({ onPlanetClick, focusedPlanet, backgroundType }) => {
   return (
     <>
-      <Background type={backgroundType} />
+      <Background textureType={backgroundType} />
 
       {/* Lighting setup */}
       <ambientLight intensity={0.6} color="#B0E0E6" />
@@ -506,14 +506,14 @@ export const SolarSystem: React.FC = () => {
     <div className="relative w-full h-screen bg-black overflow-hidden">
       {/* Solar System Canvas */}
       <Canvas
-        camera={{ position: [0, 5, 20], fov: 60 }}
+        camera={{ position: [0, 2, 8], fov: 75 }}
         className="absolute inset-0"
       >
         <OrbitControls
           enablePan={true}
           enableZoom={true}
           enableRotate={true}
-          minDistance={10}
+          minDistance={3}
           maxDistance={50}
         />
         <SolarSystemScene
@@ -532,15 +532,26 @@ export const SolarSystem: React.FC = () => {
               onClick={() => setBackgroundType("stars")}
               variant={backgroundType === "stars" ? "default" : "outline"}
               size="sm"
+              className={
+                backgroundType === "stars"
+                  ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
+                  : "text-gray-600 border-gray-300 hover:bg-gray-50"
+              }
             >
-              Stars
+              ✨ Stars
             </Button>
             <Button
               onClick={() => setBackgroundType("milky_way")}
               variant={backgroundType === "milky_way" ? "default" : "outline"}
               size="sm"
+              className={
+                backgroundType === "milky_way"
+                  ? "bg-purple-600 hover:bg-purple-700 text-white border-purple-600"
+                  : "text-gray-600 border-gray-300 hover:bg-gray-50"
+              }
+              title="Image by standret on Freepik"
             >
-              Milky Way
+              🌌 Nebula
             </Button>
           </div>
 
@@ -813,6 +824,22 @@ export const SolarSystem: React.FC = () => {
             >
               {isAnonymous ? "Save to Session (Temporary)" : "Save"}
             </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Attribution for Nebula Background */}
+      {backgroundType === "milky_way" && (
+        <div className="absolute bottom-4 left-4 pointer-events-auto">
+          <div className="text-xs text-gray-400 bg-black bg-opacity-50 px-2 py-1 rounded">
+            <a
+              href="https://www.freepik.com/free-photo/vibrant-night-sky-with-stars-nebula-galaxy_10181166.htm#fromView=keyword&page=1&position=12&uuid=a31885a9-83c2-46bf-8492-c4b345e4bf64&query=High+resolution+milky+way"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-300 hover:text-white underline"
+            >
+              Image by standret on Freepik
+            </a>
           </div>
         </div>
       )}
