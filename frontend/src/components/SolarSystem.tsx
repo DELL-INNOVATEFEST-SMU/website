@@ -15,8 +15,10 @@ import WorryTree from "@/PlanetActivities/WorryTree";
 import DanceTherapyTrial from "@/PlanetActivities/DanceTherapyTrial";
 import StoryRewrite from "@/PlanetActivities/StoryRewrite";
 import DragLeaves from "@/PlanetActivities/DragLeaves";
-
 import  ThinkingTrapBreaker  from "@/PlanetActivities/BreakingTraps";
+import StainedGlass from "@/PlanetActivities/StainedGlass2";
+import CalmSoundsMixer from "@/PlanetActivities/CalmSoundsMixer";
+
 interface PlanetActivity {
   name: string;
   description: string;
@@ -63,11 +65,20 @@ const DragLeavesActivity: PlanetActivity = {
   description: "Let go of your worries by dragging leaves into the stream.",
   component: DragLeaves, // reference to your component for the modal content
 };
-
+const StainedGlassActivity: PlanetActivity = {
+  name: "Stained Glass Designer",
+  description: "Create beautiful stained glass patterns to relax and focus.",
+  component: StainedGlass, // reference to your component for the modal content
+};
 const ThinkingTrapActivity: PlanetActivity = {
   name: "Break Thinking Traps",
   description: "Identify and reframe unhelpful thinking patterns.",
   component: ThinkingTrapBreaker, // reference to your component for the modal content
+};
+const CalmSoundsActivity: PlanetActivity = {
+  name: "Calm Sounds Mixer",
+  description: "Mix soothing sounds to create your own calm environment.",
+  component: CalmSoundsMixer, // reference to your component for the modal content
 };
 
 // Planet data with realistic relative sizes, distances, and orbital speeds
@@ -83,7 +94,7 @@ const planets: PlanetData[] = [
     texturePath: "/textures/bodies/mercury.jpg",
     rotationSpeed: 1,
     tilt: 0.00017,
-
+    activities: [CalmSoundsActivity],
   },
   {
     name: "Venus",
@@ -122,6 +133,7 @@ const planets: PlanetData[] = [
     texturePath: "/textures/bodies/Mars.jpg",
     rotationSpeed: 0.5,
     tilt: 0.43965,
+    activities: [StainedGlassActivity],
   },
   {
     name: "Jupiter",
