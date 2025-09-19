@@ -10,7 +10,7 @@ interface PlanetProps {
   distance: number;
   speed: number;
   onClick: () => void;
-  focused: boolean;
+  isHighlighted: boolean;
   texturePath?: string;
   hasRings?: boolean;
   rotationSpeed?: number;
@@ -24,7 +24,7 @@ export const Planet: React.FC<PlanetProps> = ({
   distance,
   speed,
   onClick,
-  focused,
+  isHighlighted,
   texturePath,
   hasRings,
   rotationSpeed = 0.5,
@@ -73,8 +73,8 @@ export const Planet: React.FC<PlanetProps> = ({
       // Apply axial tilt
       meshRef.current.rotation.z = tilt;
 
-      // Add gentle bobbing animation when focused
-      if (focused) {
+      // Add gentle bobbing animation when highlighted
+      if (isHighlighted) {
         meshRef.current.position.y = Math.sin(clock.getElapsedTime() * 2) * 0.1;
       } else {
         meshRef.current.position.y = 0;
@@ -105,11 +105,11 @@ export const Planet: React.FC<PlanetProps> = ({
           roughness={0.7}
           metalness={0.05}
           emissive={
-            focused
+            isHighlighted
               ? new THREE.Color(color).multiplyScalar(0.3)
               : new THREE.Color(color).multiplyScalar(0.1)
           }
-          emissiveIntensity={focused ? 0.4 : 0.15}
+          emissiveIntensity={isHighlighted ? 0.4 : 0.15}
         />
 
         {/* Planet atmosphere effect */}
@@ -148,13 +148,25 @@ export const Planet: React.FC<PlanetProps> = ({
           />
         </mesh>
 
-        {/* Glow effect when focused */}
-        {focused && (
-          <mesh>
-            <sphereGeometry args={[size * 1.2, 32, 32]} />
-            <meshBasicMaterial color={color} transparent opacity={0.2} />
-          </mesh>
-        )}
+        {/* Glow effect - always visible with enhanced effect when highlighted */}
+        <mesh>
+          <sphereGeometry args={[size * 1.15, 32, 32]} />
+          <meshBasicMaterial
+            color={color}
+            transparent
+            opacity={isHighlighted ? 0.4 : 0.25}
+          />
+        </mesh>
+
+        {/* Additional outer glow layer */}
+        <mesh>
+          <sphereGeometry args={[size * 1.3, 32, 32]} />
+          <meshBasicMaterial
+            color={color}
+            transparent
+            opacity={isHighlighted ? 0.15 : 0.08}
+          />
+        </mesh>
       </mesh>
 
       {/* Saturn's rings */}

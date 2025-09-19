@@ -506,14 +506,14 @@ export const SolarSystem: React.FC = () => {
     <div className="relative w-full h-screen bg-black overflow-hidden">
       {/* Solar System Canvas */}
       <Canvas
-        camera={{ position: [0, 5, 20], fov: 60 }}
+        camera={{ position: [0, 2, 8], fov: 75 }}
         className="absolute inset-0"
       >
         <OrbitControls
           enablePan={true}
           enableZoom={true}
           enableRotate={true}
-          minDistance={10}
+          minDistance={3}
           maxDistance={50}
         />
         <SolarSystemScene
