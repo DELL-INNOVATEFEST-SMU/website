@@ -11,6 +11,12 @@ import { useAuthContext } from "@/providers/AuthProvider";
 import { SpaceChatSystem } from "./SpaceChatSystem";
 import { supabase } from "@/lib/supabase";
 import BoxBreathingModal from "@/PlanetActivities/BoxBreathingModal";
+import WorryTree from "@/PlanetActivities/WorryTree";
+import DanceTherapyTrial from "@/PlanetActivities/DanceTherapyTrial";
+import StoryRewrite from "@/PlanetActivities/StoryRewrite";
+import DragLeaves from "@/PlanetActivities/DragLeaves";
+
+import  ThinkingTrapBreaker  from "@/PlanetActivities/BreakingTraps";
 interface PlanetActivity {
   name: string;
   description: string;
@@ -37,6 +43,32 @@ const boxBreathingActivity: PlanetActivity = {
   description: "Practice calm breathing for stress relief.",
   component: BoxBreathingModal, // reference to your component for the modal content
 };
+const WorryTreeActivity: PlanetActivity = {
+  name: "Worry Tree",
+  description: "Explore your worries and find solutions.",
+  component: WorryTree, // reference to your component for the modal content
+};
+const DanceActivity: PlanetActivity = {
+  name: "Dance Therapy",
+  description: "Express yourself through movement and dance.",
+  component: DanceTherapyTrial, // reference to your component for the modal content
+};
+const StoryRewriteActivity: PlanetActivity = {
+  name: "Story Rewrite",
+  description: "Rewrite your personal narrative for a positive outlook.",
+  component: StoryRewrite, // reference to your component for the modal content
+};
+const DragLeavesActivity: PlanetActivity = {
+  name: "Drag Leaves",
+  description: "Let go of your worries by dragging leaves into the stream.",
+  component: DragLeaves, // reference to your component for the modal content
+};
+
+const ThinkingTrapActivity: PlanetActivity = {
+  name: "Break Thinking Traps",
+  description: "Identify and reframe unhelpful thinking patterns.",
+  component: ThinkingTrapBreaker, // reference to your component for the modal content
+};
 
 // Planet data with realistic relative sizes, distances, and orbital speeds
 const planets: PlanetData[] = [
@@ -51,6 +83,7 @@ const planets: PlanetData[] = [
     texturePath: "/textures/bodies/mercury.jpg",
     rotationSpeed: 1,
     tilt: 0.00017,
+
   },
   {
     name: "Venus",
@@ -63,6 +96,7 @@ const planets: PlanetData[] = [
     texturePath: "/textures/bodies/Venus.jpg",
     rotationSpeed: 1,
     tilt: 3.09639,
+    activities: [boxBreathingActivity],
   },
   {
     name: "Earth",
@@ -75,7 +109,7 @@ const planets: PlanetData[] = [
     texturePath: "/textures/bodies/Earth.jpg",
     rotationSpeed: 1,
     tilt: 0.40928,
-    activities: [boxBreathingActivity],
+    activities: [DragLeavesActivity],
   },
   {
     name: "Mars",
@@ -100,6 +134,7 @@ const planets: PlanetData[] = [
     texturePath: "/textures/bodies/Jupiter.jpg",
     rotationSpeed: 0.2,
     tilt: 0.05463,
+    activities: [StoryRewriteActivity],
   },
   {
     name: "Saturn",
@@ -113,6 +148,7 @@ const planets: PlanetData[] = [
     hasRings: true,
     rotationSpeed: 0.1,
     tilt: 0.46653,
+    activities: [DanceActivity],
   },
   {
     name: "Uranus",
@@ -125,6 +161,7 @@ const planets: PlanetData[] = [
     texturePath: "/textures/bodies/uranus.jpg",
     rotationSpeed: 0.07,
     tilt: 1.70622,
+    activities: [WorryTreeActivity],
   },
   {
     name: "Neptune",
@@ -137,6 +174,7 @@ const planets: PlanetData[] = [
     texturePath: "/textures/bodies/Neptune.jpg",
     rotationSpeed: 0.06,
     tilt: 0.49428,
+    activities: [ThinkingTrapActivity],
   },
 ];
 
