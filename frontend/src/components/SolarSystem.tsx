@@ -15,7 +15,7 @@ import WorryTree from "@/PlanetActivities/WorryTree";
 import DanceTherapyTrial from "@/PlanetActivities/DanceTherapyTrial";
 import StoryRewrite from "@/PlanetActivities/StoryRewrite";
 import DragLeaves from "@/PlanetActivities/DragLeaves";
-import  ThinkingTrapBreaker  from "@/PlanetActivities/BreakingTraps";
+import ThinkingTrapBreaker from "@/PlanetActivities/BreakingTraps";
 import StainedGlass from "@/PlanetActivities/StainedGlass2";
 import CalmSoundsMixer from "@/PlanetActivities/CalmSoundsMixer";
 
@@ -61,7 +61,7 @@ const StoryRewriteActivity: PlanetActivity = {
   component: StoryRewrite, // reference to your component for the modal content
 };
 const DragLeavesActivity: PlanetActivity = {
-  name: "Drag Leaves",
+  name: "Leaves on a Stream",
   description: "Let go of your worries by dragging leaves into the stream.",
   component: DragLeaves, // reference to your component for the modal content
 };
@@ -269,18 +269,67 @@ const SolarSystemScene: React.FC<{
 
 const thinkingTraps = [
   {
-    title: "All-or-Nothing Thinking",
-    description: "Seeing things as all good or all bad.",
+    "title": "All-or-Nothing Thinking",
+    "description": "Viewing situations in extremes, such as all good or all bad, with no middle ground. Also called 'black-and-white thinking.'",
+    "example": "If I don’t get 100% on this exam, I’m a complete failure."
   },
   {
-    title: "Overgeneralizing",
-    description: "Assuming one event means it always happens.",
+    "title": "Overgeneralization",
+    "description": "Making sweeping negative conclusions based on a single event.",
+    "example": "I was late to work today, so I’ll probably lose my job soon."
   },
   {
-    title: "Catastrophizing",
-    description: "Expecting the worst-case scenario.",
+    "title": "Mental Filter",
+    "description": "Focusing exclusively on the negative aspect of a situation and ignoring the positives.",
+    "example": "My friend complimented my presentation but gave one small suggestion, so the whole talk must have been bad."
   },
-];
+  {
+    "title": "Discounting the Positive",
+    "description": "Rejecting or minimizing positive experiences or feedback by insisting they ‘don’t count.’",
+    "example": "Sure, I got praised at work, but they were just being nice."
+  },
+  {
+    "title": "Catastrophizing (Magnification)",
+    "description": "Expecting the worst-case scenario and blowing events out of proportion.",
+    "example": "If I make a mistake in this meeting, everyone will think I'm incompetent and I’ll ruin my career."
+  },
+  {
+    "title": "Emotional Reasoning",
+    "description": "Believing that feelings reflect objective reality, regardless of the evidence.",
+    "example": "I feel anxious about this situation, so it must be dangerous."
+  },
+  {
+    "title": "Mind Reading",
+    "description": "Assuming you know what others are thinking, often believing they think negatively of you.",
+    "example": "She didn’t reply to my text. She must be mad at me."
+  },
+  {
+    "title": "Fortune Telling",
+    "description": "Predicting negative outcomes without evidence.",
+    "example": "I just know my project will fail."
+  },
+  {
+    "title": "Personalization",
+    "description": "Taking excessive responsibility for events out of your control or blaming yourself for negative outcomes.",
+    "example": "My friend is upset. It must be my fault."
+  },
+  {
+    "title": "Labeling",
+    "description": "Attaching a negative label to yourself or others based on a single event.",
+    "example": "I failed that test, so I’m an idiot."
+  },
+  {
+    "title": "\"Should\" and \"Must\" Statements",
+    "description": "Setting rigid rules for yourself and others, leading to guilt or frustration.",
+    "example": "I should always be productive. I must never make mistakes."
+  },
+  {
+    "title": "Filtering",
+    "description": "Paying attention only to negative details and ignoring positive aspects.",
+    "example": "Even though most things went well, I focused only on what went wrong."
+  }
+]
+
 
 // Save Progress Component for Guest Users
 const SaveProgressPrompt: React.FC<{
@@ -738,16 +787,26 @@ export const SolarSystem: React.FC = () => {
 
             {/* Selected Day Content */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">
+              {/* <h3 className="text-lg font-semibold">
                 {selectedDay.toDateString()}
-              </h3>
+              </h3> */}
+              {/* Journal Entry */}
+              <div>
+                <h4 className="font-medium mb-2">Journal Entry:</h4>
+                <textarea
+                  value={journals[selectedDay.toDateString()] || ""}
+                  onChange={(e) => handleJournalChange(e.target.value)}
+                  placeholder="Write about your day, thoughts, feelings..."
+                  className="w-full h-20 p-3 border rounded-lg resize-none"
+                />
+              </div>
 
               {/* Thinking Traps Selection */}
               <div>
                 <h4 className="font-medium mb-2">
                   Thinking Traps (select any that apply):
                 </h4>
-                <div className="space-y-2">
+                <div className="space-y-2 max-h-[6.5rem] overflow-y-auto pr-2">
                   {thinkingTraps.map((trap) => (
                     <label
                       key={trap.title}
@@ -767,16 +826,7 @@ export const SolarSystem: React.FC = () => {
                 </div>
               </div>
 
-              {/* Journal Entry */}
-              <div>
-                <h4 className="font-medium mb-2">Journal Entry:</h4>
-                <textarea
-                  value={journals[selectedDay.toDateString()] || ""}
-                  onChange={(e) => handleJournalChange(e.target.value)}
-                  placeholder="Write about your day, thoughts, feelings..."
-                  className="w-full h-32 p-3 border rounded-lg resize-none"
-                />
-              </div>
+              
 
               {/* Save Progress Prompt for Guest Users */}
               {isAnonymous && showSavePrompt && (

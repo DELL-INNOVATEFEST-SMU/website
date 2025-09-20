@@ -77,7 +77,7 @@ export default function WorryTreeModal({ onClose }: { onClose: () => void }) {
     return (
         <div className="max-w-md w-full bg-white rounded-lg p-6 shadow-lg relative">
 
-            <h2 className="text-xl font-semibold mb-4">Worry Tree Activity</h2>
+            
 
             <p className="mb-4 text-gray-700">{currentStep.question}</p>
 

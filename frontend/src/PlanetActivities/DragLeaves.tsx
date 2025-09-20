@@ -84,7 +84,7 @@ export default function DragLeaves({ onClose }: { onClose: () => void })    {
 
   return (
     <div className="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-xl font-semibold mb-4 text-center">Leaves on a Stream</h2>
+      
 
       <p className="mb-6 text-center text-gray-700">
         Type your worry, add a leaf, then drag it to the stream to let it flow away.

@@ -10,7 +10,7 @@ interface Sound {
 const sounds: Sound[] = [
   { id: "rain", name: "Rain", icon: "🌧️", src: "/sounds/rain.mp3" },
   { id: "forest", name: "Forest", icon: "🌲", src: "/sounds/forest.mp3" },
-  { id: "waves", name: "Waves", icon: "🌊", src: "/sounds/waves.mp3" },
+  { id: "waves", name: "Waves", icon: "🌊", src: "/sounds/ocean.mp3" },
 ];
 
 export default function CalmSoundsMixer({ onClose }: { onClose: () => void }) {
@@ -35,6 +35,7 @@ export default function CalmSoundsMixer({ onClose }: { onClose: () => void }) {
         audio = new Audio();
         audio.loop = true;
         audio.src = sounds.find((s) => s.id === id)?.src ?? "";
+        console.log("Loading sound:", audio.src);
         audioRefs.current[id] = audio;
       }
       if (activeSounds[id]) {

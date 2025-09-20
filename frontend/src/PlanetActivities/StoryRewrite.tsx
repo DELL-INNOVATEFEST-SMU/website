@@ -25,18 +25,7 @@ const steps = [
       "Now, imagine rewriting this story with a positive or hopeful ending. What changed? How did you grow?",
     placeholder: "Instead of feeling stuck, I realized...",
   },
-  {
-    title: "Reflect on the New Story",
-    prompt:
-      "How does this new story affect how you view the experience now?",
-    placeholder: "I feel empowered because...",
-  },
-  {
-    title: "Identify Lessons Learned",
-    prompt:
-      "What important lessons or strengths did you gain from this experience?",
-    placeholder: "I learned resilience and patience...",
-  },
+  
   {
     title: "Describe How You Can Apply This Growth",
     prompt:
@@ -72,16 +61,8 @@ export default function DanceTherapyTrial({ onClose }: { onClose: () => void }) 
 
   return (
     <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg relative">
-      {onClose && (
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
-          aria-label="Close"
-        >
-          ✕
-        </button>
-      )}
-      <h2 className="text-xl font-semibold mb-4">{currentStep.title}</h2>
+      
+      
       <p className="mb-4 text-gray-700">{currentStep.prompt}</p>
       <textarea
         value={inputs[stepIndex]}

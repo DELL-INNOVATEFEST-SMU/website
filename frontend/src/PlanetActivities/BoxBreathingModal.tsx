@@ -171,6 +171,30 @@ export default function BoxBreathingModal({ onClose }: { onClose: () => void }) 
         <div className="text-4xl font-bold mt-2">{phaseSecRemaining}s</div>
       </div>
     </div>
+    <div className="flex gap-3 w-full max-w-md">
+      {!running ? (
+        <button
+          onClick={start}
+          className="flex-1 px-4 py-2 bg-blue-600 text-white rounded shadow"
+        >
+          Start
+        </button>
+      ) : (
+        <button
+          onClick={pause}
+          className="flex-1 px-4 py-2 bg-yellow-500 text-white rounded shadow"
+        >
+          Pause
+        </button>
+      )}
+
+      <button
+        onClick={reset}
+        className="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded shadow"
+      >
+        Reset
+      </button>
+    </div>
 
     {/* Seconds per side slider */}
     <div className="w-full max-w-md">
@@ -206,30 +230,7 @@ export default function BoxBreathingModal({ onClose }: { onClose: () => void }) 
     </div>
 
     {/* Controls */}
-    <div className="flex gap-3 w-full max-w-md">
-      {!running ? (
-        <button
-          onClick={start}
-          className="flex-1 px-4 py-2 bg-blue-600 text-white rounded shadow"
-        >
-          Start
-        </button>
-      ) : (
-        <button
-          onClick={pause}
-          className="flex-1 px-4 py-2 bg-yellow-500 text-white rounded shadow"
-        >
-          Pause
-        </button>
-      )}
-
-      <button
-        onClick={reset}
-        className="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded shadow"
-      >
-        Reset
-      </button>
-    </div>
+    
 
     
   </div>
