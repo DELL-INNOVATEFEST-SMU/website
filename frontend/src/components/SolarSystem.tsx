@@ -798,6 +798,7 @@ export const SolarSystem: React.FC = () => {
         {/* Mission Log */}
         <MissionLog
           onPlanetClick={handleMissionPlanetClick}
+          onNavigate={navigate}
           completedTasks={completedTasks}
           attemptedTasks={attemptedTasks}
           onTaskComplete={handleTaskComplete}

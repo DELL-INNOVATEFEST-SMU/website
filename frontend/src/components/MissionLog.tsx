@@ -23,6 +23,7 @@ interface MissionTask {
 
 interface MissionLogProps {
   onPlanetClick: (planetName: string) => void;
+  onNavigate: (path: string) => void;
   completedTasks: Set<string>;
   attemptedTasks: Set<string>;
   onTaskComplete: (taskId: string) => void;
@@ -107,10 +108,10 @@ const missionTasks: MissionTask[] = [
     onStart: () => {},
   },
   {
-    id: "replenish-oxygen",
-    title: "Replenish Oxygen",
-    planet: "Venus",
-    planetColor: "#FFC649",
+    id: "find-cosmic-compass",
+    title: "Find Your Cosmic Compass",
+    planet: "CosmicCompass",
+    planetColor: "#9333EA",
     completed: false,
     onStart: () => {},
   },
@@ -212,9 +213,10 @@ const MissionTaskCard: React.FC<{
 
 export const MissionLog: React.FC<MissionLogProps> = ({
   onPlanetClick,
+  onNavigate,
   completedTasks,
   attemptedTasks,
-  onTaskComplete: _onTaskComplete,
+  onTaskComplete,
   isOpen,
   onToggle,
 }) => {
@@ -249,7 +251,13 @@ export const MissionLog: React.FC<MissionLogProps> = ({
 
   const handleTaskClick = (task: MissionTask) => {
     if (!task.completed) {
-      onPlanetClick(task.planet);
+      // Handle cosmic compass navigation specially
+      if (task.id === "find-cosmic-compass") {
+        onNavigate("/cosmic-compass");
+        onTaskComplete(task.id); // Mark as completed immediately when clicked
+      } else {
+        onPlanetClick(task.planet);
+      }
     }
   };
 
