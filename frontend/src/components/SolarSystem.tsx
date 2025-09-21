@@ -825,9 +825,18 @@ export const SolarSystem: React.FC = () => {
 
       {/* Journal Modal */}
       {showJournal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div
+          className="fixed inset-0 flex items-center justify-center z-50 p-4"
+          style={{
+            backgroundImage: `url('/textures/background/stars_milky_way.jpg')`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        >
+          {/* No overlay - let the starry background show through */}
           <div
-            className="relative bg-slate-900/90 backdrop-blur-md border border-slate-700/50 rounded-lg p-4 sm:p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl"
+            className="relative z-10 bg-slate-900/90 backdrop-blur-md border border-slate-700/50 rounded-lg p-4 sm:p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl"
             style={{
               backgroundImage: `url('/textures/background/Vibrant_Night_Sky_with_Stars_and_Nebula.jpg')`,
               backgroundSize: "cover",
