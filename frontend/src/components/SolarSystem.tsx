@@ -838,9 +838,8 @@ export const SolarSystem: React.FC = () => {
               </div>
               <Button
                 onClick={() => setShowJournal(false)}
-                variant="outline"
                 size="sm"
-                className="border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100"
+                className="bg-transparent border border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100 hover:border-slate-500"
               >
                 Close
               </Button>
@@ -851,9 +850,8 @@ export const SolarSystem: React.FC = () => {
               <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
                 <Button
                   onClick={handlePrev}
-                  variant="outline"
                   size="sm"
-                  className="border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100"
+                  className="bg-transparent border border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100 hover:border-slate-500"
                 >
                   Previous Week
                 </Button>
@@ -865,9 +863,8 @@ export const SolarSystem: React.FC = () => {
                 </span>
                 <Button
                   onClick={handleNext}
-                  variant="outline"
                   size="sm"
-                  className="border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100"
+                  className="bg-transparent border border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100 hover:border-slate-500"
                 >
                   Next Week
                 </Button>
@@ -884,12 +881,11 @@ export const SolarSystem: React.FC = () => {
                     <Button
                       key={day.toDateString()}
                       onClick={() => setSelectedDay(day)}
-                      variant={isSelected ? "default" : "outline"}
                       size="sm"
-                      className={`h-12 sm:h-16 flex flex-col ${
+                      className={`h-12 sm:h-16 flex flex-col border ${
                         isSelected
-                          ? "bg-blue-600 hover:bg-blue-700 text-white"
-                          : "border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100"
+                          ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-500"
+                          : "bg-slate-800/60 border-slate-600 text-slate-300 hover:bg-slate-700/60 hover:text-slate-100 hover:border-slate-500"
                       } ${
                         hasEntry
                           ? "bg-purple-600/20 text-purple-300 border-purple-500/30"
@@ -942,7 +938,7 @@ export const SolarSystem: React.FC = () => {
                         type="checkbox"
                         checked={selectedTraps.includes(trap.title)}
                         onChange={() => toggleTrap(trap.title)}
-                        className="rounded mt-0.5 border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500/50"
+                        className="rounded mt-0.5 border-slate-600 bg-slate-800/60 text-blue-500 focus:ring-blue-500/50 focus:ring-2 focus:outline-none accent-blue-500"
                       />
                       <span className="text-sm text-slate-300">
                         <strong className="text-slate-100">
@@ -1003,9 +999,8 @@ export const SolarSystem: React.FC = () => {
                     </h3>
                     <Button
                       onClick={() => setShowImageModal(false)}
-                      variant="outline"
                       size="sm"
-                      className="border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100"
+                      className="bg-transparent border border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100 hover:border-slate-500"
                     >
                       Close
                     </Button>
@@ -1026,9 +1021,8 @@ export const SolarSystem: React.FC = () => {
                     </Button>
                     <Button
                       onClick={handleShareImage}
-                      variant="outline"
                       size="sm"
-                      className="border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100"
+                      className="bg-transparent border border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100 hover:border-slate-500"
                     >
                       Share
                     </Button>
@@ -1081,8 +1075,7 @@ export const SolarSystem: React.FC = () => {
                   alert("Unexpected error saving journal.");
                 }
               }}
-              variant="outline"
-              className="w-full mt-4 border-green-500 text-green-400 bg-slate-900/95 hover:bg-green-500/20 hover:text-green-300 hover:border-green-400"
+              className="w-full mt-4 border border-green-500 text-green-400 bg-transparent hover:bg-green-500/20 hover:text-green-300 hover:border-green-400"
             >
               {isAnonymous ? "Save to Session (Temporary)" : "Save"}
             </Button>
