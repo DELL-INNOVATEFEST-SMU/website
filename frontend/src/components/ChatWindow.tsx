@@ -162,7 +162,7 @@ export function ChatWindow({
                               onClick={() =>
                                 onActionButtonClick?.(button.action)
                               }
-                              className="text-xs px-3 py-1 h-7 bg-transparent border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white hover:border-slate-500"
+                              className="text-xs px-3 py-1 h-7 bg-transparent border-green-500/50 text-green-400 hover:bg-green-500/20 hover:text-green-300 hover:border-green-400 font-mono uppercase tracking-wide"
                             >
                               {button.label}
                             </Button>
