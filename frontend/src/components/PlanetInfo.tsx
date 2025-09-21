@@ -55,26 +55,16 @@ export const PlanetInfo: React.FC<PlanetInfoProps> = ({
               />
               {planet.name}
             </CardTitle>
-            <div className="flex items-center gap-2">
-              {/* Planet Character Image */}
-              {planet.characterPath && (
-                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-slate-600/50">
-                  <img
-                    src={planet.characterPath}
-                    alt={`${planet.name} character`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onClose}
-                className="h-8 w-8 p-0 text-slate-400 hover:text-white hover:bg-slate-700/50"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
+            {/* Planet Character Image - Large */}
+            {planet.characterPath && (
+              <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-slate-600/50 flex-shrink-0">
+                <img
+                  src={planet.characterPath}
+                  alt={`${planet.name} character`}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
           </div>
         </CardHeader>
         <CardContent className="space-y-4 bg-slate-900/95">
@@ -161,13 +151,23 @@ export const PlanetInfo: React.FC<PlanetInfoProps> = ({
               </div>
             </div>
           )}
-          <Button
-            onClick={onClose}
-            className="w-full mt-4 border-green-500 text-green-400 bg-slate-900/95 hover:bg-green-500/20 hover:text-green-300 hover:border-green-400"
-            variant="outline"
-          >
-            Back to Solar System
-          </Button>
+          <div className="flex gap-2 mt-4">
+            <Button
+              onClick={onClose}
+              className="flex-1 border-green-500 text-green-400 bg-slate-900/95 hover:bg-green-500/20 hover:text-green-300 hover:border-green-400"
+              variant="outline"
+            >
+              Back to Solar System
+            </Button>
+            <Button
+              onClick={onClose}
+              variant="ghost"
+              size="sm"
+              className="h-10 w-10 p-0 text-slate-400 hover:text-white hover:bg-slate-700/50 border border-slate-600/50"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
