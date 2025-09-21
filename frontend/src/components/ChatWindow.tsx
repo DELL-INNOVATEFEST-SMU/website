@@ -14,6 +14,7 @@ interface ChatWindowProps {
   onSendMessage: (message: string) => void;
   onClose: () => void;
   onClear: () => void;
+  onActionButtonClick?: (action: string) => void;
   className?: string;
 }
 
@@ -30,6 +31,7 @@ export function ChatWindow({
   onSendMessage,
   onClose,
   onClear,
+  onActionButtonClick,
   className,
 }: ChatWindowProps) {
   const [inputMessage, setInputMessage] = useState("");
@@ -147,6 +149,26 @@ export function ChatWindow({
                         message.content
                       )}
                     </div>
+                    {/* Action Buttons */}
+                    {message.actionButtons &&
+                      message.actionButtons.length > 0 &&
+                      !message.isTyping && (
+                        <div className="flex gap-2 mt-2">
+                          {message.actionButtons.map((button) => (
+                            <Button
+                              key={button.id}
+                              variant={button.variant || "outline"}
+                              size="sm"
+                              onClick={() =>
+                                onActionButtonClick?.(button.action)
+                              }
+                              className="text-xs px-3 py-1 h-7 bg-transparent border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white hover:border-slate-500"
+                            >
+                              {button.label}
+                            </Button>
+                          ))}
+                        </div>
+                      )}
                   </div>
                 )}
 

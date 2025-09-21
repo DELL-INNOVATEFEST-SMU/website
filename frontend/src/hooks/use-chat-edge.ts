@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from "react"
-import type { ChatMessage, ChatSession } from "@/types/chat"
+import type { ChatMessage, ChatSession, ChatActionButton } from "@/types/chat"
 import { edgeChatService } from "@/lib/gemini-chat-edge"
 import { useAuthContext } from "@/providers/AuthProvider"
 
@@ -19,6 +19,20 @@ export function useChatEdge() {
         content: "Commander Sam H. here, ready for your orders. Select a planet to begin our mission briefing, or just chat with me about space exploration!",
         role: "assistant",
         timestamp: new Date(),
+        actionButtons: [
+          {
+            id: "first_mission_btn",
+            label: "First Mission",
+            action: "first_mission",
+            variant: "outline"
+          },
+          {
+            id: "where_are_we_btn",
+            label: "Where are we?",
+            action: "where_are_we",
+            variant: "outline"
+          }
+        ]
       }
     ],
     isActive: false,
@@ -151,11 +165,97 @@ export function useChatEdge() {
           content: "Commander Sam H. here, ready for your orders. Select a planet to begin our mission briefing, or just chat with me about space exploration!",
           role: "assistant",
           timestamp: new Date(),
+          actionButtons: [
+            {
+              id: "first_mission_btn",
+              label: "First Mission",
+              action: "first_mission",
+              variant: "outline"
+            },
+            {
+              id: "where_are_we_btn",
+              label: "Where are we?",
+              action: "where_are_we",
+              variant: "outline"
+            }
+          ]
         }
       ],
       lastActivity: new Date(),
     }))
   }, [])
+
+  /**
+   * Handle action button clicks
+   */
+  const handleActionButtonClick = useCallback(async (action: string) => {
+    if (action === "where_are_we") {
+      // Add user message showing the button click
+      const userMessage: ChatMessage = {
+        id: `user_action_${Date.now()}`,
+        content: "Where are we?",
+        role: "user",
+        timestamp: new Date(),
+      }
+
+      setSession(prev => ({
+        ...prev,
+        messages: [...prev.messages, userMessage],
+        lastActivity: new Date(),
+      }))
+
+      // Show typing indicator
+      showTypingIndicator()
+
+      // Add the response
+      const responseText = "You're adrift among the stars, Commander. Out here, space can feel endless… and a little lonely. That's why we've charted planets where you can land, pause, and catch your breath after the tough grind of astro-work. But our journey isn't over—our next destination lies a hundred light years away. To get there, we'll need to gather enough fuel for the voyage. Ready to keep pushing the frontier?"
+
+      await simulateTyping(responseText)
+
+      // Update the welcome message to only show First Mission button
+      setSession(prev => ({
+        ...prev,
+        messages: prev.messages.map(msg => 
+          msg.id === "welcome_msg" || msg.id === "welcome_msg_new"
+            ? {
+                ...msg,
+                actionButtons: [
+                  {
+                    id: "first_mission_btn",
+                    label: "First Mission",
+                    action: "first_mission",
+                    variant: "outline"
+                  }
+                ]
+              }
+            : msg
+        ),
+        lastActivity: new Date(),
+      }))
+    } else if (action === "first_mission") {
+      // Add user message showing the button click
+      const userMessage: ChatMessage = {
+        id: `user_action_${Date.now()}`,
+        content: "First Mission",
+        role: "user",
+        timestamp: new Date(),
+      }
+
+      setSession(prev => ({
+        ...prev,
+        messages: [...prev.messages, userMessage],
+        lastActivity: new Date(),
+      }))
+
+      // Show typing indicator
+      showTypingIndicator()
+
+      // Add a response for first mission
+      const responseText = "Excellent choice, Commander! Your first mission is to explore the planets in our solar system. Each planet offers unique activities and experiences. Click on any planet to begin your journey and discover what awaits you in the cosmos."
+
+      await simulateTyping(responseText)
+    }
+  }, [showTypingIndicator, simulateTyping])
 
   /**
    * Toggle chat active state
@@ -215,5 +315,6 @@ export function useChatEdge() {
     toggleChat,
     scrollToBottom,
     checkHealth,
+    handleActionButtonClick,
   }
 }
