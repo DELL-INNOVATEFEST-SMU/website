@@ -420,6 +420,9 @@ export const SolarSystem: React.FC = () => {
   // Mission completion state
   const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set());
 
+  // Mission log visibility state
+  const [isMissionLogOpen, setIsMissionLogOpen] = useState(false);
+
   // --- Journal feature (from main) ---
   const fetchedOnce = useRef(false);
   const [imageBase64, setImageBase64] = useState<string | null>(null);
@@ -746,6 +749,8 @@ export const SolarSystem: React.FC = () => {
           onPlanetClick={handleMissionPlanetClick}
           completedTasks={completedTasks}
           onTaskComplete={handleTaskComplete}
+          isOpen={isMissionLogOpen}
+          onToggle={() => setIsMissionLogOpen(!isMissionLogOpen)}
         />
       </div>
 
