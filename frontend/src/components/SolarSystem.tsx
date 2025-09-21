@@ -806,7 +806,7 @@ export const SolarSystem: React.FC = () => {
             <Button
               onClick={handleActivityComplete}
               variant="outline"
-              className="mt-4 w-full"
+              className="mt-4 w-full border-green-500 text-green-400 bg-transparent hover:bg-green-500/10 hover:text-green-300 hover:border-green-400"
             >
               Complete Mission
             </Button>
