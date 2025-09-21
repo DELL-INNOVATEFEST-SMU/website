@@ -9,8 +9,7 @@ const steps = [
   },
   {
     title: "Identify the Feelings",
-    prompt:
-      "Describe the feelings you had during or after this experience.",
+    prompt: "Describe the feelings you had during or after this experience.",
     placeholder: "I felt sad, anxious, frustrated...",
   },
   {
@@ -25,17 +24,19 @@ const steps = [
       "Now, imagine rewriting this story with a positive or hopeful ending. What changed? How did you grow?",
     placeholder: "Instead of feeling stuck, I realized...",
   },
-  
+
   {
     title: "Describe How You Can Apply This Growth",
-    prompt:
-      "How can you use what you’ve learned going forward in your life?",
+    prompt: "How can you use what you’ve learned going forward in your life?",
     placeholder: "I will approach challenges with more confidence...",
   },
 ];
 
-
-export default function DanceTherapyTrial({ onClose: _onClose }: { onClose: () => void }) {
+export default function DanceTherapyTrial({
+  onClose: _onClose,
+}: {
+  onClose: () => void;
+}) {
   const [stepIndex, setStepIndex] = useState(0);
   const [inputs, setInputs] = useState<string[]>(Array(steps.length).fill(""));
 
@@ -60,24 +61,22 @@ export default function DanceTherapyTrial({ onClose: _onClose }: { onClose: () =
   };
 
   return (
-    <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg relative">
-      
-      
-      <p className="mb-4 text-gray-700">{currentStep.prompt}</p>
+    <div className="max-w-md w-full p-6 bg-slate-900/95 backdrop-blur-sm border border-slate-700/50 rounded-lg shadow-2xl relative">
+      <p className="mb-4 text-slate-200">{currentStep.prompt}</p>
       <textarea
         value={inputs[stepIndex]}
         onChange={handleChange}
         placeholder={currentStep.placeholder}
-        className="w-full p-2 border rounded min-h-[100px] mb-4"
+        className="w-full p-2 border border-slate-600/50 rounded min-h-[100px] mb-4 bg-slate-800/60 text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50"
       />
       <div className="flex justify-between">
         <button
           onClick={prevStep}
           disabled={stepIndex === 0}
-          className={`px-4 py-2 rounded ${
+          className={`px-4 py-2 rounded shadow border transition-colors ${
             stepIndex === 0
-              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-              : "bg-gray-300 hover:bg-gray-400"
+              ? "bg-slate-700 text-slate-500 cursor-not-allowed border-slate-600/50"
+              : "bg-slate-700 hover:bg-slate-600 text-slate-200 border-slate-600/50"
           }`}
         >
           Back
@@ -86,7 +85,7 @@ export default function DanceTherapyTrial({ onClose: _onClose }: { onClose: () =
           <button
             onClick={nextStep}
             disabled={inputs[stepIndex].trim() === ""}
-            className={`px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50`}
+            className={`px-4 py-2 rounded shadow border border-green-500 bg-slate-900/95 text-green-400 hover:bg-green-500/20 hover:text-green-300 hover:border-green-400 disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             Next
           </button>
@@ -94,7 +93,7 @@ export default function DanceTherapyTrial({ onClose: _onClose }: { onClose: () =
           <button
             onClick={() => alert("Great job rewriting your story!")}
             disabled={inputs[stepIndex].trim() === ""}
-            className="px-4 py-2 rounded bg-green-600 text-white"
+            className="px-4 py-2 rounded shadow border border-green-500 bg-slate-900/95 text-green-400 hover:bg-green-500/20 hover:text-green-300 hover:border-green-400 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Finish
           </button>
@@ -102,4 +101,4 @@ export default function DanceTherapyTrial({ onClose: _onClose }: { onClose: () =
       </div>
     </div>
   );
-};
+}

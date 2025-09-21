@@ -29,7 +29,11 @@ const traps: Trap[] = [
   },
 ];
 
-export default function ThinkingTrapBreaker({ onClose: _onClose }: { onClose: () => void }) {
+export default function ThinkingTrapBreaker({
+  onClose: _onClose,
+}: {
+  onClose: () => void;
+}) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [clickCount, setClickCount] = useState(0);
   const [score, setScore] = useState(0);
@@ -57,21 +61,26 @@ export default function ThinkingTrapBreaker({ onClose: _onClose }: { onClose: ()
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg flex flex-col items-center">
-      <h2 className="text-xl font-semibold mb-4">Thinking Trap Breaker</h2>
+    <div className="max-w-md mx-auto p-6 bg-slate-900/95 backdrop-blur-sm border border-slate-700/50 rounded-lg shadow-2xl flex flex-col items-center">
+      <h2 className="text-xl font-semibold mb-4 text-slate-100">
+        Thinking Trap Breaker
+      </h2>
       <div
-        className={`w-full p-6 rounded-lg shadow cursor-pointer transition-transform duration-500 ${
-          showReframe ? "bg-green-100" : "bg-red-100"
+        className={`w-full p-6 rounded-lg shadow-2xl cursor-pointer transition-transform duration-500 border ${
+          showReframe
+            ? "bg-green-900/30 border-green-500/50"
+            : "bg-red-900/30 border-red-500/50"
         }`}
         onClick={handleBreakTrap}
         aria-live="polite"
       >
-        <p className="text-center text-lg font-medium">
+        <p className="text-center text-lg font-medium text-slate-100">
           {showReframe ? currentTrap.reframe : currentTrap.trap}
         </p>
         {!showReframe && (
-          <p className="text-center mt-2 text-sm text-gray-700">
-            Click {totalClicksToBreak - clickCount} more times to break this trap
+          <p className="text-center mt-2 text-sm text-slate-300">
+            Click {totalClicksToBreak - clickCount} more times to break this
+            trap
           </p>
         )}
       </div>
@@ -79,21 +88,22 @@ export default function ThinkingTrapBreaker({ onClose: _onClose }: { onClose: ()
       {showReframe && currentIndex < traps.length - 1 && (
         <button
           onClick={handleNextTrap}
-          className="mt-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="mt-6 px-4 py-2 bg-slate-900/95 border border-green-500 text-green-400 rounded shadow hover:bg-green-500/20 hover:text-green-300 hover:border-green-400"
         >
           Next Trap
         </button>
       )}
 
       {showReframe && currentIndex === traps.length - 1 && (
-        <div className="mt-6 text-center text-green-700 font-semibold">
+        <div className="mt-6 text-center text-green-400 font-semibold">
           You've broken all traps! Great job!
         </div>
       )}
 
-      <div className="mt-4">
-        Score: {score} / {traps.length}
+      <div className="mt-4 text-slate-300">
+        Score: <span className="text-cyan-400 font-semibold">{score}</span> /{" "}
+        <span className="text-slate-400">{traps.length}</span>
       </div>
     </div>
   );
-};
+}

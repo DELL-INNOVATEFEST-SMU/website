@@ -13,7 +13,11 @@ const sounds: Sound[] = [
   { id: "waves", name: "Waves", icon: "🌊", src: "/sounds/ocean.mp3" },
 ];
 
-export default function CalmSoundsMixer({ onClose: _onClose }: { onClose: () => void }) {
+export default function CalmSoundsMixer({
+  onClose: _onClose,
+}: {
+  onClose: () => void;
+}) {
   const [activeSounds, setActiveSounds] = useState<Record<string, boolean>>({});
   const [volumes, setVolumes] = useState<Record<string, number>>({});
   const audioRefs = useRef<Record<string, HTMLAudioElement>>({});
@@ -62,20 +66,24 @@ export default function CalmSoundsMixer({ onClose: _onClose }: { onClose: () => 
   };
 
   return (
-    <div className="max-w-md p-4 bg-white rounded-lg shadow-lg">
-      <h2 className="text-xl font-semibold mb-4">Calm Sounds Mixer</h2>
+    <div className="max-w-md p-4 bg-slate-900/95 backdrop-blur-sm border border-slate-700/50 rounded-lg shadow-2xl">
+      <h2 className="text-xl font-semibold mb-4 text-slate-100">
+        Calm Sounds Mixer
+      </h2>
       {sounds.map(({ id, name, icon }) => (
         <div key={id} className="flex items-center mb-4 space-x-4">
           <button
             onClick={() => toggleSound(id)}
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-xl ${
-              activeSounds[id] ? "bg-blue-500 text-white" : "bg-gray-300"
+            className={`w-8 h-8 rounded-full flex items-center justify-center text-xl border transition-colors ${
+              activeSounds[id]
+                ? "bg-slate-900/95 text-green-400 border-green-500 hover:bg-green-500/20 hover:text-green-300 hover:border-green-400"
+                : "bg-slate-700 text-slate-300 border-slate-600/50 hover:bg-slate-600"
             }`}
             aria-label={`Toggle ${name} sound`}
           >
             {icon}
           </button>
-          <span className="w-20">{name}</span>
+          <span className="w-20 text-slate-200">{name}</span>
           <input
             type="range"
             min={0}
@@ -84,10 +92,10 @@ export default function CalmSoundsMixer({ onClose: _onClose }: { onClose: () => 
             value={volumes[id] ?? 0.5}
             disabled={!activeSounds[id]}
             onChange={(e) => changeVolume(id, Number(e.target.value))}
-            className="flex-1"
+            className="flex-1 accent-cyan-500"
           />
         </div>
       ))}
     </div>
   );
-};
+}

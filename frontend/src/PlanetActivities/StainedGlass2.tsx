@@ -2,7 +2,15 @@
 
 import { useState } from "react";
 
-const COLORS = ["#F87171", "#60A5FA", "#34D399", "#FBBF24", "#A78BFA", "#F472B6", "#FCD34D"];
+const COLORS = [
+  "#F87171",
+  "#60A5FA",
+  "#34D399",
+  "#FBBF24",
+  "#A78BFA",
+  "#F472B6",
+  "#FCD34D",
+];
 
 const shapes = [
   // Center circle
@@ -40,10 +48,10 @@ export default function StainedGlassWithPalette() {
           <button
             key={color}
             onClick={() => setSelectedColor(color)}
-            className="w-8 h-8 rounded-full border-2 border-gray-300"
+            className="w-8 h-8 rounded-full border-2 border-slate-600/50 hover:border-slate-500 transition-colors"
             style={{
               backgroundColor: color,
-              outline: selectedColor === color ? "3px solid black" : "none",
+              outline: selectedColor === color ? "3px solid #0ea5e9" : "none",
             }}
             aria-label={`Select color ${color}`}
           />
@@ -53,7 +61,7 @@ export default function StainedGlassWithPalette() {
       {/* Stained Glass SVG */}
       <svg
         viewBox="0 0 100 100"
-        className="border-4 border-gray-400 rounded-md"
+        className="border-4 border-slate-600/50 rounded-md bg-slate-800/30"
         style={{ width: 250, height: 250, cursor: "pointer" }}
       >
         {shapes.map((shape) => {
@@ -64,8 +72,8 @@ export default function StainedGlassWithPalette() {
                 cx={shape.cx}
                 cy={shape.cy}
                 r={shape.r}
-                fill={fills[shape.id] || "#EEE"}
-                stroke="#333"
+                fill={fills[shape.id] || "#374151"}
+                stroke="#64748b"
                 onClick={() => handleFill(shape.id)}
               />
             );
@@ -74,8 +82,8 @@ export default function StainedGlassWithPalette() {
               <polygon
                 key={shape.id}
                 points={shape.points}
-                fill={fills[shape.id] || "#EEE"}
-                stroke="#333"
+                fill={fills[shape.id] || "#374151"}
+                stroke="#64748b"
                 onClick={() => handleFill(shape.id)}
               />
             );

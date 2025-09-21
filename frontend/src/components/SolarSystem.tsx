@@ -34,6 +34,7 @@ interface PlanetData {
   description: string;
   facts: string[];
   texturePath?: string;
+  characterPath?: string;
   hasRings?: boolean;
   activities?: PlanetActivity[];
   rotationSpeed?: number;
@@ -93,6 +94,7 @@ const planets: PlanetData[] = [
     description: "The smallest and fastest planet, closest to the Sun.",
     facts: ["Closest to the Sun", "No atmosphere", "Extreme temperatures"],
     texturePath: "/textures/bodies/mercury.jpg",
+    characterPath: "/mascots/mercury_art.JPG",
     rotationSpeed: 1,
     tilt: 0.00017,
     activities: [CalmSoundsActivity],
@@ -106,6 +108,7 @@ const planets: PlanetData[] = [
     description: "The hottest planet with a thick, toxic atmosphere.",
     facts: ["Hottest planet", "Thick atmosphere", "Rotates backwards"],
     texturePath: "/textures/bodies/Venus.jpg",
+    characterPath: "/mascots/venus_art.jpg",
     rotationSpeed: 1,
     tilt: 3.09639,
     activities: [boxBreathingActivity],
@@ -119,6 +122,7 @@ const planets: PlanetData[] = [
     description: "Our home planet, the only known planet with life.",
     facts: ["Only planet with life", "71% water coverage", "One natural moon"],
     texturePath: "/textures/bodies/Earth.jpg",
+    characterPath: "/mascots/earth_art.JPG",
     rotationSpeed: 1,
     tilt: 0.40928,
     activities: [DragLeavesActivity],
@@ -132,6 +136,7 @@ const planets: PlanetData[] = [
     description: "The red planet with the largest volcano in the solar system.",
     facts: ["Red planet", "Largest volcano", "Two small moons"],
     texturePath: "/textures/bodies/Mars.jpg",
+    characterPath: "/mascots/mars_art.JPG",
     rotationSpeed: 0.5,
     tilt: 0.43965,
     activities: [StainedGlassActivity],
@@ -145,6 +150,7 @@ const planets: PlanetData[] = [
     description: "The largest planet with a great red spot storm.",
     facts: ["Largest planet", "Great Red Spot storm", "Over 80 moons"],
     texturePath: "/textures/bodies/Jupiter.jpg",
+    characterPath: "/mascots/jupiter_art.JPG",
     rotationSpeed: 0.2,
     tilt: 0.05463,
     activities: [StoryRewriteActivity],
@@ -158,6 +164,7 @@ const planets: PlanetData[] = [
     description: "Famous for its prominent ring system.",
     facts: ["Prominent rings", "Less dense than water", "Over 80 moons"],
     texturePath: "/textures/bodies/saturn.jpg",
+    characterPath: "/mascots/saturn_art.jpg",
     hasRings: true,
     rotationSpeed: 0.1,
     tilt: 0.46653,
@@ -172,6 +179,7 @@ const planets: PlanetData[] = [
     description: "An ice giant that rotates on its side.",
     facts: ["Rotates on its side", "Made of ice and rock", "Faint ring system"],
     texturePath: "/textures/bodies/uranus.jpg",
+    characterPath: "/mascots/uranus_art.JPG",
     rotationSpeed: 0.07,
     tilt: 1.70622,
     activities: [WorryTreeActivity],
@@ -185,6 +193,7 @@ const planets: PlanetData[] = [
     description: "The windiest planet with supersonic winds.",
     facts: ["Windiest planet", "Supersonic winds", "Deep blue color"],
     texturePath: "/textures/bodies/Neptune.jpg",
+    characterPath: "/mascots/neptune_art.JPG",
     rotationSpeed: 0.06,
     tilt: 0.49428,
     activities: [ThinkingTrapActivity],
@@ -806,7 +815,7 @@ export const SolarSystem: React.FC = () => {
             <Button
               onClick={handleActivityComplete}
               variant="outline"
-              className="mt-4 w-full"
+              className="mt-4 w-full border-green-500 text-green-400 bg-transparent hover:bg-green-500/10 hover:text-green-300 hover:border-green-400"
             >
               Complete Mission
             </Button>
@@ -816,235 +825,298 @@ export const SolarSystem: React.FC = () => {
 
       {/* Journal Modal */}
       {showJournal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <div className="flex items-center gap-3">
-                <h2 className="text-2xl font-bold">Journal</h2>
-                {isAnonymous && (
-                  <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">
-                    Guest Mode
-                  </span>
-                )}
-              </div>
-              <Button
-                onClick={() => setShowJournal(false)}
-                variant="outline"
-                size="sm"
-              >
-                Close
-              </Button>
-            </div>
-
-            {/* Calendar Navigation */}
-            <div className="mb-6">
+        <div
+          className="fixed inset-0 flex items-center justify-center z-50 p-4"
+          style={{
+            backgroundImage: `url('/textures/background/stars_milky_way.jpg')`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        >
+          {/* No overlay - let the starry background show through */}
+          <div
+            className="relative z-10 bg-slate-900/90 backdrop-blur-md border border-slate-700/50 rounded-lg p-4 sm:p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl"
+            style={{
+              backgroundImage: `url('/textures/background/Vibrant_Night_Sky_with_Stars_and_Nebula.jpg')`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
+          >
+            {/* Dark overlay for better text readability */}
+            <div className="absolute inset-0 bg-slate-900/75 backdrop-blur-sm rounded-lg pointer-events-none"></div>
+            {/* Content container with relative positioning */}
+            <div className="relative z-10">
               <div className="flex justify-between items-center mb-4">
-                <Button onClick={handlePrev} variant="outline" size="sm">
-                  Previous Week
-                </Button>
-                <span className="font-medium">
-                  {startDate.toDateString()} -{" "}
-                  {new Date(
-                    startDate.getTime() + (daysToShow - 1) * 24 * 60 * 60 * 1000
-                  ).toDateString()}
-                </span>
-                <Button onClick={handleNext} variant="outline" size="sm">
-                  Next Week
-                </Button>
-              </div>
-
-              <div className="grid grid-cols-7 gap-2">
-                {days.map((day) => {
-                  const isSelected =
-                    selectedDay.toDateString() === day.toDateString();
-                  const hasEntry = journals[day.toDateString()];
-                  const isFuture = isFutureDay(day);
-
-                  return (
-                    <Button
-                      key={day.toDateString()}
-                      onClick={() => setSelectedDay(day)}
-                      variant={isSelected ? "default" : "outline"}
-                      size="sm"
-                      className={`h-16 flex flex-col ${
-                        hasEntry ? "bg-purple-100 text-black" : ""
-                      } ${isFuture ? "opacity-50 cursor-not-allowed" : ""}`}
-                      disabled={isFuture}
-                    >
-                      <span className="text-xs">
-                        {day.toLocaleDateString("en", { weekday: "short" })}
-                      </span>
-                      <span className="text-lg">{day.getDate()}</span>
-                    </Button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Selected Day Content */}
-            <div className="space-y-4">
-              {/* <h3 className="text-lg font-semibold">
-                {selectedDay.toDateString()}
-              </h3> */}
-              {/* Journal Entry */}
-              <div>
-                <h4 className="font-medium mb-2">Journal Entry:</h4>
-                <textarea
-                  value={journals[selectedDay.toDateString()] || ""}
-                  onChange={(e) => handleJournalChange(e.target.value)}
-                  placeholder="Write about your day, thoughts, feelings..."
-                  className="w-full h-20 p-3 border rounded-lg resize-none"
-                />
-              </div>
-
-              {/* Thinking Traps Selection */}
-              <div>
-                <h4 className="font-medium mb-2">
-                  Thinking Traps (select any that apply):
-                </h4>
-                <div className="space-y-2 max-h-[6.5rem] overflow-y-auto pr-2">
-                  {thinkingTraps.map((trap) => (
-                    <label
-                      key={trap.title}
-                      className="flex items-center space-x-2"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedTraps.includes(trap.title)}
-                        onChange={() => toggleTrap(trap.title)}
-                        className="rounded"
-                      />
-                      <span className="text-sm">
-                        <strong>{trap.title}:</strong> {trap.description}
-                      </span>
-                    </label>
-                  ))}
+                <div className="flex items-center gap-3">
+                  <h2 className="text-2xl font-bold text-slate-100">Journal</h2>
+                  {isAnonymous && (
+                    <span className="text-xs bg-yellow-400/20 text-yellow-300 border border-yellow-400/30 px-2 py-1 rounded">
+                      Guest Mode
+                    </span>
+                  )}
                 </div>
+                <Button
+                  onClick={() => setShowJournal(false)}
+                  size="sm"
+                  className="bg-transparent border border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100 hover:border-slate-500"
+                >
+                  Close
+                </Button>
               </div>
 
-              {/* Save Progress Prompt for Guest Users */}
-              {isAnonymous && showSavePrompt && (
-                <SaveProgressPrompt
-                  onSaveProgress={handleSaveProgress}
-                  onDismiss={() => setShowSavePrompt(false)}
-                />
-              )}
-
-              {/* Image Generation */}
-              <div className="border-t pt-4">
-                <div className="flex justify-between items-center mb-2">
-                  <h4 className="font-medium">Generate Image</h4>
+              {/* Calendar Navigation */}
+              <div className="mb-6">
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
                   <Button
-                    onClick={generateImage}
-                    disabled={
-                      loading || !journals[selectedDay.toDateString()]?.trim()
-                    }
-                    variant="default"
+                    onClick={handlePrev}
                     size="sm"
+                    className="bg-transparent border border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100 hover:border-slate-500"
                   >
-                    {loading ? "Generating..." : "Generate Image"}
+                    Previous Week
+                  </Button>
+                  <span className="font-medium text-slate-200 text-center text-sm sm:text-base">
+                    {startDate.toDateString()} -{" "}
+                    {new Date(
+                      startDate.getTime() +
+                        (daysToShow - 1) * 24 * 60 * 60 * 1000
+                    ).toDateString()}
+                  </span>
+                  <Button
+                    onClick={handleNext}
+                    size="sm"
+                    className="bg-transparent border border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100 hover:border-slate-500"
+                  >
+                    Next Week
                   </Button>
                 </div>
-                {error && (
-                  <div className="text-red-600 text-sm mb-2">{error}</div>
-                )}
-                {isAnonymous && (
-                  <div className="text-xs text-amber-600 mt-1">
-                    🔒 Guest mode: Generated images are temporary and won't be
-                    saved permanently
-                  </div>
-                )}
-              </div>
-            </div>
 
-            {/* Image Modal */}
-            {showImageModal && imageBase64 && (
-              <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-60">
-                <div className="bg-white rounded-lg p-6 max-w-2xl max-h-[90vh] overflow-auto">
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-semibold">Generated Image</h3>
-                    <Button
-                      onClick={() => setShowImageModal(false)}
-                      variant="outline"
-                      size="sm"
-                    >
-                      Close
-                    </Button>
-                  </div>
-                  <img
-                    src={`data:image/png;base64,${imageBase64}`}
-                    alt="Generated journal visualization"
-                    className="w-full h-auto rounded-lg mb-4"
+                <div className="grid grid-cols-7 gap-1 sm:gap-2">
+                  {days.map((day) => {
+                    const isSelected =
+                      selectedDay.toDateString() === day.toDateString();
+                    const hasEntry = journals[day.toDateString()];
+                    const isFuture = isFutureDay(day);
+
+                    return (
+                      <Button
+                        key={day.toDateString()}
+                        onClick={() => setSelectedDay(day)}
+                        size="sm"
+                        className={`h-12 sm:h-16 flex flex-col border ${
+                          isSelected
+                            ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-500"
+                            : "bg-slate-800/60 border-slate-600 text-slate-300 hover:bg-slate-700/60 hover:text-slate-100 hover:border-slate-500"
+                        } ${
+                          hasEntry
+                            ? "bg-purple-600/20 text-purple-300 border-purple-500/30"
+                            : ""
+                        } ${isFuture ? "opacity-50 cursor-not-allowed" : ""}`}
+                        disabled={isFuture}
+                      >
+                        <span className="text-xs">
+                          {day.toLocaleDateString("en", { weekday: "short" })}
+                        </span>
+                        <span className="text-sm sm:text-lg">
+                          {day.getDate()}
+                        </span>
+                      </Button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Selected Day Content */}
+              <div className="space-y-4">
+                {/* <h3 className="text-lg font-semibold">
+                {selectedDay.toDateString()}
+              </h3> */}
+                {/* Journal Entry */}
+                <div>
+                  <h4 className="font-medium mb-2 text-slate-100">
+                    Journal Entry:
+                  </h4>
+                  <textarea
+                    value={journals[selectedDay.toDateString()] || ""}
+                    onChange={(e) => handleJournalChange(e.target.value)}
+                    placeholder="Write about your day, thoughts, feelings..."
+                    className="w-full h-24 sm:h-20 p-3 border border-slate-600/50 rounded-lg resize-none bg-slate-800/60 text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50"
                   />
-                  <div className="flex gap-2">
+                </div>
+
+                {/* Thinking Traps Selection */}
+                <div>
+                  <h4 className="font-medium mb-2 text-slate-100">
+                    Thinking Traps (select any that apply):
+                  </h4>
+                  <div className="space-y-2 max-h-[6.5rem] overflow-y-auto pr-2">
+                    {thinkingTraps.map((trap) => (
+                      <label
+                        key={trap.title}
+                        className="flex items-start space-x-2 p-2 rounded-lg hover:bg-slate-800/30 transition-colors"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedTraps.includes(trap.title)}
+                          onChange={() => toggleTrap(trap.title)}
+                          className="rounded mt-0.5 border-slate-600 bg-slate-800/60 text-blue-500 focus:ring-blue-500/50 focus:ring-2 focus:outline-none accent-blue-500"
+                        />
+                        <span className="text-sm text-slate-300">
+                          <strong className="text-slate-100">
+                            {trap.title}:
+                          </strong>{" "}
+                          {trap.description}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Save Progress Prompt for Guest Users */}
+                {isAnonymous && showSavePrompt && (
+                  <SaveProgressPrompt
+                    onSaveProgress={handleSaveProgress}
+                    onDismiss={() => setShowSavePrompt(false)}
+                  />
+                )}
+
+                {/* Image Generation */}
+                <div className="border-t border-slate-700/50 pt-4">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2">
+                    <h4 className="font-medium text-slate-100">
+                      Generate Image
+                    </h4>
                     <Button
-                      onClick={handleSaveImage}
+                      onClick={generateImage}
+                      disabled={
+                        loading || !journals[selectedDay.toDateString()]?.trim()
+                      }
                       variant="default"
                       size="sm"
+                      className="bg-blue-600 hover:bg-blue-700 text-white"
                     >
-                      Download
-                    </Button>
-                    <Button
-                      onClick={handleShareImage}
-                      variant="outline"
-                      size="sm"
-                    >
-                      Share
+                      {loading ? "Generating..." : "Generate Image"}
                     </Button>
                   </div>
+                  {error && (
+                    <div className="text-red-400 text-sm mb-2 bg-red-900/20 border border-red-500/30 rounded p-2">
+                      {error}
+                    </div>
+                  )}
                   {isAnonymous && (
-                    <div className="text-xs text-amber-600 mt-2 flex items-center gap-1">
-                      <span>⚠️</span>
-                      <span>
-                        Remember to download - this image won't be saved
-                        permanently in guest mode
-                      </span>
+                    <div className="text-xs text-amber-300 mt-1 bg-amber-900/20 border border-amber-500/30 rounded p-2">
+                      🔒 Guest mode: Generated images are temporary and won't be
+                      saved permanently
                     </div>
                   )}
                 </div>
               </div>
-            )}
 
-            <Button
-              onClick={async () => {
-                try {
-                  if (!user?.id) {
-                    alert("Please sign in to save.");
-                    return;
+              {/* Image Modal */}
+              {showImageModal && imageBase64 && (
+                <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-60 p-4">
+                  <div
+                    className="relative bg-slate-900/95 backdrop-blur-md border border-slate-700/50 rounded-lg p-4 sm:p-6 max-w-2xl max-h-[90vh] overflow-auto shadow-2xl"
+                    style={{
+                      backgroundImage: `url('/textures/background/Vibrant_Night_Sky_with_Stars_and_Nebula.jpg')`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      backgroundRepeat: "no-repeat",
+                    }}
+                  >
+                    {/* Dark overlay for better text readability */}
+                    <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm rounded-lg pointer-events-none"></div>
+                    {/* Content container with relative positioning */}
+                    <div className="relative z-10">
+                      <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-lg font-semibold text-slate-100">
+                          Generated Image
+                        </h3>
+                        <Button
+                          onClick={() => setShowImageModal(false)}
+                          size="sm"
+                          className="bg-transparent border border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100 hover:border-slate-500"
+                        >
+                          Close
+                        </Button>
+                      </div>
+                      <img
+                        src={`data:image/png;base64,${imageBase64}`}
+                        alt="Generated journal visualization"
+                        className="w-full h-auto rounded-lg mb-4"
+                      />
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <Button
+                          onClick={handleSaveImage}
+                          variant="default"
+                          size="sm"
+                          className="bg-blue-600 hover:bg-blue-700 text-white"
+                        >
+                          Download
+                        </Button>
+                        <Button
+                          onClick={handleShareImage}
+                          size="sm"
+                          className="bg-transparent border border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100 hover:border-slate-500"
+                        >
+                          Share
+                        </Button>
+                      </div>
+                      {isAnonymous && (
+                        <div className="text-xs text-amber-300 mt-2 flex items-center gap-1 bg-amber-900/20 border border-amber-500/30 rounded p-2">
+                          <span>⚠️</span>
+                          <span>
+                            Remember to download - this image won't be saved
+                            permanently in guest mode
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <Button
+                onClick={async () => {
+                  try {
+                    if (!user?.id) {
+                      alert("Please sign in to save.");
+                      return;
+                    }
+
+                    const payload = {
+                      user_id: user.id,
+                      thinking_traps: JSON.stringify(selectedTraps),
+                      journal_entry: journals[selectedDay.toDateString()] || "",
+                      created_at: new Date(selectedDay)
+                        .toISOString()
+                        .split("T")[0],
+                    };
+
+                    const { error } = await supabase
+                      .from("journals")
+                      .upsert(payload, {
+                        onConflict: "user_id, created_at",
+                      });
+
+                    if (error) {
+                      console.error("Failed to save journal:", error);
+                      alert("Failed to save journal.");
+                      return;
+                    }
+
+                    setShowJournal(false);
+                  } catch (err) {
+                    console.error(err);
+                    alert("Unexpected error saving journal.");
                   }
-
-                  const payload = {
-                    user_id: user.id,
-                    thinking_traps: JSON.stringify(selectedTraps),
-                    journal_entry: journals[selectedDay.toDateString()] || "",
-                    created_at: new Date(selectedDay)
-                      .toISOString()
-                      .split("T")[0],
-                  };
-
-                  const { error } = await supabase
-                    .from("journals")
-                    .upsert(payload, {
-                      onConflict: "user_id, created_at",
-                    });
-
-                  if (error) {
-                    console.error("Failed to save journal:", error);
-                    alert("Failed to save journal.");
-                    return;
-                  }
-
-                  setShowJournal(false);
-                } catch (err) {
-                  console.error(err);
-                  alert("Unexpected error saving journal.");
-                }
-              }}
-              variant="outline"
-              className="w-full mt-4"
-            >
-              {isAnonymous ? "Save to Session (Temporary)" : "Save"}
-            </Button>
+                }}
+                className="w-full mt-4 border border-green-500 text-green-400 bg-transparent hover:bg-green-500/20 hover:text-green-300 hover:border-green-400"
+              >
+                {isAnonymous ? "Save to Session (Temporary)" : "Save"}
+              </Button>
+            </div>
           </div>
         </div>
       )}
