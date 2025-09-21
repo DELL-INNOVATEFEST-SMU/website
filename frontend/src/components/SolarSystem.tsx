@@ -808,7 +808,7 @@ export const SolarSystem: React.FC = () => {
               variant="outline"
               className="mt-4 w-full"
             >
-              Complete Activity
+              Complete Mission
             </Button>
           </div>
         </div>

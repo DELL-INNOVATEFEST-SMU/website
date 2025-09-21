@@ -139,7 +139,7 @@ export const PlanetInfo: React.FC<PlanetInfoProps> = ({
                   variant="outline"
                   className="mt-4 w-full"
                 >
-                  Complete Activity
+                  Complete Mission
                 </Button>
               </div>
             </div>

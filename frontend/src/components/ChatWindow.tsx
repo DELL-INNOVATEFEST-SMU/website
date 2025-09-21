@@ -26,11 +26,11 @@ export function ChatWindow({
   isOpen,
   messages,
   isLoading,
-  isTyping,
+  isTyping: _isTyping,
   messagesEndRef,
   onSendMessage,
   onClose,
-  onClear,
+  onClear: _onClear,
   onActionButtonClick,
   className,
 }: ChatWindowProps) {

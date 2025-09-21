@@ -214,11 +214,11 @@ export const MissionLog: React.FC<MissionLogProps> = ({
   onPlanetClick,
   completedTasks,
   attemptedTasks,
-  onTaskComplete,
+  onTaskComplete: _onTaskComplete,
   isOpen,
   onToggle,
 }) => {
-  const [tasks, setTasks] = useState(missionTasks);
+  const [tasks] = useState(missionTasks);
 
   // Update tasks with completion and attempt status
   const updatedTasks = tasks.map((task) => ({
