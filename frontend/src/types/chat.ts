@@ -1,4 +1,14 @@
 /**
+ * Action button interface for chat messages
+ */
+export interface ChatActionButton {
+  id: string
+  label: string
+  action: string
+  variant?: "default" | "outline" | "secondary"
+}
+
+/**
  * Chat message interface for the space exploration chat system
  */
 export interface ChatMessage {
@@ -7,6 +17,7 @@ export interface ChatMessage {
   role: "user" | "assistant"
   timestamp: Date
   isTyping?: boolean
+  actionButtons?: ChatActionButton[]
 }
 
 /**

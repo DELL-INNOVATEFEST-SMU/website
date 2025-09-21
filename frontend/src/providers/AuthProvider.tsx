@@ -4,7 +4,7 @@ import {
   useEffect,
   useMemo,
   useState,
-  ReactNode,
+  type ReactNode,
 } from "react";
 import { supabase } from "@/lib/supabase";
 import { AuthService } from "@/services/supabase/auth";
@@ -75,7 +75,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
    * Verify OTP token and complete authentication
    */
   const verifyOTP = async (email: string, token: string): Promise<void> => {
-    const response = await AuthService.verifyOTP(email, token);
+    await AuthService.verifyOTP(email, token);
     // The session will be updated via onAuthStateChange
   };
 

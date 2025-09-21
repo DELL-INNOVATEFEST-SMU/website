@@ -35,7 +35,7 @@ const steps = [
 ];
 
 
-export default function DanceTherapyTrial({ onClose }: { onClose: () => void }) {
+export default function DanceTherapyTrial({ onClose: _onClose }: { onClose: () => void }) {
   const [stepIndex, setStepIndex] = useState(0);
   const [inputs, setInputs] = useState<string[]>(Array(steps.length).fill(""));
 

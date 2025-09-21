@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface Sound {
   id: string;
@@ -13,7 +13,7 @@ const sounds: Sound[] = [
   { id: "waves", name: "Waves", icon: "🌊", src: "/sounds/ocean.mp3" },
 ];
 
-export default function CalmSoundsMixer({ onClose }: { onClose: () => void }) {
+export default function CalmSoundsMixer({ onClose: _onClose }: { onClose: () => void }) {
   const [activeSounds, setActiveSounds] = useState<Record<string, boolean>>({});
   const [volumes, setVolumes] = useState<Record<string, number>>({});
   const audioRefs = useRef<Record<string, HTMLAudioElement>>({});

@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 const PHASES = ["Inhale", "Hold", "Exhale", "Hold"];
 const DEFAULT_SIDE_SECONDS = 4; // default 4s per side
 
-export default function BoxBreathingModal({ onClose }: { onClose: () => void }) {
+export default function BoxBreathingModal({ onClose: _onClose }: { onClose: () => void }) {
     const [running, setRunning] = useState(false);
     const [sideSeconds, setSideSeconds] = useState(DEFAULT_SIDE_SECONDS);
     const [startTime, setStartTime] = useState<number | null>(null);

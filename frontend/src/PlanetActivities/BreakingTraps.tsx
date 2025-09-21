@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 interface Trap {
   id: number;
@@ -29,7 +29,7 @@ const traps: Trap[] = [
   },
 ];
 
-export default function ThinkingTrapBreaker({ onClose }: { onClose: () => void }) {
+export default function ThinkingTrapBreaker({ onClose: _onClose }: { onClose: () => void }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [clickCount, setClickCount] = useState(0);
   const [score, setScore] = useState(0);

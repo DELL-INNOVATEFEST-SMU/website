@@ -23,6 +23,7 @@ export function SpaceChatSystem({ className }: SpaceChatSystemProps) {
     sendMessage,
     clearChat,
     toggleChat,
+    handleActionButtonClick,
   } = useChatEdge();
 
   const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
@@ -89,6 +90,7 @@ export function SpaceChatSystem({ className }: SpaceChatSystemProps) {
         onSendMessage={sendMessage}
         onClose={toggleChat}
         onClear={clearChat}
+        onActionButtonClick={handleActionButtonClick}
       />
 
       {/* Chat Bubble */}

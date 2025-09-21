@@ -90,7 +90,7 @@ export const Planet: React.FC<PlanetProps> = ({
         onClick={onClick}
         castShadow
         receiveShadow
-        onPointerOver={(e) => {
+        onPointerOver={(e: any) => {
           e.stopPropagation();
           document.body.style.cursor = "pointer";
         }}
