@@ -18,17 +18,18 @@ export default function CosmicCompass() {
     <div className="cosmic-compass-page">
       <StarField />
 
+      {/* Back button positioned at top-left of the page */}
+      <Button
+        variant="ghost"
+        onClick={() => navigate("/")}
+        className="fixed top-4 left-4 text-white hover:bg-white/10 z-10"
+      >
+        ← Back to Solar System
+      </Button>
+
       <div className="cosmic-compass-container">
         {/* Header */}
         <header className="cosmic-compass-header">
-          <Button
-            variant="ghost"
-            onClick={() => navigate("/")}
-            className="absolute top-4 left-4 text-white hover:bg-white/10"
-          >
-            ← Back to Solar System
-          </Button>
-
           <div className="text-center">
             <h1 className="cosmic-compass-title">✦ Cosmic Compass ✦</h1>
             <div className="cosmic-compass-subtitle">
