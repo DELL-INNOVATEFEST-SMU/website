@@ -825,13 +825,13 @@ export const SolarSystem: React.FC = () => {
 
       {/* Journal Modal */}
       {showJournal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-900/85 backdrop-blur-md border border-slate-700/50 rounded-lg p-4 sm:p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center gap-3">
-                <h2 className="text-2xl font-bold">Journal</h2>
+                <h2 className="text-2xl font-bold text-slate-100">Journal</h2>
                 {isAnonymous && (
-                  <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">
+                  <span className="text-xs bg-yellow-400/20 text-yellow-300 border border-yellow-400/30 px-2 py-1 rounded">
                     Guest Mode
                   </span>
                 )}
@@ -840,6 +840,7 @@ export const SolarSystem: React.FC = () => {
                 onClick={() => setShowJournal(false)}
                 variant="outline"
                 size="sm"
+                className="border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100"
               >
                 Close
               </Button>
@@ -847,22 +848,32 @@ export const SolarSystem: React.FC = () => {
 
             {/* Calendar Navigation */}
             <div className="mb-6">
-              <div className="flex justify-between items-center mb-4">
-                <Button onClick={handlePrev} variant="outline" size="sm">
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
+                <Button
+                  onClick={handlePrev}
+                  variant="outline"
+                  size="sm"
+                  className="border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100"
+                >
                   Previous Week
                 </Button>
-                <span className="font-medium">
+                <span className="font-medium text-slate-200 text-center text-sm sm:text-base">
                   {startDate.toDateString()} -{" "}
                   {new Date(
                     startDate.getTime() + (daysToShow - 1) * 24 * 60 * 60 * 1000
                   ).toDateString()}
                 </span>
-                <Button onClick={handleNext} variant="outline" size="sm">
+                <Button
+                  onClick={handleNext}
+                  variant="outline"
+                  size="sm"
+                  className="border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100"
+                >
                   Next Week
                 </Button>
               </div>
 
-              <div className="grid grid-cols-7 gap-2">
+              <div className="grid grid-cols-7 gap-1 sm:gap-2">
                 {days.map((day) => {
                   const isSelected =
                     selectedDay.toDateString() === day.toDateString();
@@ -875,15 +886,23 @@ export const SolarSystem: React.FC = () => {
                       onClick={() => setSelectedDay(day)}
                       variant={isSelected ? "default" : "outline"}
                       size="sm"
-                      className={`h-16 flex flex-col ${
-                        hasEntry ? "bg-purple-100 text-black" : ""
+                      className={`h-12 sm:h-16 flex flex-col ${
+                        isSelected
+                          ? "bg-blue-600 hover:bg-blue-700 text-white"
+                          : "border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100"
+                      } ${
+                        hasEntry
+                          ? "bg-purple-600/20 text-purple-300 border-purple-500/30"
+                          : ""
                       } ${isFuture ? "opacity-50 cursor-not-allowed" : ""}`}
                       disabled={isFuture}
                     >
                       <span className="text-xs">
                         {day.toLocaleDateString("en", { weekday: "short" })}
                       </span>
-                      <span className="text-lg">{day.getDate()}</span>
+                      <span className="text-sm sm:text-lg">
+                        {day.getDate()}
+                      </span>
                     </Button>
                   );
                 })}
@@ -897,34 +916,39 @@ export const SolarSystem: React.FC = () => {
               </h3> */}
               {/* Journal Entry */}
               <div>
-                <h4 className="font-medium mb-2">Journal Entry:</h4>
+                <h4 className="font-medium mb-2 text-slate-100">
+                  Journal Entry:
+                </h4>
                 <textarea
                   value={journals[selectedDay.toDateString()] || ""}
                   onChange={(e) => handleJournalChange(e.target.value)}
                   placeholder="Write about your day, thoughts, feelings..."
-                  className="w-full h-20 p-3 border rounded-lg resize-none"
+                  className="w-full h-24 sm:h-20 p-3 border border-slate-600/50 rounded-lg resize-none bg-slate-800/60 text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50"
                 />
               </div>
 
               {/* Thinking Traps Selection */}
               <div>
-                <h4 className="font-medium mb-2">
+                <h4 className="font-medium mb-2 text-slate-100">
                   Thinking Traps (select any that apply):
                 </h4>
                 <div className="space-y-2 max-h-[6.5rem] overflow-y-auto pr-2">
                   {thinkingTraps.map((trap) => (
                     <label
                       key={trap.title}
-                      className="flex items-center space-x-2"
+                      className="flex items-start space-x-2 p-2 rounded-lg hover:bg-slate-800/30 transition-colors"
                     >
                       <input
                         type="checkbox"
                         checked={selectedTraps.includes(trap.title)}
                         onChange={() => toggleTrap(trap.title)}
-                        className="rounded"
+                        className="rounded mt-0.5 border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500/50"
                       />
-                      <span className="text-sm">
-                        <strong>{trap.title}:</strong> {trap.description}
+                      <span className="text-sm text-slate-300">
+                        <strong className="text-slate-100">
+                          {trap.title}:
+                        </strong>{" "}
+                        {trap.description}
                       </span>
                     </label>
                   ))}
@@ -940,9 +964,9 @@ export const SolarSystem: React.FC = () => {
               )}
 
               {/* Image Generation */}
-              <div className="border-t pt-4">
-                <div className="flex justify-between items-center mb-2">
-                  <h4 className="font-medium">Generate Image</h4>
+              <div className="border-t border-slate-700/50 pt-4">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2">
+                  <h4 className="font-medium text-slate-100">Generate Image</h4>
                   <Button
                     onClick={generateImage}
                     disabled={
@@ -950,15 +974,18 @@ export const SolarSystem: React.FC = () => {
                     }
                     variant="default"
                     size="sm"
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
                   >
                     {loading ? "Generating..." : "Generate Image"}
                   </Button>
                 </div>
                 {error && (
-                  <div className="text-red-600 text-sm mb-2">{error}</div>
+                  <div className="text-red-400 text-sm mb-2 bg-red-900/20 border border-red-500/30 rounded p-2">
+                    {error}
+                  </div>
                 )}
                 {isAnonymous && (
-                  <div className="text-xs text-amber-600 mt-1">
+                  <div className="text-xs text-amber-300 mt-1 bg-amber-900/20 border border-amber-500/30 rounded p-2">
                     🔒 Guest mode: Generated images are temporary and won't be
                     saved permanently
                   </div>
@@ -968,14 +995,17 @@ export const SolarSystem: React.FC = () => {
 
             {/* Image Modal */}
             {showImageModal && imageBase64 && (
-              <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-60">
-                <div className="bg-white rounded-lg p-6 max-w-2xl max-h-[90vh] overflow-auto">
+              <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-60 p-4">
+                <div className="bg-slate-900/95 backdrop-blur-md border border-slate-700/50 rounded-lg p-4 sm:p-6 max-w-2xl max-h-[90vh] overflow-auto shadow-2xl">
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-semibold">Generated Image</h3>
+                    <h3 className="text-lg font-semibold text-slate-100">
+                      Generated Image
+                    </h3>
                     <Button
                       onClick={() => setShowImageModal(false)}
                       variant="outline"
                       size="sm"
+                      className="border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100"
                     >
                       Close
                     </Button>
@@ -985,11 +1015,12 @@ export const SolarSystem: React.FC = () => {
                     alt="Generated journal visualization"
                     className="w-full h-auto rounded-lg mb-4"
                   />
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <Button
                       onClick={handleSaveImage}
                       variant="default"
                       size="sm"
+                      className="bg-blue-600 hover:bg-blue-700 text-white"
                     >
                       Download
                     </Button>
@@ -997,12 +1028,13 @@ export const SolarSystem: React.FC = () => {
                       onClick={handleShareImage}
                       variant="outline"
                       size="sm"
+                      className="border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100"
                     >
                       Share
                     </Button>
                   </div>
                   {isAnonymous && (
-                    <div className="text-xs text-amber-600 mt-2 flex items-center gap-1">
+                    <div className="text-xs text-amber-300 mt-2 flex items-center gap-1 bg-amber-900/20 border border-amber-500/30 rounded p-2">
                       <span>⚠️</span>
                       <span>
                         Remember to download - this image won't be saved
@@ -1050,7 +1082,7 @@ export const SolarSystem: React.FC = () => {
                 }
               }}
               variant="outline"
-              className="w-full mt-4"
+              className="w-full mt-4 border-green-500 text-green-400 bg-slate-900/95 hover:bg-green-500/20 hover:text-green-300 hover:border-green-400"
             >
               {isAnonymous ? "Save to Session (Temporary)" : "Save"}
             </Button>
