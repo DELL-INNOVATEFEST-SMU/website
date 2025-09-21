@@ -1,4 +1,3 @@
-import React from "react";
 import { QuestionRenderer } from "./QuestionRenderer";
 
 interface QuizCardProps {
@@ -25,7 +24,6 @@ export function QuizCard({
   questions,
   answers,
   isCurrentAnswered,
-  canProceed,
   selectAnswer,
   goNext,
   goBack,

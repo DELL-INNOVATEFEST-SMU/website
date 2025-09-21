@@ -1,5 +1,3 @@
-import React from "react";
-
 /**
  * Animated starfield background component
  * Creates a cosmic atmosphere with twinkling stars

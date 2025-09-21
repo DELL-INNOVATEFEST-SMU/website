@@ -1,4 +1,3 @@
-import React from "react";
 import { QuizQuestion } from "@/lib/cosmic-compass/quiz-config";
 
 interface QuestionRendererProps {

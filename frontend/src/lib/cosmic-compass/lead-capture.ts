@@ -5,7 +5,7 @@
  */
 
 import { supabase } from "@/lib/supabase";
-import { QuizAnswers, QuizResult } from "./quiz-config";
+import { QuizAnswers } from "./quiz-config";
 
 export interface LeadCapturePayload {
   contact: {

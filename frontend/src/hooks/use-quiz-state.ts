@@ -46,13 +46,13 @@ interface QuizState {
   result: QuizResult | null;
   
   // Actions
-  selectAnswer: (questionId: string, answer: any) => void;
+  selectAnswer: (questionId: string, answer: { score?: number; tag?: string; year?: string; nat?: string }) => void;
   goNext: () => void;
   goBack: () => void;
   finish: () => void;
   setContactEmail: (email: string) => void;
   setContactPhone: (phone: string) => void;
-  submitAndReveal: (endpoint?: string) => Promise<void>;
+  submitAndReveal: () => Promise<void>;
   reset: () => void;
 }
 
@@ -100,11 +100,16 @@ export function useQuizState(): QuizState {
   }, [showResults, answers]);
   
   // Select answer for current question
-  const selectAnswer = useCallback((questionId: string, answer: any) => {
+  const selectAnswer = useCallback((questionId: string, answer: { score?: number; tag?: string; year?: string; nat?: string }) => {
     setAnswers(prev => ({
       ...prev,
       [questionId]: answer
     }));
+  }, []);
+  
+  // Finish quiz and show results
+  const finish = useCallback(() => {
+    setShowResults(true);
   }, []);
   
   // Navigation: go to next question
@@ -116,7 +121,7 @@ export function useQuizState(): QuizState {
     } else {
       finish();
     }
-  }, [canProceed, currentStep, questions.length]);
+  }, [canProceed, currentStep, questions.length, finish]);
   
   // Navigation: go to previous question
   const goBack = useCallback(() => {
@@ -125,13 +130,8 @@ export function useQuizState(): QuizState {
     }
   }, [currentStep]);
   
-  // Finish quiz and show results
-  const finish = useCallback(() => {
-    setShowResults(true);
-  }, []);
-  
   // Submit contact info and reveal results
-  const submitAndReveal = useCallback(async (endpoint?: string) => {
+  const submitAndReveal = useCallback(async () => {
     if (!result) return;
     
     const isValidContactInfo = isValidContact(contactEmail, contactPhone);

@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { QuizContainer } from "@/components/quiz/QuizContainer";
-import { StarField } from "@/components/quiz/StarField";
+import { QuizContainer } from "../components/quiz/QuizContainer";
+import { StarField } from "../components/quiz/StarField";
 import { useIsMobile } from "@/hooks/use-mobile";
 import "@/styles/cosmic-compass.css";
 

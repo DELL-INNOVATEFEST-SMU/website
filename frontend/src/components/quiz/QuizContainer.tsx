@@ -1,4 +1,3 @@
-import React from "react";
 import { useQuizState } from "@/hooks/use-quiz-state";
 import { QuizCard } from "./QuizCard";
 import { ResultsCard } from "./ResultsCard";
