@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Rocket, Fuel, CheckCircle2, ClipboardList, X } from "lucide-react";
+import { Rocket, Fuel, CheckCircle2, ClipboardList, X, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface MissionTask {
@@ -17,6 +17,7 @@ interface MissionTask {
 interface MissionLogProps {
   onPlanetClick: (planetName: string) => void;
   completedTasks: Set<string>;
+  attemptedTasks: Set<string>;
   onTaskComplete: (taskId: string) => void;
   isOpen: boolean;
   onToggle: () => void;
@@ -160,13 +161,16 @@ const FuelTank: React.FC<{
 const MissionTaskCard: React.FC<{
   task: MissionTask;
   isCompleted: boolean;
+  isAttempted: boolean;
   onClick: () => void;
-}> = ({ task, isCompleted, onClick }) => {
+}> = ({ task, isCompleted, isAttempted, onClick }) => {
   return (
     <Card
       className={`cursor-pointer transition-all duration-300 hover:scale-105 ${
         isCompleted
           ? "bg-green-900/30 border-green-500/50"
+          : isAttempted
+          ? "bg-yellow-900/30 border-yellow-500/50"
           : "bg-slate-900/95 border-slate-700 hover:border-slate-500"
       } backdrop-blur-sm`}
       onClick={onClick}
@@ -188,6 +192,8 @@ const MissionTaskCard: React.FC<{
           {/* Completion Status */}
           {isCompleted ? (
             <CheckCircle2 className="h-5 w-5 text-green-400" />
+          ) : isAttempted ? (
+            <Clock className="h-5 w-5 text-yellow-400" />
           ) : (
             <div className="w-5 h-5 border-2 border-slate-400 rounded-full" />
           )}
@@ -200,21 +206,33 @@ const MissionTaskCard: React.FC<{
 export const MissionLog: React.FC<MissionLogProps> = ({
   onPlanetClick,
   completedTasks,
+  attemptedTasks,
   onTaskComplete,
   isOpen,
   onToggle,
 }) => {
   const [tasks, setTasks] = useState(missionTasks);
 
-  // Update tasks with completion status
+  // Update tasks with completion and attempt status
   const updatedTasks = tasks.map((task) => ({
     ...task,
     completed: completedTasks.has(task.id),
+    attempted: attemptedTasks.has(task.id),
     onStart: () => onPlanetClick(task.planet),
   }));
 
   const completedCount = completedTasks.size;
-  const fuelProgress = (completedCount / tasks.length) * 100;
+  const attemptedCount = attemptedTasks.size;
+  
+  // Calculate fuel progress based on attempts (attempts count as partial progress)
+  // Each attempt gives 50% progress, completion gives 100%
+  const totalProgress = Array.from(attemptedTasks).reduce((total, taskId) => {
+    const baseProgress = 50; // 50% for attempting
+    const completionBonus = completedTasks.has(taskId) ? 50 : 0; // Additional 50% for completing
+    return total + baseProgress + completionBonus;
+  }, 0);
+  
+  const fuelProgress = (totalProgress / (tasks.length * 100)) * 100;
   const isFuelFull = fuelProgress >= 100;
 
   const handleLaunch = () => {
@@ -261,6 +279,7 @@ export const MissionLog: React.FC<MissionLogProps> = ({
                     key={task.id}
                     task={task}
                     isCompleted={task.completed}
+                    isAttempted={task.attempted}
                     onClick={() => handleTaskClick(task)}
                   />
                 ))}
@@ -281,6 +300,15 @@ export const MissionLog: React.FC<MissionLogProps> = ({
                     variant="secondary"
                     className="bg-slate-800 text-green-400"
                   >
+                    {attemptedCount}/{tasks.length} Attempted
+                  </Badge>
+                </div>
+                <div className="flex justify-between items-center text-xs mt-1">
+                  <span className="text-slate-400">Completed</span>
+                  <Badge
+                    variant="secondary"
+                    className="bg-slate-800 text-blue-400"
+                  >
                     {completedCount}/{tasks.length} Complete
                   </Badge>
                 </div>
@@ -293,7 +321,7 @@ export const MissionLog: React.FC<MissionLogProps> = ({
       {/* Mission Log Bubble */}
       <MissionLogBubble
         isOpen={isOpen}
-        completedCount={completedCount}
+        completedCount={attemptedCount}
         totalTasks={tasks.length}
         onClick={onToggle}
       />

@@ -419,6 +419,9 @@ export const SolarSystem: React.FC = () => {
 
   // Mission completion state
   const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set());
+  
+  // Mission attempt tracking state
+  const [attemptedTasks, setAttemptedTasks] = useState<Set<string>>(new Set());
 
   // Mission log visibility state
   const [isMissionLogOpen, setIsMissionLogOpen] = useState(false);
@@ -624,6 +627,11 @@ export const SolarSystem: React.FC = () => {
     setCompletedTasks((prev) => new Set(prev).add(taskId));
   };
 
+  // Track task attempts
+  const handleTaskAttempt = (taskId: string) => {
+    setAttemptedTasks((prev) => new Set(prev).add(taskId));
+  };
+
   const handleActivityComplete = () => {
     // Map planet activities to mission tasks
     const planetToTaskMap: { [key: string]: string } = {
@@ -635,6 +643,23 @@ export const SolarSystem: React.FC = () => {
 
     if (selectedPlanet && planetToTaskMap[selectedPlanet.name]) {
       handleTaskComplete(planetToTaskMap[selectedPlanet.name]);
+    }
+  };
+
+  // Track activity attempts when user clicks into an activity
+  const handleActivityStart = (activity: PlanetActivity) => {
+    setActiveActivity(activity);
+    
+    // Track the attempt for the current planet's mission task
+    const planetToTaskMap: { [key: string]: string } = {
+      Jupiter: "rewrite-story",
+      Mercury: "calm-storm",
+      Neptune: "break-traps",
+      Venus: "replenish-oxygen",
+    };
+
+    if (selectedPlanet && planetToTaskMap[selectedPlanet.name]) {
+      handleTaskAttempt(planetToTaskMap[selectedPlanet.name]);
     }
   };
 
@@ -748,6 +773,7 @@ export const SolarSystem: React.FC = () => {
         <MissionLog
           onPlanetClick={handleMissionPlanetClick}
           completedTasks={completedTasks}
+          attemptedTasks={attemptedTasks}
           onTaskComplete={handleTaskComplete}
           isOpen={isMissionLogOpen}
           onToggle={() => setIsMissionLogOpen(!isMissionLogOpen)}
@@ -759,7 +785,7 @@ export const SolarSystem: React.FC = () => {
         <PlanetInfo
           planet={selectedPlanet}
           onClose={closePlanetInfo}
-          onStartActivity={setActiveActivity}
+          onStartActivity={handleActivityStart}
           onActivityComplete={handleActivityComplete}
         />
       )}
