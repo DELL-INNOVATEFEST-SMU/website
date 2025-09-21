@@ -9,6 +9,7 @@ import { Moon } from "./Moon";
 import { Button } from "./ui/button";
 import { useAuthContext } from "@/providers/AuthProvider";
 import { SpaceChatSystem } from "./SpaceChatSystem";
+import { MissionLog } from "./MissionLog";
 import { supabase } from "@/lib/supabase";
 import BoxBreathingModal from "@/PlanetActivities/BoxBreathingModal";
 import WorryTree from "@/PlanetActivities/WorryTree";
@@ -269,67 +270,80 @@ const SolarSystemScene: React.FC<{
 
 const thinkingTraps = [
   {
-    "title": "All-or-Nothing Thinking",
-    "description": "Viewing situations in extremes, such as all good or all bad, with no middle ground. Also called 'black-and-white thinking.'",
-    "example": "If I don’t get 100% on this exam, I’m a complete failure."
+    title: "All-or-Nothing Thinking",
+    description:
+      "Viewing situations in extremes, such as all good or all bad, with no middle ground. Also called 'black-and-white thinking.'",
+    example: "If I don’t get 100% on this exam, I’m a complete failure.",
   },
   {
-    "title": "Overgeneralization",
-    "description": "Making sweeping negative conclusions based on a single event.",
-    "example": "I was late to work today, so I’ll probably lose my job soon."
+    title: "Overgeneralization",
+    description:
+      "Making sweeping negative conclusions based on a single event.",
+    example: "I was late to work today, so I’ll probably lose my job soon.",
   },
   {
-    "title": "Mental Filter",
-    "description": "Focusing exclusively on the negative aspect of a situation and ignoring the positives.",
-    "example": "My friend complimented my presentation but gave one small suggestion, so the whole talk must have been bad."
+    title: "Mental Filter",
+    description:
+      "Focusing exclusively on the negative aspect of a situation and ignoring the positives.",
+    example:
+      "My friend complimented my presentation but gave one small suggestion, so the whole talk must have been bad.",
   },
   {
-    "title": "Discounting the Positive",
-    "description": "Rejecting or minimizing positive experiences or feedback by insisting they ‘don’t count.’",
-    "example": "Sure, I got praised at work, but they were just being nice."
+    title: "Discounting the Positive",
+    description:
+      "Rejecting or minimizing positive experiences or feedback by insisting they ‘don’t count.’",
+    example: "Sure, I got praised at work, but they were just being nice.",
   },
   {
-    "title": "Catastrophizing (Magnification)",
-    "description": "Expecting the worst-case scenario and blowing events out of proportion.",
-    "example": "If I make a mistake in this meeting, everyone will think I'm incompetent and I’ll ruin my career."
+    title: "Catastrophizing (Magnification)",
+    description:
+      "Expecting the worst-case scenario and blowing events out of proportion.",
+    example:
+      "If I make a mistake in this meeting, everyone will think I'm incompetent and I’ll ruin my career.",
   },
   {
-    "title": "Emotional Reasoning",
-    "description": "Believing that feelings reflect objective reality, regardless of the evidence.",
-    "example": "I feel anxious about this situation, so it must be dangerous."
+    title: "Emotional Reasoning",
+    description:
+      "Believing that feelings reflect objective reality, regardless of the evidence.",
+    example: "I feel anxious about this situation, so it must be dangerous.",
   },
   {
-    "title": "Mind Reading",
-    "description": "Assuming you know what others are thinking, often believing they think negatively of you.",
-    "example": "She didn’t reply to my text. She must be mad at me."
+    title: "Mind Reading",
+    description:
+      "Assuming you know what others are thinking, often believing they think negatively of you.",
+    example: "She didn’t reply to my text. She must be mad at me.",
   },
   {
-    "title": "Fortune Telling",
-    "description": "Predicting negative outcomes without evidence.",
-    "example": "I just know my project will fail."
+    title: "Fortune Telling",
+    description: "Predicting negative outcomes without evidence.",
+    example: "I just know my project will fail.",
   },
   {
-    "title": "Personalization",
-    "description": "Taking excessive responsibility for events out of your control or blaming yourself for negative outcomes.",
-    "example": "My friend is upset. It must be my fault."
+    title: "Personalization",
+    description:
+      "Taking excessive responsibility for events out of your control or blaming yourself for negative outcomes.",
+    example: "My friend is upset. It must be my fault.",
   },
   {
-    "title": "Labeling",
-    "description": "Attaching a negative label to yourself or others based on a single event.",
-    "example": "I failed that test, so I’m an idiot."
+    title: "Labeling",
+    description:
+      "Attaching a negative label to yourself or others based on a single event.",
+    example: "I failed that test, so I’m an idiot.",
   },
   {
-    "title": "\"Should\" and \"Must\" Statements",
-    "description": "Setting rigid rules for yourself and others, leading to guilt or frustration.",
-    "example": "I should always be productive. I must never make mistakes."
+    title: '"Should" and "Must" Statements',
+    description:
+      "Setting rigid rules for yourself and others, leading to guilt or frustration.",
+    example: "I should always be productive. I must never make mistakes.",
   },
   {
-    "title": "Filtering",
-    "description": "Paying attention only to negative details and ignoring positive aspects.",
-    "example": "Even though most things went well, I focused only on what went wrong."
-  }
-]
-
+    title: "Filtering",
+    description:
+      "Paying attention only to negative details and ignoring positive aspects.",
+    example:
+      "Even though most things went well, I focused only on what went wrong.",
+  },
+];
 
 // Save Progress Component for Guest Users
 const SaveProgressPrompt: React.FC<{
@@ -388,7 +402,9 @@ const GuestModeIndicator: React.FC<{ onUpgrade: () => void }> = ({
 export const SolarSystem: React.FC = () => {
   const { user, signOut, isAnonymous } = useAuthContext();
   const [showSavePrompt, setShowSavePrompt] = useState(false);
-  const [activeActivity, setActiveActivity] = useState<PlanetActivity | null>(null);
+  const [activeActivity, setActiveActivity] = useState<PlanetActivity | null>(
+    null
+  );
   const [showImageModal, setShowImageModal] = useState(false);
   const [selectedTraps, setSelectedTraps] = useState<string[]>([]);
   const [selectedDay, setSelectedDay] = useState<Date>(new Date());
@@ -400,6 +416,9 @@ export const SolarSystem: React.FC = () => {
   const [backgroundType, setBackgroundType] = useState<"stars" | "milky_way">(
     "milky_way"
   );
+
+  // Mission completion state
+  const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set());
 
   // --- Journal feature (from main) ---
   const fetchedOnce = useRef(false);
@@ -591,6 +610,31 @@ export const SolarSystem: React.FC = () => {
     setFocusedPlanet(planet.name);
   };
 
+  const handleMissionPlanetClick = (planetName: string) => {
+    const planet = planets.find((p) => p.name === planetName);
+    if (planet) {
+      handlePlanetClick(planet);
+    }
+  };
+
+  const handleTaskComplete = (taskId: string) => {
+    setCompletedTasks((prev) => new Set(prev).add(taskId));
+  };
+
+  const handleActivityComplete = () => {
+    // Map planet activities to mission tasks
+    const planetToTaskMap: { [key: string]: string } = {
+      Jupiter: "rewrite-story",
+      Mercury: "calm-storm",
+      Neptune: "break-traps",
+      Venus: "replenish-oxygen",
+    };
+
+    if (selectedPlanet && planetToTaskMap[selectedPlanet.name]) {
+      handleTaskComplete(planetToTaskMap[selectedPlanet.name]);
+    }
+  };
+
   const closePlanetInfo = () => {
     setSelectedPlanet(null);
     setFocusedPlanet(null);
@@ -696,16 +740,33 @@ export const SolarSystem: React.FC = () => {
         <div className="absolute bottom-4 left-4 right-4 pointer-events-auto">
           <SpaceChatSystem />
         </div>
+
+        {/* Mission Log */}
+        <MissionLog
+          onPlanetClick={handleMissionPlanetClick}
+          completedTasks={completedTasks}
+          onTaskComplete={handleTaskComplete}
+        />
       </div>
 
       {/* Planet Info Modal */}
       {selectedPlanet && (
-        <PlanetInfo planet={selectedPlanet} onClose={closePlanetInfo} onStartActivity={setActiveActivity} />
+        <PlanetInfo
+          planet={selectedPlanet}
+          onClose={closePlanetInfo}
+          onStartActivity={setActiveActivity}
+          onActivityComplete={handleActivityComplete}
+        />
       )}
       {activeActivity && (
-        <div className="fixed inset-0  flex items-center justify-center z-50" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+        <div
+          className="fixed inset-0  flex items-center justify-center z-50"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+        >
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md">
-            <h3 className="text-lg font-semibold mb-2">{activeActivity.name}</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              {activeActivity.name}
+            </h3>
             <p className="mb-4">{activeActivity.description}</p>
             <activeActivity.component onClose={() => setActiveActivity(null)} />
             <Button
@@ -771,8 +832,9 @@ export const SolarSystem: React.FC = () => {
                       onClick={() => setSelectedDay(day)}
                       variant={isSelected ? "default" : "outline"}
                       size="sm"
-                      className={`h-16 flex flex-col ${hasEntry ? "bg-purple-100 text-black" : ""
-                        } ${isFuture ? "opacity-50 cursor-not-allowed" : ""}`}
+                      className={`h-16 flex flex-col ${
+                        hasEntry ? "bg-purple-100 text-black" : ""
+                      } ${isFuture ? "opacity-50 cursor-not-allowed" : ""}`}
                       disabled={isFuture}
                     >
                       <span className="text-xs">
@@ -825,8 +887,6 @@ export const SolarSystem: React.FC = () => {
                   ))}
                 </div>
               </div>
-
-              
 
               {/* Save Progress Prompt for Guest Users */}
               {isAnonymous && showSavePrompt && (

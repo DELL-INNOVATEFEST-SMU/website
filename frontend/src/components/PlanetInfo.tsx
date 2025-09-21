@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { X } from 'lucide-react';
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { X, Sparkles } from "lucide-react";
 
 interface PlanetActivity {
   name: string;
@@ -25,10 +25,23 @@ interface PlanetInfoProps {
   planet: PlanetData;
   onClose: () => void;
   onStartActivity?: (activity: PlanetActivity) => void;
+  onActivityComplete?: () => void;
 }
 
-export const PlanetInfo: React.FC<PlanetInfoProps> = ({ planet, onClose, onStartActivity }) => {
-  const [activeActivity, setActiveActivity] = useState<PlanetActivity | null>(null);
+export const PlanetInfo: React.FC<PlanetInfoProps> = ({
+  planet,
+  onClose,
+  onStartActivity,
+  onActivityComplete,
+}) => {
+  const [activeActivity, setActiveActivity] = useState<PlanetActivity | null>(
+    null
+  );
+
+  const handleActivityComplete = () => {
+    setActiveActivity(null);
+    onActivityComplete?.();
+  };
   return (
     <div className="absolute bottom-6 left-6 right-6 md:right-auto md:max-w-md z-20">
       <Card className="bg-card/90 backdrop-blur-sm border-border">
@@ -52,19 +65,15 @@ export const PlanetInfo: React.FC<PlanetInfoProps> = ({ planet, onClose, onStart
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">
-            {planet.description}
-          </p>
+          <p className="text-sm text-muted-foreground">{planet.description}</p>
 
           <div className="space-y-2">
-            <h4 className="text-sm font-semibold text-foreground">Key Facts:</h4>
+            <h4 className="text-sm font-semibold text-foreground">
+              Key Facts:
+            </h4>
             <div className="flex flex-wrap gap-1">
               {planet.facts.map((fact, index) => (
-                <Badge
-                  key={index}
-                  variant="secondary"
-                  className="text-xs"
-                >
+                <Badge key={index} variant="secondary" className="text-xs">
                   {fact}
                 </Badge>
               ))}
@@ -74,7 +83,9 @@ export const PlanetInfo: React.FC<PlanetInfoProps> = ({ planet, onClose, onStart
           <div className="grid grid-cols-2 gap-4 text-xs">
             <div>
               <span className="text-muted-foreground">Relative Size:</span>
-              <p className="font-medium">{(planet.size / 0.15).toFixed(2)}x Earth</p>
+              <p className="font-medium">
+                {(planet.size / 0.15).toFixed(2)}x Earth
+              </p>
             </div>
             <div>
               <span className="text-muted-foreground">Distance:</span>
@@ -83,42 +94,57 @@ export const PlanetInfo: React.FC<PlanetInfoProps> = ({ planet, onClose, onStart
           </div>
           {planet.activities && planet.activities.length > 0 && (
             <div className="mt-4">
-              <h4 className="text-sm font-semibold text-foreground">Try Activities:</h4>
+              <h4 className="text-sm font-semibold text-foreground">
+                Try Activities:
+              </h4>
               <div className="flex gap-2 flex-wrap">
                 {planet.activities.map((activity) => (
                   <Button
                     key={activity.name}
                     onClick={() => onStartActivity && onStartActivity(activity)}
                     variant="secondary"
-                    className="w-full mt-4"
+                    className="w-full mt-4 relative overflow-hidden group hover:scale-105 transition-all duration-300"
+                    style={{
+                      backgroundColor: `${planet.color}20`,
+                      borderColor: `${planet.color}40`,
+                      color: planet.color,
+                    }}
                   >
-                    {activity.name}
+                    {/* Sparkle Effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
+
+                    {/* Button Content */}
+                    <div className="relative flex items-center justify-center gap-2">
+                      <Sparkles className="h-4 w-4 animate-pulse" />
+                      {activity.name}
+                    </div>
                   </Button>
                 ))}
               </div>
             </div>
           )}
           {activeActivity && (
-            <div className="fixed inset-0 flex items-center justify-center z-50" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+            <div
+              className="fixed inset-0 flex items-center justify-center z-50"
+              style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+            >
               <div className="bg-white p-6 rounded-lg shadow-lg max-w-md">
-                <h3 className="text-lg font-semibold mb-2">{activeActivity.name}</h3>
+                <h3 className="text-lg font-semibold mb-2">
+                  {activeActivity.name}
+                </h3>
                 <p className="mb-4">{activeActivity.description}</p>
-                <activeActivity.component onClose={() => setActiveActivity(null)} />
+                <activeActivity.component onClose={handleActivityComplete} />
                 <Button
-                  onClick={() => setActiveActivity(null)}
+                  onClick={handleActivityComplete}
                   variant="outline"
                   className="mt-4 w-full"
                 >
-                  Close Activity
+                  Complete Activity
                 </Button>
               </div>
             </div>
           )}
-          <Button
-            onClick={onClose}
-            className="w-full mt-4"
-            variant="outline"
-          >
+          <Button onClick={onClose} className="w-full mt-4" variant="outline">
             Back to Solar System
           </Button>
         </CardContent>
