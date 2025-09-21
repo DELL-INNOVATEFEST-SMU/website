@@ -3,6 +3,7 @@ import { useFormattedResult } from "@/hooks/use-quiz-state";
 import { Button } from "@/components/ui/button";
 import { submitLeadCapture } from "@/lib/cosmic-compass/lead-capture";
 import { buildLeadPayload } from "@/lib/cosmic-compass/quiz-logic";
+import { PlanetImage } from "./PlanetImage";
 
 interface ResultsCardProps {
   result: any;
@@ -132,6 +133,16 @@ export function ResultsCard({
 
           {/* Planet Assignment */}
           <h3 className="cosmic-planet-title">{formattedResult.planet.name}</h3>
+
+          {/* Planet Mascot Image */}
+          <div className="planet-image-container">
+            <PlanetImage
+              planetId={formattedResult.planet.id}
+              className="cosmic-planet-mascot"
+              alt={`${formattedResult.planet.name} mascot`}
+            />
+          </div>
+
           <div className="cosmic-planet-description">
             {formattedResult.planetDescription}
           </div>

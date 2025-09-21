@@ -405,3 +405,63 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+/* Planet Image Styles */
+.planet-image-container {
+  display: flex;
+  justify-content: center;
+  margin: 12px 0;
+}
+
+.cosmic-planet-mascot {
+  max-width: 120px;
+  max-height: 120px;
+  width: auto;
+  height: auto;
+  border-radius: 50%;
+  border: 3px solid var(--cosmic-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cosmic-planet-mascot:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(124, 140, 251, 0.3);
+}
+
+/* Fallback for missing planet images (like Pluto) */
+.planet-image-fallback {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 3px solid var(--cosmic-border);
+  background: linear-gradient(135deg, var(--cosmic-card), var(--cosmic-card2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.planet-symbol {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--cosmic-accent);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Responsive adjustments for planet images */
+@media (max-width: 768px) {
+  .cosmic-planet-mascot {
+    max-width: 100px;
+    max-height: 100px;
+  }
+  
+  .planet-image-fallback {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .planet-symbol {
+    font-size: 40px;
+  }
+}
