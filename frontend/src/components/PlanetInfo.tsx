@@ -151,23 +151,13 @@ export const PlanetInfo: React.FC<PlanetInfoProps> = ({
               </div>
             </div>
           )}
-          <div className="flex gap-2 mt-4">
-            <Button
-              onClick={onClose}
-              className="flex-1 border-green-500 text-green-400 bg-slate-900/95 hover:bg-green-500/20 hover:text-green-300 hover:border-green-400"
-              variant="outline"
-            >
-              Back to Solar System
-            </Button>
-            <Button
-              onClick={onClose}
-              variant="ghost"
-              size="sm"
-              className="h-10 w-10 p-0 text-slate-400 hover:text-white hover:bg-slate-700/50 border border-slate-600/50"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
+          <Button
+            onClick={onClose}
+            className="w-full mt-4 border-green-500 text-green-400 bg-slate-900/95 hover:bg-green-500/20 hover:text-green-300 hover:border-green-400"
+            variant="outline"
+          >
+            Back to Solar System
+          </Button>
         </CardContent>
       </Card>
     </div>
