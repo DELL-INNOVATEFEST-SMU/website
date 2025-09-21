@@ -233,7 +233,7 @@ export const PLANET_DESCRIPTIONS: Record<string, string> = {
   venus: "The harmony planet - loving, creative, and seeking balance. You bring beauty and peace to everything you touch.",
   saturn: "The wisdom planet - structured, disciplined, and thoughtful. You build lasting foundations with patience and perseverance.",
   uranus: "The innovator planet - unique, independent, and revolutionary. You see possibilities others miss and dare to be different.",
-  pluto: "The transformer planet - intense, mysterious, and powerful. You have the strength to overcome any obstacle and emerge renewed.",
+  pluto: "The transformer plutoid - small, but tenacious. You have the strength to overcome any obstacle and emerge renewed.",
   earth: "The nurturing planet - grounded, caring, and life-giving. You create safe spaces where others can grow and thrive.",
   neptune: "The dreamer planet - intuitive, imaginative, and deeply empathetic. You see the world through the lens of possibility and compassion.",
   jupiter: "The explorer planet - expansive, optimistic, and adventurous. You seek knowledge, growth, and new horizons with enthusiasm.",
