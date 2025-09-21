@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from "react"
-import type { ChatMessage, ChatSession, ChatActionButton } from "@/types/chat"
+import type { ChatMessage, ChatSession } from "@/types/chat"
 import { geminiChatService } from "@/lib/gemini-chat"
 
 /**

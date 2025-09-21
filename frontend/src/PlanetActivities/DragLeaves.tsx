@@ -9,7 +9,7 @@ interface Leaf {
 
 const initialColors = ["#A3D9A5", "#F4C95D", "#A4CED4", "#FFC4C4", "#B9A6F2"];
 
-export default function DragLeaves({ onClose }: { onClose: () => void })    {
+export default function DragLeaves({ onClose: _onClose }: { onClose: () => void }) {
   const [leaves, setLeaves] = useState<Leaf[]>([]);
   const [droppedLeaves, setDroppedLeaves] = useState<Leaf[]>([]);
   const [inputText, setInputText] = useState("");

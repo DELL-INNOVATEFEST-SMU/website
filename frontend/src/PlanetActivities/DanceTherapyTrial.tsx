@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
 
 interface DanceStep {
@@ -35,7 +35,7 @@ const danceSteps: DanceStep[] = [
   },
 ];
 
-export default function DanceTherapyTrial({ onClose }: { onClose: () => void }) {
+export default function DanceTherapyTrial({ onClose: _onClose }: { onClose: () => void }) {
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
   const [secondsLeft, setSecondsLeft] = useState(danceSteps[0].durationSeconds);
 
