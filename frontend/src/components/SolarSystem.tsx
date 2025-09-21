@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
+import { useNavigate } from "react-router-dom";
 import { Planet } from "./Planet";
 import { Sun } from "./Sun";
 import { PlanetInfo } from "./PlanetInfo";
@@ -410,6 +411,7 @@ const GuestModeIndicator: React.FC<{ onUpgrade: () => void }> = ({
 
 export const SolarSystem: React.FC = () => {
   const { user, signOut, isAnonymous } = useAuthContext();
+  const navigate = useNavigate();
   const [showSavePrompt, setShowSavePrompt] = useState(false);
   const [activeActivity, setActiveActivity] = useState<PlanetActivity | null>(
     null
@@ -747,6 +749,18 @@ export const SolarSystem: React.FC = () => {
               title="Image by standret on Freepik"
             >
               🌌 Nebula
+            </Button>
+          </div>
+
+          {/* Cosmic Compass Quiz Button */}
+          <div className="mb-4">
+            <Button
+              onClick={() => navigate("/cosmic-compass")}
+              variant="default"
+              size="sm"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-none"
+            >
+              🧭 Cosmic Compass Quiz
             </Button>
           </div>
 

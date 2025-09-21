@@ -4,6 +4,7 @@ import { Toaster } from "./components/ui/toaster";
 import { AuthProvider } from "./providers/AuthProvider";
 import { AuthGate } from "./components/auth/AuthGate";
 import Index from "./pages/Index";
+import CosmicCompass from "./pages/CosmicCompass";
 
 const queryClient = new QueryClient();
 
@@ -14,6 +15,7 @@ function Main() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/cosmic-compass" element={<CosmicCompass />} />
         </Routes>
       </BrowserRouter>
     </>

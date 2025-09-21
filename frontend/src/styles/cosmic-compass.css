@@ -1,0 +1,483 @@
+/* Cosmic Compass Quiz Styles */
+/* Scoped styles to preserve original design while integrating with React app */
+
+.cosmic-compass-page {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Inter, Arial, sans-serif;
+  color: var(--cosmic-ink);
+  background: radial-gradient(1200px 600px at 80% -10%, #2b3572, transparent),
+              radial-gradient(800px 600px at -10% 110%, #7c2f7a, transparent),
+              linear-gradient(180deg, var(--cosmic-bg1), var(--cosmic-bg2));
+  overflow-x: hidden;
+}
+
+/* CSS Custom Properties - Cosmic Theme */
+:root {
+  --cosmic-bg1: #0b1020;
+  --cosmic-bg2: #06060b;
+  --cosmic-ink: #eef1ff;
+  --cosmic-muted: #aab0ff;
+  --cosmic-accent: #7c8cfb;
+  --cosmic-card: #141a33;
+  --cosmic-card2: #10142a;
+  --cosmic-border: #263064;
+}
+
+.cosmic-compass-container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.cosmic-compass-header {
+  text-align: center;
+  margin: 12px 0 16px;
+  position: relative;
+}
+
+.cosmic-compass-title {
+  font-size: 22px;
+  margin: 0;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  color: var(--cosmic-ink);
+}
+
+.cosmic-compass-subtitle {
+  font-size: 12px;
+  color: var(--cosmic-muted);
+  opacity: 0.9;
+  margin-top: 6px;
+}
+
+/* Quiz Card Styles */
+.cosmic-quiz-card {
+  background: linear-gradient(180deg, var(--cosmic-card), var(--cosmic-card2));
+  border: 1px solid var(--cosmic-border);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  margin-bottom: 12px;
+}
+
+.cosmic-progress {
+  height: 8px;
+  background: #0d1230;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.cosmic-progress-bar {
+  height: 8px;
+  background: linear-gradient(90deg, var(--cosmic-accent), #b6bfff);
+  transition: width 0.25s ease;
+  border-radius: 999px;
+}
+
+.cosmic-counter {
+  display: inline-block;
+  background: #0f1538;
+  border: 1px solid var(--cosmic-border);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: #c7ceff;
+  float: right;
+  margin-bottom: 10px;
+}
+
+.cosmic-kicker {
+  font-size: 11px;
+  color: #bfc6ff;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: 6px;
+}
+
+.cosmic-question {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 6px 0 10px;
+  color: var(--cosmic-ink);
+}
+
+.cosmic-options {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.cosmic-option-btn {
+  width: 100%;
+  text-align: left;
+  background: #151a3a;
+  border: 1px solid #2a356b;
+  color: var(--cosmic-ink);
+  padding: 12px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.cosmic-option-btn:hover {
+  background: #1c2350;
+}
+
+.cosmic-option-btn.selected {
+  background: #3a49b3;
+  border-color: #8aa0ff;
+  color: #000;
+}
+
+.cosmic-nav {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.cosmic-nav-btn {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #2a356b;
+  background: #151a3a;
+  color: var(--cosmic-ink);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.cosmic-nav-btn:hover:not(:disabled) {
+  background: #1c2350;
+}
+
+.cosmic-nav-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cosmic-nav-btn.primary {
+  background: linear-gradient(90deg, var(--cosmic-accent), #a2adff);
+  color: #000;
+  border: none;
+}
+
+.cosmic-nav-btn.primary:hover:not(:disabled) {
+  background: linear-gradient(90deg, #6b7bfb, #9199ff);
+}
+
+.cosmic-hint {
+  color: #ffb4c4;
+  font-size: 12px;
+  margin-top: 8px;
+  display: none;
+}
+
+.cosmic-hint.show {
+  display: block;
+}
+
+/* Input Styles */
+.cosmic-input,
+.cosmic-select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #2a356b;
+  background: #0f1538;
+  color: var(--cosmic-ink);
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.cosmic-input:focus,
+.cosmic-select:focus {
+  outline: none;
+  border-color: var(--cosmic-accent);
+  box-shadow: 0 0 0 2px rgba(124, 140, 251, 0.2);
+}
+
+.cosmic-input::placeholder {
+  color: var(--cosmic-muted);
+  opacity: 0.7;
+}
+
+/* Results Styles */
+.cosmic-results-card {
+  background: linear-gradient(180deg, var(--cosmic-card), var(--cosmic-card2));
+  border: 1px solid var(--cosmic-border);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  margin-top: 12px;
+}
+
+.cosmic-results-title {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--cosmic-ink);
+}
+
+.cosmic-results-subtitle {
+  font-size: 12px;
+  color: var(--cosmic-muted);
+  margin-bottom: 10px;
+}
+
+.cosmic-input-row {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.cosmic-cta {
+  display: inline-block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #f06cf0, #8c9bff);
+  color: #000;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.cosmic-cta:hover:not(:disabled) {
+  background: linear-gradient(90deg, #e055e0, #7a89ff);
+  transform: translateY(-1px);
+}
+
+.cosmic-cta:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.cosmic-cta.alt {
+  background: linear-gradient(90deg, #8c9bff, #f06cf0);
+  margin-top: 8px;
+}
+
+.cosmic-cta.alt:hover:not(:disabled) {
+  background: linear-gradient(90deg, #7a89ff, #e055e0);
+}
+
+.cosmic-badge {
+  display: inline-block;
+  padding: 6px 8px;
+  border-radius: 10px;
+  background: #0f1538;
+  border: 1px solid #2a356b;
+  font-size: 11px;
+  color: #c7ceff;
+  margin-right: 10px;
+  margin-bottom: 6px;
+}
+
+.cosmic-grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.cosmic-planet-title {
+  margin: 12px 0 6px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--cosmic-ink);
+}
+
+.cosmic-planet-description {
+  font-size: 14px;
+  color: #dfe3ff;
+  margin-bottom: 12px;
+}
+
+.cosmic-phq-note {
+  font-size: 11px;
+  color: var(--cosmic-muted);
+  margin-top: 8px;
+}
+
+.cosmic-submit-message {
+  font-size: 12px;
+  color: #ffb4c4;
+  margin-top: 6px;
+  display: none;
+}
+
+.cosmic-submit-message.show {
+  display: block;
+}
+
+/* Star Field Animation */
+.cosmic-stars {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cosmic-star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: #fff;
+  border-radius: 50%;
+  opacity: 0.75;
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+.cosmic-star:nth-child(2n) {
+  animation-delay: 1s;
+}
+
+.cosmic-star:nth-child(3n) {
+  animation-delay: 2s;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.75; }
+  50% { opacity: 0.3; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .cosmic-compass-container {
+    padding: 16px;
+    padding-bottom: 24px; /* Extra padding for mobile back button */
+  }
+  
+  .cosmic-compass-title {
+    font-size: 20px;
+  }
+  
+  .cosmic-compass-subtitle {
+    font-size: 11px;
+  }
+  
+  .cosmic-quiz-card {
+    padding: 14px;
+  }
+  
+  .cosmic-question {
+    font-size: 16px;
+  }
+  
+  .cosmic-nav {
+    flex-direction: column;
+  }
+  
+  .cosmic-nav button {
+    flex: none;
+  }
+  
+  .cosmic-grid2 {
+    grid-template-columns: 1fr;
+  }
+
+  /* Mobile back button styling */
+  .cosmic-compass-container .mobile-back-button {
+    margin-top: 20px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  
+  .cosmic-compass-container .mobile-back-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+  }
+}
+
+/* Loading States */
+.cosmic-loading {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--cosmic-muted);
+  border-radius: 50%;
+  border-top-color: var(--cosmic-accent);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Planet Image Styles */
+.planet-image-container {
+  display: flex;
+  justify-content: center;
+  margin: 12px 0;
+}
+
+.cosmic-planet-mascot {
+  max-width: 120px;
+  max-height: 120px;
+  width: auto;
+  height: auto;
+  border-radius: 50%;
+  border: 3px solid var(--cosmic-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cosmic-planet-mascot:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(124, 140, 251, 0.3);
+}
+
+/* Fallback for missing planet images (like Pluto) */
+.planet-image-fallback {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 3px solid var(--cosmic-border);
+  background: linear-gradient(135deg, var(--cosmic-card), var(--cosmic-card2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.planet-symbol {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--cosmic-accent);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Responsive adjustments for planet images */
+@media (max-width: 768px) {
+  .cosmic-planet-mascot {
+    max-width: 100px;
+    max-height: 100px;
+  }
+  
+  .planet-image-fallback {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .planet-symbol {
+    font-size: 40px;
+  }
+}
