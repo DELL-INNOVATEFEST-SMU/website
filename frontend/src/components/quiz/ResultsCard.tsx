@@ -158,13 +158,13 @@ export function ResultsCard({
           </a>
 
           <button className="cosmic-cta alt" onClick={handleShare}>
-            Share your planet
+            Share your Cosmic Affinity
           </button>
 
           {/* PHQ Note */}
           <div className="cosmic-phq-note">
             PHQ-4 total: <strong>{formattedResult.phqTotal}</strong>. Brief
-            screener, not a diagnosis.
+            sentiments, this is not a diagnosis.
           </div>
         </div>
       )}

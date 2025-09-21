@@ -80,9 +80,9 @@ export function getReferralRoute(age: number | null, nationality: string): "samh
   const isSGCitizen = nationality === "sg";
   
   if (isSGCitizen && age !== null) {
-    if (age >= 12 && age <= 25) {
+    if (age >= 12 && age < 25) {
       return "samh"; // SAMH Telegram bot for youth
-    } else if (age > 25) {
+    } else if (age >= 25) {
       return "comit"; // COMIT for adults
     }
   }
