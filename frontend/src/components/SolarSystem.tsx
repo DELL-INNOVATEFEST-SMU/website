@@ -419,7 +419,7 @@ export const SolarSystem: React.FC = () => {
 
   // Mission completion state
   const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set());
-  
+
   // Mission attempt tracking state
   const [attemptedTasks, setAttemptedTasks] = useState<Set<string>>(new Set());
 
@@ -633,6 +633,9 @@ export const SolarSystem: React.FC = () => {
   };
 
   const handleActivityComplete = () => {
+    // Close the activity modal
+    setActiveActivity(null);
+
     // Map planet activities to mission tasks
     const planetToTaskMap: { [key: string]: string } = {
       Jupiter: "rewrite-story",
@@ -649,7 +652,7 @@ export const SolarSystem: React.FC = () => {
   // Track activity attempts when user clicks into an activity
   const handleActivityStart = (activity: PlanetActivity) => {
     setActiveActivity(activity);
-    
+
     // Track the attempt for the current planet's mission task
     const planetToTaskMap: { [key: string]: string } = {
       Jupiter: "rewrite-story",
@@ -799,13 +802,13 @@ export const SolarSystem: React.FC = () => {
               {activeActivity.name}
             </h3>
             <p className="mb-4">{activeActivity.description}</p>
-            <activeActivity.component onClose={() => setActiveActivity(null)} />
+            <activeActivity.component onClose={handleActivityComplete} />
             <Button
-              onClick={() => setActiveActivity(null)}
+              onClick={handleActivityComplete}
               variant="outline"
               className="mt-4 w-full"
             >
-              Close Activity
+              Complete Activity
             </Button>
           </div>
         </div>

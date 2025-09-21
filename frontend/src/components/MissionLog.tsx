@@ -2,7 +2,14 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Rocket, Fuel, CheckCircle2, ClipboardList, X, Clock } from "lucide-react";
+import {
+  Rocket,
+  Fuel,
+  CheckCircle2,
+  ClipboardList,
+  X,
+  Clock,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface MissionTask {
@@ -223,7 +230,7 @@ export const MissionLog: React.FC<MissionLogProps> = ({
 
   const completedCount = completedTasks.size;
   const attemptedCount = attemptedTasks.size;
-  
+
   // Calculate fuel progress based on attempts (attempts count as partial progress)
   // Each attempt gives 50% progress, completion gives 100%
   const totalProgress = Array.from(attemptedTasks).reduce((total, taskId) => {
@@ -231,13 +238,13 @@ export const MissionLog: React.FC<MissionLogProps> = ({
     const completionBonus = completedTasks.has(taskId) ? 50 : 0; // Additional 50% for completing
     return total + baseProgress + completionBonus;
   }, 0);
-  
+
   const fuelProgress = (totalProgress / (tasks.length * 100)) * 100;
   const isFuelFull = fuelProgress >= 100;
 
   const handleLaunch = () => {
     // Temporary link - replace with actual telegram bot integration
-    window.open("https://t.me/your_bot_here", "_blank");
+    window.open("https://t.me/CommanderSam_bot", "_blank");
   };
 
   const handleTaskClick = (task: MissionTask) => {
