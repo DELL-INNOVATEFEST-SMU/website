@@ -9,7 +9,11 @@ interface Leaf {
 
 const initialColors = ["#A3D9A5", "#F4C95D", "#A4CED4", "#FFC4C4", "#B9A6F2"];
 
-export default function DragLeaves({ onClose: _onClose }: { onClose: () => void }) {
+export default function DragLeaves({
+  onClose: _onClose,
+}: {
+  onClose: () => void;
+}) {
   const [leaves, setLeaves] = useState<Leaf[]>([]);
   const [droppedLeaves, setDroppedLeaves] = useState<Leaf[]>([]);
   const [inputText, setInputText] = useState("");
@@ -83,11 +87,10 @@ export default function DragLeaves({ onClose: _onClose }: { onClose: () => void 
   }, [droppedLeaves]);
 
   return (
-    <div className="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-      
-
-      <p className="mb-6 text-center text-gray-700">
-        Type your worry, add a leaf, then drag it to the stream to let it flow away.
+    <div className="max-w-xl mx-auto p-6 bg-slate-900/95 backdrop-blur-sm border border-slate-700/50 rounded-lg shadow-2xl">
+      <p className="mb-6 text-center text-slate-300">
+        Type your worry, add a leaf, then drag it to the stream to let it flow
+        away.
       </p>
 
       {/* Input to add worries */}
@@ -96,12 +99,12 @@ export default function DragLeaves({ onClose: _onClose }: { onClose: () => void 
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           placeholder="Type your worry here"
-          className="flex-1 p-2 border rounded"
+          className="flex-1 p-2 border border-slate-600/50 rounded bg-slate-800/60 text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50"
         />
         <button
           onClick={addLeaf}
           disabled={inputText.trim() === ""}
-          className="px-4 py-2 bg-green-600 text-white rounded disabled:opacity-50"
+          className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded disabled:opacity-50 border border-green-500/50 shadow"
         >
           Add Leaf
         </button>
@@ -158,4 +161,4 @@ export default function DragLeaves({ onClose: _onClose }: { onClose: () => void 
       </div>
     </div>
   );
-};
+}

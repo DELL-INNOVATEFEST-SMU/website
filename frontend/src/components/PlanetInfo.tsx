@@ -44,10 +44,10 @@ export const PlanetInfo: React.FC<PlanetInfoProps> = ({
   };
   return (
     <div className="absolute bottom-6 left-6 right-6 md:right-auto md:max-w-md z-20">
-      <Card className="bg-card/90 backdrop-blur-sm border-border">
-        <CardHeader className="pb-3">
+      <Card className="bg-slate-900/95 backdrop-blur-sm border-slate-700/50 shadow-2xl">
+        <CardHeader className="pb-3 bg-gradient-to-r from-slate-800/80 to-slate-900/80 rounded-t-lg">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-xl font-bold text-foreground flex items-center gap-2">
+            <CardTitle className="text-xl font-bold text-slate-100 flex items-center gap-2">
               <div
                 className="w-4 h-4 rounded-full"
                 style={{ backgroundColor: planet.color }}
@@ -58,22 +58,24 @@ export const PlanetInfo: React.FC<PlanetInfoProps> = ({
               variant="ghost"
               size="sm"
               onClick={onClose}
-              className="h-8 w-8 p-0"
+              className="h-8 w-8 p-0 text-slate-400 hover:text-white hover:bg-slate-700/50"
             >
               <X className="h-4 w-4" />
             </Button>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">{planet.description}</p>
+        <CardContent className="space-y-4 bg-slate-900/95">
+          <p className="text-sm text-slate-300">{planet.description}</p>
 
           <div className="space-y-2">
-            <h4 className="text-sm font-semibold text-foreground">
-              Key Facts:
-            </h4>
+            <h4 className="text-sm font-semibold text-slate-100">Key Facts:</h4>
             <div className="flex flex-wrap gap-1">
               {planet.facts.map((fact, index) => (
-                <Badge key={index} variant="secondary" className="text-xs">
+                <Badge
+                  key={index}
+                  variant="secondary"
+                  className="text-xs bg-slate-800/60 border-slate-700/50 text-slate-200"
+                >
                   {fact}
                 </Badge>
               ))}
@@ -82,19 +84,19 @@ export const PlanetInfo: React.FC<PlanetInfoProps> = ({
 
           <div className="grid grid-cols-2 gap-4 text-xs">
             <div>
-              <span className="text-muted-foreground">Relative Size:</span>
-              <p className="font-medium">
+              <span className="text-slate-400">Relative Size:</span>
+              <p className="font-medium text-slate-200">
                 {(planet.size / 0.15).toFixed(2)}x Earth
               </p>
             </div>
             <div>
-              <span className="text-muted-foreground">Distance:</span>
-              <p className="font-medium">{planet.distance} AU</p>
+              <span className="text-slate-400">Distance:</span>
+              <p className="font-medium text-slate-200">{planet.distance} AU</p>
             </div>
           </div>
           {planet.activities && planet.activities.length > 0 && (
             <div className="mt-4">
-              <h4 className="text-sm font-semibold text-foreground">
+              <h4 className="text-sm font-semibold text-slate-100">
                 Try Activities:
               </h4>
               <div className="flex gap-2 flex-wrap">
@@ -126,25 +128,31 @@ export const PlanetInfo: React.FC<PlanetInfoProps> = ({
           {activeActivity && (
             <div
               className="fixed inset-0 flex items-center justify-center z-50"
-              style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+              style={{ backgroundColor: "rgba(0, 0, 0, 0.8)" }}
             >
-              <div className="bg-white p-6 rounded-lg shadow-lg max-w-md">
-                <h3 className="text-lg font-semibold mb-2">
+              <div className="bg-slate-900/95 backdrop-blur-sm border border-slate-700/50 p-6 rounded-lg shadow-2xl max-w-md">
+                <h3 className="text-lg font-semibold mb-2 text-slate-100">
                   {activeActivity.name}
                 </h3>
-                <p className="mb-4">{activeActivity.description}</p>
+                <p className="mb-4 text-slate-300">
+                  {activeActivity.description}
+                </p>
                 <activeActivity.component onClose={handleActivityComplete} />
                 <Button
                   onClick={handleActivityComplete}
                   variant="outline"
-                  className="mt-4 w-full"
+                  className="mt-4 w-full border-slate-600/50 text-slate-200 hover:bg-slate-800/50"
                 >
                   Complete Mission
                 </Button>
               </div>
             </div>
           )}
-          <Button onClick={onClose} className="w-full mt-4" variant="outline">
+          <Button
+            onClick={onClose}
+            className="w-full mt-4 border-slate-600/50 text-slate-200 hover:bg-slate-800/50"
+            variant="outline"
+          >
             Back to Solar System
           </Button>
         </CardContent>
