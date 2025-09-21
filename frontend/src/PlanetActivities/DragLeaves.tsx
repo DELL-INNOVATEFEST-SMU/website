@@ -104,7 +104,7 @@ export default function DragLeaves({
         <button
           onClick={addLeaf}
           disabled={inputText.trim() === ""}
-          className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded disabled:opacity-50 border border-green-500/50 shadow"
+          className="px-4 py-2 bg-slate-900/95 border border-green-500 text-green-400 rounded shadow hover:bg-green-500/20 hover:text-green-300 hover:border-green-400 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Add Leaf
         </button>

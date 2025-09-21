@@ -76,7 +76,7 @@ export default function CalmSoundsMixer({
             onClick={() => toggleSound(id)}
             className={`w-8 h-8 rounded-full flex items-center justify-center text-xl border transition-colors ${
               activeSounds[id]
-                ? "bg-cyan-600 text-white border-cyan-500/50"
+                ? "bg-slate-900/95 text-green-400 border-green-500 hover:bg-green-500/20 hover:text-green-300 hover:border-green-400"
                 : "bg-slate-700 text-slate-300 border-slate-600/50 hover:bg-slate-600"
             }`}
             aria-label={`Toggle ${name} sound`}

@@ -141,7 +141,7 @@ export const PlanetInfo: React.FC<PlanetInfoProps> = ({
                 <Button
                   onClick={handleActivityComplete}
                   variant="outline"
-                  className="mt-4 w-full border-slate-600/50 text-slate-200 hover:bg-slate-800/50"
+                  className="mt-4 w-full border-green-500 text-green-400 bg-slate-900/95 hover:bg-green-500/20 hover:text-green-300 hover:border-green-400"
                 >
                   Complete Mission
                 </Button>
@@ -150,7 +150,7 @@ export const PlanetInfo: React.FC<PlanetInfoProps> = ({
           )}
           <Button
             onClick={onClose}
-            className="w-full mt-4 border-slate-600/50 text-slate-200 hover:bg-slate-800/50"
+            className="w-full mt-4 border-green-500 text-green-400 bg-slate-900/95 hover:bg-green-500/20 hover:text-green-300 hover:border-green-400"
             variant="outline"
           >
             Back to Solar System

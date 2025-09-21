@@ -85,7 +85,7 @@ export default function DanceTherapyTrial({
           <button
             onClick={nextStep}
             disabled={inputs[stepIndex].trim() === ""}
-            className={`px-4 py-2 rounded shadow border border-cyan-500/50 bg-cyan-600 hover:bg-cyan-500 text-white disabled:opacity-50 disabled:cursor-not-allowed`}
+            className={`px-4 py-2 rounded shadow border border-green-500 bg-slate-900/95 text-green-400 hover:bg-green-500/20 hover:text-green-300 hover:border-green-400 disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             Next
           </button>
@@ -93,7 +93,7 @@ export default function DanceTherapyTrial({
           <button
             onClick={() => alert("Great job rewriting your story!")}
             disabled={inputs[stepIndex].trim() === ""}
-            className="px-4 py-2 rounded shadow border border-green-500/50 bg-green-600 hover:bg-green-500 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 rounded shadow border border-green-500 bg-slate-900/95 text-green-400 hover:bg-green-500/20 hover:text-green-300 hover:border-green-400 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Finish
           </button>

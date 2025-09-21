@@ -181,14 +181,14 @@ export default function BoxBreathingModal({
         {!running ? (
           <button
             onClick={start}
-            className="flex-1 px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded shadow border border-cyan-500/50"
+            className="flex-1 px-4 py-2 bg-slate-900/95 border border-green-500 text-green-400 rounded shadow hover:bg-green-500/20 hover:text-green-300 hover:border-green-400"
           >
             Start
           </button>
         ) : (
           <button
             onClick={pause}
-            className="flex-1 px-4 py-2 bg-yellow-600 hover:bg-yellow-500 text-white rounded shadow border border-yellow-500/50"
+            className="flex-1 px-4 py-2 bg-slate-900/95 border border-yellow-500 text-yellow-400 rounded shadow hover:bg-yellow-500/20 hover:text-yellow-300 hover:border-yellow-400"
           >
             Pause
           </button>
@@ -196,7 +196,7 @@ export default function BoxBreathingModal({
 
         <button
           onClick={reset}
-          className="flex-1 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded shadow border border-slate-600/50"
+          className="flex-1 px-4 py-2 bg-slate-900/95 border border-slate-600 text-slate-300 rounded shadow hover:bg-slate-700/50 hover:text-slate-200 hover:border-slate-500"
         >
           Reset
         </button>

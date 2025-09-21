@@ -77,19 +77,19 @@ export default function DanceTherapyTrial({
         className={`w-48 h-48 bg-slate-800/60 border border-slate-600/50 rounded-lg flex items-center justify-center ${step.animationClass}`}
       >
         {/* You can add SVG or image here for visualization */}
-        <span className="text-lg italic text-cyan-400">Dance Move</span>
+        <span className="text-lg italic text-green-400">Dance Move</span>
       </div>
 
       <p className="text-center text-slate-300">{step.description}</p>
 
-      <div className="text-2xl font-bold text-cyan-400">{secondsLeft}s</div>
+      <div className="text-2xl font-bold text-green-400">{secondsLeft}s</div>
 
       <div className="flex justify-center gap-2">
         {danceSteps.map((_, idx) => (
           <span
             key={idx}
             className={`w-3 h-3 rounded-full cursor-pointer transition-colors ${
-              idx === currentStepIdx ? "bg-cyan-500" : "bg-slate-600"
+              idx === currentStepIdx ? "bg-green-500" : "bg-slate-600"
             }`}
             onClick={() => {
               setCurrentStepIdx(idx);

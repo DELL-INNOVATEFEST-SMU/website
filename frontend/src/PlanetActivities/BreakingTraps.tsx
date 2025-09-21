@@ -88,7 +88,7 @@ export default function ThinkingTrapBreaker({
       {showReframe && currentIndex < traps.length - 1 && (
         <button
           onClick={handleNextTrap}
-          className="mt-6 px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded shadow border border-cyan-500/50"
+          className="mt-6 px-4 py-2 bg-slate-900/95 border border-green-500 text-green-400 rounded shadow hover:bg-green-500/20 hover:text-green-300 hover:border-green-400"
         >
           Next Trap
         </button>
