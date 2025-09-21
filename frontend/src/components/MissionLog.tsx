@@ -29,8 +29,10 @@ const MissionLogBubble: React.FC<{
   totalTasks: number;
   onClick: () => void;
 }> = ({ isOpen, completedCount, totalTasks, onClick }) => {
+  if (isOpen) return null;
+
   return (
-    <div className="fixed bottom-6 left-6 z-50 transition-all duration-300 ease-in-out hover:scale-105 active:scale-95">
+    <div className="fixed bottom-6 left-6 z-50 pointer-events-auto transition-all duration-300 ease-in-out hover:scale-105 active:scale-95">
       {/* Pulsing Ring Effect for completed tasks */}
       {completedCount > 0 && (
         <div
@@ -44,7 +46,10 @@ const MissionLogBubble: React.FC<{
 
       {/* Main Mission Log Bubble */}
       <Button
-        onClick={onClick}
+        onClick={() => {
+          console.log("MissionLogBubble clicked!");
+          onClick();
+        }}
         size="lg"
         className={cn(
           "relative h-14 w-14 rounded-full shadow-lg z-10",
