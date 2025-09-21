@@ -428,11 +428,17 @@ export const SolarSystem: React.FC = () => {
     "milky_way"
   );
 
-  // Mission completion state
-  const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set());
+  // Mission completion state - persisted in localStorage
+  const [completedTasks, setCompletedTasks] = useState<Set<string>>(() => {
+    const saved = localStorage.getItem("mission-completed-tasks");
+    return saved ? new Set(JSON.parse(saved)) : new Set();
+  });
 
-  // Mission attempt tracking state
-  const [attemptedTasks, setAttemptedTasks] = useState<Set<string>>(new Set());
+  // Mission attempt tracking state - persisted in localStorage
+  const [attemptedTasks, setAttemptedTasks] = useState<Set<string>>(() => {
+    const saved = localStorage.getItem("mission-attempted-tasks");
+    return saved ? new Set(JSON.parse(saved)) : new Set();
+  });
 
   // Mission log visibility state
   const [isMissionLogOpen, setIsMissionLogOpen] = useState(false);
@@ -445,6 +451,22 @@ export const SolarSystem: React.FC = () => {
 
   // Show save progress prompt after user has done some activity
   const [activityCount, setActivityCount] = useState(0);
+
+  // Persist completed tasks to localStorage
+  useEffect(() => {
+    localStorage.setItem(
+      "mission-completed-tasks",
+      JSON.stringify([...completedTasks])
+    );
+  }, [completedTasks]);
+
+  // Persist attempted tasks to localStorage
+  useEffect(() => {
+    localStorage.setItem(
+      "mission-attempted-tasks",
+      JSON.stringify([...attemptedTasks])
+    );
+  }, [attemptedTasks]);
 
   const toggleTrap = (trapTitle: string) => {
     setSelectedTraps((prev) =>
@@ -652,7 +674,7 @@ export const SolarSystem: React.FC = () => {
       Jupiter: "rewrite-story",
       Mercury: "calm-storm",
       Neptune: "break-traps",
-      Venus: "replenish-oxygen",
+      // Venus no longer has a mission task (replaced with cosmic compass)
     };
 
     if (selectedPlanet && planetToTaskMap[selectedPlanet.name]) {
@@ -669,7 +691,7 @@ export const SolarSystem: React.FC = () => {
       Jupiter: "rewrite-story",
       Mercury: "calm-storm",
       Neptune: "break-traps",
-      Venus: "replenish-oxygen",
+      // Venus no longer has a mission task (replaced with cosmic compass)
     };
 
     if (selectedPlanet && planetToTaskMap[selectedPlanet.name]) {
@@ -755,7 +777,12 @@ export const SolarSystem: React.FC = () => {
           {/* Cosmic Compass Quiz Button */}
           <div className="mb-4">
             <Button
-              onClick={() => navigate("/cosmic-compass")}
+              onClick={() => {
+                navigate("/cosmic-compass");
+                // Mark as both attempted and completed for proper fuel calculation
+                handleTaskAttempt("find-cosmic-compass");
+                handleTaskComplete("find-cosmic-compass");
+              }}
               variant="default"
               size="sm"
               className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-none"
@@ -802,6 +829,7 @@ export const SolarSystem: React.FC = () => {
           completedTasks={completedTasks}
           attemptedTasks={attemptedTasks}
           onTaskComplete={handleTaskComplete}
+          onTaskAttempt={handleTaskAttempt}
           isOpen={isMissionLogOpen}
           onToggle={() => setIsMissionLogOpen(!isMissionLogOpen)}
         />

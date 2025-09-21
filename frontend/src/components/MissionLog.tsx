@@ -27,6 +27,7 @@ interface MissionLogProps {
   completedTasks: Set<string>;
   attemptedTasks: Set<string>;
   onTaskComplete: (taskId: string) => void;
+  onTaskAttempt: (taskId: string) => void;
   isOpen: boolean;
   onToggle: () => void;
 }
@@ -217,6 +218,7 @@ export const MissionLog: React.FC<MissionLogProps> = ({
   completedTasks,
   attemptedTasks,
   onTaskComplete,
+  onTaskAttempt,
   isOpen,
   onToggle,
 }) => {
@@ -254,7 +256,9 @@ export const MissionLog: React.FC<MissionLogProps> = ({
       // Handle cosmic compass navigation specially
       if (task.id === "find-cosmic-compass") {
         onNavigate("/cosmic-compass");
-        onTaskComplete(task.id); // Mark as completed immediately when clicked
+        // Mark as both attempted and completed for proper fuel calculation
+        onTaskAttempt(task.id);
+        onTaskComplete(task.id);
       } else {
         onPlanetClick(task.planet);
       }
