@@ -34,6 +34,7 @@ interface PlanetData {
   description: string;
   facts: string[];
   texturePath?: string;
+  characterPath?: string;
   hasRings?: boolean;
   activities?: PlanetActivity[];
   rotationSpeed?: number;
@@ -93,6 +94,7 @@ const planets: PlanetData[] = [
     description: "The smallest and fastest planet, closest to the Sun.",
     facts: ["Closest to the Sun", "No atmosphere", "Extreme temperatures"],
     texturePath: "/textures/bodies/mercury.jpg",
+    characterPath: "/mascots/mercury_art.JPG",
     rotationSpeed: 1,
     tilt: 0.00017,
     activities: [CalmSoundsActivity],
@@ -106,6 +108,7 @@ const planets: PlanetData[] = [
     description: "The hottest planet with a thick, toxic atmosphere.",
     facts: ["Hottest planet", "Thick atmosphere", "Rotates backwards"],
     texturePath: "/textures/bodies/Venus.jpg",
+    characterPath: "/mascots/venus_art.jpg",
     rotationSpeed: 1,
     tilt: 3.09639,
     activities: [boxBreathingActivity],
@@ -119,6 +122,7 @@ const planets: PlanetData[] = [
     description: "Our home planet, the only known planet with life.",
     facts: ["Only planet with life", "71% water coverage", "One natural moon"],
     texturePath: "/textures/bodies/Earth.jpg",
+    characterPath: "/mascots/earth_art.JPG",
     rotationSpeed: 1,
     tilt: 0.40928,
     activities: [DragLeavesActivity],
@@ -132,6 +136,7 @@ const planets: PlanetData[] = [
     description: "The red planet with the largest volcano in the solar system.",
     facts: ["Red planet", "Largest volcano", "Two small moons"],
     texturePath: "/textures/bodies/Mars.jpg",
+    characterPath: "/mascots/mars_art.JPG",
     rotationSpeed: 0.5,
     tilt: 0.43965,
     activities: [StainedGlassActivity],
@@ -145,6 +150,7 @@ const planets: PlanetData[] = [
     description: "The largest planet with a great red spot storm.",
     facts: ["Largest planet", "Great Red Spot storm", "Over 80 moons"],
     texturePath: "/textures/bodies/Jupiter.jpg",
+    characterPath: "/mascots/jupiter_art.JPG",
     rotationSpeed: 0.2,
     tilt: 0.05463,
     activities: [StoryRewriteActivity],
@@ -158,6 +164,7 @@ const planets: PlanetData[] = [
     description: "Famous for its prominent ring system.",
     facts: ["Prominent rings", "Less dense than water", "Over 80 moons"],
     texturePath: "/textures/bodies/saturn.jpg",
+    characterPath: "/mascots/saturn_art.jpg",
     hasRings: true,
     rotationSpeed: 0.1,
     tilt: 0.46653,
@@ -172,6 +179,7 @@ const planets: PlanetData[] = [
     description: "An ice giant that rotates on its side.",
     facts: ["Rotates on its side", "Made of ice and rock", "Faint ring system"],
     texturePath: "/textures/bodies/uranus.jpg",
+    characterPath: "/mascots/uranus_art.JPG",
     rotationSpeed: 0.07,
     tilt: 1.70622,
     activities: [WorryTreeActivity],
@@ -185,6 +193,7 @@ const planets: PlanetData[] = [
     description: "The windiest planet with supersonic winds.",
     facts: ["Windiest planet", "Supersonic winds", "Deep blue color"],
     texturePath: "/textures/bodies/Neptune.jpg",
+    characterPath: "/mascots/neptune_art.JPG",
     rotationSpeed: 0.06,
     tilt: 0.49428,
     activities: [ThinkingTrapActivity],
