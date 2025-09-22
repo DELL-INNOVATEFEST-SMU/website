@@ -22,6 +22,7 @@ import StainedGlass from "@/PlanetActivities/StainedGlass2";
 import CalmSoundsMixer from "@/PlanetActivities/CalmSoundsMixer";
 import { useResponsive } from "@/hooks/use-mobile";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { TrendingUp } from "lucide-react";
 
 interface PlanetActivity {
   name: string;
@@ -736,7 +737,7 @@ export const SolarSystem: React.FC = () => {
         className="absolute inset-0"
       >
         <OrbitControls
-          enablePan={!isSmallMobile}
+          enablePan={true}
           enableZoom={true}
           enableRotate={true}
           minDistance={isMobile ? 4 : 3}
