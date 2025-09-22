@@ -239,14 +239,12 @@ export function AuthGate() {
   const handleBackToEmail = () => {
     setShowOTPInput(false);
     setOtpToken("");
-    setIsNewUser(false);
   };
 
   const resetForm = () => {
     setEmail("");
     setOtpToken("");
     setShowOTPInput(false);
-    setIsNewUser(false);
   };
 
   if (!open) return null;

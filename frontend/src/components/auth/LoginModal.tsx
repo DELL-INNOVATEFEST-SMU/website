@@ -192,14 +192,12 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
   const handleBackToEmail = () => {
     setShowOTPInput(false);
     setOtpToken("");
-    setIsNewUser(false);
   };
 
   const resetForm = () => {
     setEmail("");
     setOtpToken("");
     setShowOTPInput(false);
-    setIsNewUser(false);
   };
 
   const handleClose = () => {
