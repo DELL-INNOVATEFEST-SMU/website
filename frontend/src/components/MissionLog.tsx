@@ -424,8 +424,8 @@ export const MissionLog: React.FC<MissionLogProps> = ({
         >
           <Card
             className={`bg-slate-900/95 border-slate-700 backdrop-blur-sm ${
-              isMobile ? "max-h-[80vh] overflow-y-auto" : ""
-            }`}
+              isMobile ? "max-h-[80vh]" : "max-h-[85vh]"
+            } overflow-y-auto`}
           >
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
@@ -448,6 +448,9 @@ export const MissionLog: React.FC<MissionLogProps> = ({
                   <X className={isMobile ? "h-5 w-5" : "h-4 w-4"} />
                 </Button>
               </div>
+              <p className="text-sm text-slate-400 mt-2">
+                Tap on a planet to start a mission. Each completed mission fuels your tank and helps you feel better along the way.
+              </p>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Mission Tasks */}
