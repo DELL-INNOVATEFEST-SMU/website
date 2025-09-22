@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { useFormattedResult } from "@/hooks/use-quiz-state";
 import { PlanetImage } from "./PlanetImage";
+import { X } from "lucide-react";
 
 interface ResultsCardProps {
   result: any;
@@ -29,6 +31,7 @@ export function ResultsCard({
   submitAndReveal,
 }: ResultsCardProps) {
   const formattedResult = useFormattedResult(result);
+  const [showImagePopup, setShowImagePopup] = useState(false);
 
   if (!formattedResult) {
     return (
@@ -44,6 +47,8 @@ export function ResultsCard({
     // You can configure the endpoint here or leave empty for simulation
     const LEAD_ENDPOINT = ""; // Add your webhook URL here
     await submitAndReveal(LEAD_ENDPOINT);
+    // Show popup after submission
+    setShowImagePopup(true);
   };
 
   const handleShare = () => {
@@ -134,23 +139,17 @@ export function ResultsCard({
             />
           </div>
 
-          <div className="cosmic-planet-description">
-            {formattedResult.planetDescription}
-          </div>
 
           {/* Action Buttons */}
-          <a
+          {/* <a
             href={formattedResult.referralInfo.url}
             target="_blank"
             rel="noopener noreferrer"
             className="cosmic-cta"
           >
             {formattedResult.referralInfo.label}
-          </a>
+          </a> */}
 
-          <button className="cosmic-cta alt" onClick={handleShare}>
-            Share your Cosmic Affinity
-          </button>
           {/* Result Badges */}
           <div className="cosmic-grid2">
             
@@ -163,6 +162,60 @@ export function ResultsCard({
           <div className="cosmic-phq-note">
             PHQ-4 total: <strong>{formattedResult.phqTotal}</strong>. Brief
             sentiments, this is not a diagnosis.
+          </div>
+        </div>
+      )}
+
+      {/* Planet Image Popup */}
+      {showImagePopup && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-60 p-4"
+          onClick={() => setShowImagePopup(false)}
+        >
+          <div
+            className="relative bg-slate-900/95 backdrop-blur-md border border-slate-700/50 rounded-lg p-6 max-w-lg w-full max-h-[90vh] overflow-auto shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setShowImagePopup(false)}
+              className="absolute top-4 right-4 bg-transparent border border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100 hover:border-slate-500 h-8 w-8 rounded flex items-center justify-center"
+            >
+              <X className="h-4 w-4" />
+            </button>
+
+            {/* Celebration Message */}
+            <div className="text-center mb-4">
+              <h2 className="text-2xl font-bold text-green-400 mb-2">
+                🎉 Congratulations! 🎉
+              </h2>
+              <p className="text-lg text-slate-100">
+                You got <span className="font-bold text-blue-400">{formattedResult.planet.name}</span>!
+              </p>
+            </div>
+
+            {/* Large Planet Image */}
+            <div className="flex justify-center mb-4">
+              <PlanetImage
+                planetId={formattedResult.planet.id}
+                className="w-full max-w-sm rounded-lg border-2 border-slate-600"
+                alt={`${formattedResult.planet.name} mascot`}
+              />
+            </div>
+
+            {/* Share Button */}
+            <div className="text-center mb-4">
+              <button className="cosmic-cta alt w-full" onClick={handleShare}>
+                Share your Cosmic Affinity
+              </button>
+            </div>
+
+            {/* Close Instructions */}
+            <div className="text-center text-slate-300">
+              <p className="text-sm">
+                Click anywhere outside to close
+              </p>
+            </div>
           </div>
         </div>
       )}

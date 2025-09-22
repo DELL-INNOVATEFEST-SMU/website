@@ -440,11 +440,11 @@
 }
 
 .cosmic-planet-mascot {
-  max-width: 120px;
-  max-height: 120px;
+  max-width: 80%;
+  max-height: 400px;
   width: auto;
   height: auto;
-  border-radius: 50%;
+  border-radius: 12px;
   border: 3px solid var(--cosmic-border);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -478,8 +478,8 @@
 /* Responsive adjustments for planet images */
 @media (max-width: 768px) {
   .cosmic-planet-mascot {
-    max-width: 100px;
-    max-height: 100px;
+    max-width: 85%;
+    max-height: 300px;
   }
   
   .planet-image-fallback {
