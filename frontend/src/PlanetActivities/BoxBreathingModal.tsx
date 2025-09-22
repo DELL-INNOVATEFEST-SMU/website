@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useResponsive } from "@/hooks/use-mobile";
 
 const PHASES = ["Inhale", "Hold", "Exhale", "Hold"];
 const DEFAULT_SIDE_SECONDS = 4; // default 4s per side
@@ -8,6 +9,7 @@ export default function BoxBreathingModal({
 }: {
   onClose: () => void;
 }) {
+  const { isSmallMobile } = useResponsive();
   const [running, setRunning] = useState(false);
   const [sideSeconds, setSideSeconds] = useState(DEFAULT_SIDE_SECONDS);
   const [startTime, setStartTime] = useState<number | null>(null);
@@ -151,17 +153,21 @@ export default function BoxBreathingModal({
   };
 
   return (
-    <div className="max-w-3xl w-full max-h-[80vh] overflow-y-auto p-6 bg-slate-900/95 backdrop-blur-sm border border-slate-700/50 text-slate-100 rounded-lg relative flex flex-col items-center gap-6 shadow-2xl">
-      <p className="mb-4 text-sm text-slate-300 text-center">
+    <div className="w-full max-h-[80vh] overflow-y-auto p-4 sm:p-6 bg-slate-900/95 backdrop-blur-sm border border-slate-700/50 text-slate-100 rounded-lg relative flex flex-col items-center gap-4 sm:gap-6 shadow-2xl">
+      <p className="mb-4 text-sm sm:text-base text-slate-300 text-center">
         Follow a 4-4-4-4 pattern. The dot moves around the square — inhale
         (top), hold (right), exhale (bottom), hold (left).
       </p>
 
-      {/* Breathing box fills full width */}
+      {/* Breathing box responsive */}
       <div
         ref={squareRef}
         className="relative bg-slate-800/60 border border-slate-700/50 rounded-lg shadow-2xl"
-        style={{ width: "100%", aspectRatio: "1 / 1" }}
+        style={{
+          width: "100%",
+          maxWidth: isSmallMobile ? "280px" : "400px",
+          aspectRatio: "1 / 1",
+        }}
       >
         {/* square outline */}
         <div className="absolute inset-0 rounded-md border-6 border-cyan-400/50 box-border" />
@@ -169,26 +175,26 @@ export default function BoxBreathingModal({
         <div style={dotStyle} aria-hidden />
         {/* center label */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <div className="text-lg font-medium text-slate-200">
+          <div className="text-base sm:text-lg font-medium text-slate-200">
             {PHASES[phaseIndex]}
           </div>
-          <div className="text-4xl font-bold mt-2 text-cyan-400">
+          <div className="text-2xl sm:text-4xl font-bold mt-2 text-cyan-400">
             {phaseSecRemaining}s
           </div>
         </div>
       </div>
-      <div className="flex gap-3 w-full max-w-md">
+      <div className="flex flex-col sm:flex-row gap-3 w-full max-w-md">
         {!running ? (
           <button
             onClick={start}
-            className="flex-1 px-4 py-2 bg-slate-900/95 border border-green-500 text-green-400 rounded shadow hover:bg-green-500/20 hover:text-green-300 hover:border-green-400"
+            className="flex-1 px-4 py-2 bg-slate-900/95 border border-green-500 text-green-400 rounded shadow hover:bg-green-500/20 hover:text-green-300 hover:border-green-400 min-h-[44px] touch-manipulation"
           >
             Start
           </button>
         ) : (
           <button
             onClick={pause}
-            className="flex-1 px-4 py-2 bg-slate-900/95 border border-yellow-500 text-yellow-400 rounded shadow hover:bg-yellow-500/20 hover:text-yellow-300 hover:border-yellow-400"
+            className="flex-1 px-4 py-2 bg-slate-900/95 border border-yellow-500 text-yellow-400 rounded shadow hover:bg-yellow-500/20 hover:text-yellow-300 hover:border-yellow-400 min-h-[44px] touch-manipulation"
           >
             Pause
           </button>
@@ -196,7 +202,7 @@ export default function BoxBreathingModal({
 
         <button
           onClick={reset}
-          className="flex-1 px-4 py-2 bg-slate-900/95 border border-slate-600 text-slate-300 rounded shadow hover:bg-slate-700/50 hover:text-slate-200 hover:border-slate-500"
+          className="flex-1 px-4 py-2 bg-slate-900/95 border border-slate-600 text-slate-300 rounded shadow hover:bg-slate-700/50 hover:text-slate-200 hover:border-slate-500 min-h-[44px] touch-manipulation"
         >
           Reset
         </button>
@@ -222,7 +228,7 @@ export default function BoxBreathingModal({
       </div>
 
       {/* How it works */}
-      <div className="w-full max-w-md text-slate-300 text-sm leading-relaxed">
+      <div className="w-full max-w-md text-slate-300 text-sm sm:text-base leading-relaxed">
         <h3 className="font-semibold mb-2 text-slate-100">How it works</h3>
         <ol className="list-decimal list-inside space-y-1 mb-4">
           <li>

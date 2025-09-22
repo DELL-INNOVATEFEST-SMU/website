@@ -31,13 +31,13 @@ export default function CalmSoundsMixer({
     setVolumes(initialVolumes);
   }, []);
   useEffect(() => {
-  return () => {
-    Object.values(audioRefs.current).forEach((audio) => {
-      audio.pause();
-      audio.currentTime = 0;
-    });
-  };
-}, []);
+    return () => {
+      Object.values(audioRefs.current).forEach((audio) => {
+        audio.pause();
+        audio.currentTime = 0;
+      });
+    };
+  }, []);
 
   useEffect(() => {
     // Play/pause and update volume on activeSounds or volumes change
@@ -74,15 +74,18 @@ export default function CalmSoundsMixer({
   };
 
   return (
-    <div className="max-w-md p-4 bg-slate-900/95 backdrop-blur-sm border border-slate-700/50 rounded-lg shadow-2xl">
-      <h2 className="text-xl font-semibold mb-4 text-slate-100">
+    <div className="w-full p-4 sm:p-6 bg-slate-900/95 backdrop-blur-sm border border-slate-700/50 rounded-lg shadow-2xl">
+      <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-slate-100">
         Calm Sounds Mixer
       </h2>
       {sounds.map(({ id, name, icon }) => (
-        <div key={id} className="flex items-center mb-4 space-x-4">
+        <div
+          key={id}
+          className="flex flex-col sm:flex-row items-start sm:items-center mb-4 sm:mb-6 space-y-2 sm:space-y-0 sm:space-x-4"
+        >
           <button
             onClick={() => toggleSound(id)}
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-xl border transition-colors ${
+            className={`w-10 h-10 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xl border transition-colors min-h-[44px] min-w-[44px] touch-manipulation ${
               activeSounds[id]
                 ? "bg-slate-900/95 text-green-400 border-green-500 hover:bg-green-500/20 hover:text-green-300 hover:border-green-400"
                 : "bg-slate-700 text-slate-300 border-slate-600/50 hover:bg-slate-600"
@@ -91,7 +94,9 @@ export default function CalmSoundsMixer({
           >
             {icon}
           </button>
-          <span className="w-20 text-slate-200">{name}</span>
+          <span className="w-20 text-slate-200 text-sm sm:text-base">
+            {name}
+          </span>
           <input
             type="range"
             min={0}
@@ -100,7 +105,7 @@ export default function CalmSoundsMixer({
             value={volumes[id] ?? 0.5}
             disabled={!activeSounds[id]}
             onChange={(e) => changeVolume(id, Number(e.target.value))}
-            className="flex-1 accent-cyan-500"
+            className="flex-1 w-full sm:w-auto accent-cyan-500 min-h-[44px] touch-manipulation"
           />
         </div>
       ))}

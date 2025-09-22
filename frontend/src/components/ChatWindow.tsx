@@ -3,6 +3,7 @@ import { Send, X, Minimize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { useResponsive } from "@/hooks/use-mobile";
 import type { ChatMessage } from "@/types/chat";
 
 interface ChatWindowProps {
@@ -35,6 +36,7 @@ export function ChatWindow({
   className,
 }: ChatWindowProps) {
   const [inputMessage, setInputMessage] = useState("");
+  const { isMobile } = useResponsive();
 
   console.log("ChatWindow render - isOpen:", isOpen);
 
@@ -64,7 +66,9 @@ export function ChatWindow({
   return (
     <div
       className={cn(
-        "fixed bottom-6 right-6 z-50 w-96 h-[500px]",
+        isMobile
+          ? "fixed inset-0 z-50 w-full h-full"
+          : "fixed bottom-6 right-6 z-50 w-96 h-[500px]",
         "transition-all duration-300 ease-in-out",
         "animate-in slide-in-from-bottom-5 fade-in-0",
         className
@@ -196,59 +200,76 @@ export function ChatWindow({
           </div>
 
           {/* Input Area */}
-          <div className="border-t border-slate-700/50 bg-slate-800/40 p-4">
-            <form onSubmit={handleSubmit} className="flex gap-2">
+          <div
+            className={`border-t border-slate-700/50 bg-slate-800/40 ${
+              isMobile ? "p-3" : "p-4"
+            }`}
+          >
+            <form
+              onSubmit={handleSubmit}
+              className={`flex ${isMobile ? "gap-3" : "gap-2"}`}
+            >
               <div className="flex-1 relative">
                 <input
                   type="text"
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Type your message..."
+                  placeholder={
+                    isMobile ? "Type message..." : "Type your message..."
+                  }
                   disabled={isLoading}
                   className={cn(
-                    "w-full px-3 py-2 bg-slate-700/50 border border-slate-600/50 rounded-md",
-                    "text-slate-100 placeholder:text-slate-400 text-sm",
+                    "w-full bg-slate-700/50 border border-slate-600/50 rounded-md",
+                    "text-slate-100 placeholder:text-slate-400",
                     "focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50",
-                    "disabled:opacity-50 disabled:cursor-not-allowed"
+                    "disabled:opacity-50 disabled:cursor-not-allowed",
+                    isMobile
+                      ? "px-4 py-3 text-base min-h-touch"
+                      : "px-3 py-2 text-sm"
                   )}
                 />
               </div>
               <Button
                 type="submit"
                 disabled={!inputMessage.trim() || isLoading}
-                size="sm"
-                className="bg-cyan-600 hover:bg-cyan-500 text-white border-cyan-500/50"
+                size={isMobile ? "default" : "sm"}
+                className={cn(
+                  "bg-cyan-600 hover:bg-cyan-500 text-white border-cyan-500/50",
+                  isMobile && "min-h-touch px-4"
+                )}
               >
-                <Send className="h-4 w-4" />
+                <Send className={isMobile ? "h-5 w-5" : "h-4 w-4"} />
               </Button>
             </form>
 
             {/* Status Bar */}
-            <div className="flex items-center justify-between mt-3 text-xs">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-slate-400">LOC:</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-slate-400">PWR:</span>
-                  <div className="w-16 h-1.5 bg-slate-700 rounded-full overflow-hidden">
-                    <div className="w-3/4 h-full bg-orange-500 rounded-full" />
+            {!isMobile && (
+              <div className="flex items-center justify-between mt-3 text-xs">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-400">LOC:</span>
                   </div>
-                  <span className="text-orange-400">75%</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-slate-400">SYS:</span>
-                  <div className="w-16 h-1.5 bg-slate-700 rounded-full overflow-hidden">
-                    <div className="w-full h-full bg-green-500 rounded-full" />
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-400">PWR:</span>
+                    <div className="w-16 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                      <div className="w-3/4 h-full bg-orange-500 rounded-full" />
+                    </div>
+                    <span className="text-orange-400">75%</span>
                   </div>
-                  <span className="text-green-400">100%</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-400">SYS:</span>
+                    <div className="w-16 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                      <div className="w-full h-full bg-green-500 rounded-full" />
+                    </div>
+                    <span className="text-green-400">100%</span>
+                  </div>
+                </div>
+                <div className="text-slate-500">
+                  <span className="text-cyan-400">DEEP SPACE</span>
                 </div>
               </div>
-              <div className="text-slate-500">
-                <span className="text-cyan-400">DEEP SPACE</span>
-              </div>
-            </div>
+            )}
           </div>
         </CardContent>
       </Card>

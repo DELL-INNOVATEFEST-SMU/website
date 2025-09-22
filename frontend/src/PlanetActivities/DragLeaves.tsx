@@ -87,37 +87,37 @@ export default function DragLeaves({
   }, [droppedLeaves]);
 
   return (
-    <div className="max-w-xl mx-auto p-6 bg-slate-900/95 backdrop-blur-sm border border-slate-700/50 rounded-lg shadow-2xl">
-      <p className="mb-6 text-center text-slate-300">
+    <div className="w-full mx-auto p-4 sm:p-6 bg-slate-900/95 backdrop-blur-sm border border-slate-700/50 rounded-lg shadow-2xl">
+      <p className="mb-4 sm:mb-6 text-center text-slate-300 text-sm sm:text-base">
         Type your worry, add a leaf, then drag it to the stream to let it flow
         away.
       </p>
 
       {/* Input to add worries */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex flex-col sm:flex-row gap-2 mb-4 sm:mb-6">
         <input
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           placeholder="Type your worry here"
-          className="flex-1 p-2 border border-slate-600/50 rounded bg-slate-800/60 text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50"
+          className="flex-1 p-3 sm:p-2 border border-slate-600/50 rounded bg-slate-800/60 text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 text-sm sm:text-base"
         />
         <button
           onClick={addLeaf}
           disabled={inputText.trim() === ""}
-          className="px-4 py-2 bg-slate-900/95 border border-green-500 text-green-400 rounded shadow hover:bg-green-500/20 hover:text-green-300 hover:border-green-400 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 py-3 sm:py-2 bg-slate-900/95 border border-green-500 text-green-400 rounded shadow hover:bg-green-500/20 hover:text-green-300 hover:border-green-400 disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] touch-manipulation"
         >
           Add Leaf
         </button>
       </div>
 
       {/* Leaves available to drag */}
-      <div className="flex gap-4 mb-8 justify-center flex-wrap">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8 justify-center">
         {leaves.map((leaf) => (
           <div
             key={leaf.id}
             draggable
             onDragStart={(e) => handleDragStart(e, leaf.id)}
-            className="min-w-[80px] min-h-[80px] rounded-xl flex items-center justify-center cursor-grab select-none p-4"
+            className="min-w-[80px] min-h-[80px] rounded-xl flex items-center justify-center cursor-grab select-none p-3 sm:p-4 touch-manipulation"
             style={{
               backgroundColor: leaf.color,
               userSelect: "none",
@@ -126,7 +126,7 @@ export default function DragLeaves({
             }}
             title={leaf.text}
           >
-            {leaf.text}
+            <span className="text-xs sm:text-sm font-medium">{leaf.text}</span>
           </div>
         ))}
       </div>
@@ -135,11 +135,11 @@ export default function DragLeaves({
       <div
         onDrop={handleDrop}
         onDragOver={handleDragOver}
-        className="relative h-40 bg-blue-200 rounded-lg border-4 border-blue-400 overflow-hidden"
+        className="relative h-32 sm:h-40 bg-blue-200 rounded-lg border-4 border-blue-400 overflow-hidden"
         aria-label="Stream drop area"
       >
         {droppedLeaves.length === 0 && (
-          <p className="text-center w-full text-gray-500 mt-12">
+          <p className="text-center w-full text-gray-500 mt-8 sm:mt-12 text-sm sm:text-base">
             Drop leaves here to gently let go of your worries...
           </p>
         )}
@@ -147,7 +147,7 @@ export default function DragLeaves({
         {droppedLeaves.map((leaf) => (
           <div
             key={leaf.id}
-            className="absolute top-1/2 transform -translate-y-1/2 rounded-xl flex items-center justify-center px-4 py-2 text-white font-semibold shadow-lg select-none"
+            className="absolute top-1/2 transform -translate-y-1/2 rounded-xl flex items-center justify-center px-3 sm:px-4 py-2 text-white font-semibold shadow-lg select-none"
             style={{
               backgroundColor: leaf.color,
               left: `${leaf.x}%`,
@@ -155,7 +155,7 @@ export default function DragLeaves({
               transition: "left 0.1s linear",
             }}
           >
-            {leaf.text}
+            <span className="text-xs sm:text-sm">{leaf.text}</span>
           </div>
         ))}
       </div>

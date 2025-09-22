@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useResponsive } from "@/hooks/use-mobile";
 
 const COLORS = [
   "#F87171",
@@ -33,6 +34,7 @@ const shapes = [
 ];
 
 export default function StainedGlassWithPalette() {
+  const { isSmallMobile } = useResponsive();
   const [selectedColor, setSelectedColor] = useState(COLORS[0]);
   const [fills, setFills] = useState<{ [key: string]: string }>({});
 
@@ -41,14 +43,14 @@ export default function StainedGlassWithPalette() {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-4">
+    <div className="flex flex-col items-center space-y-4 sm:space-y-6">
       {/* Color Palette */}
-      <div className="flex flex-wrap justify-center gap-2">
+      <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
         {COLORS.map((color) => (
           <button
             key={color}
             onClick={() => setSelectedColor(color)}
-            className="w-8 h-8 rounded-full border-2 border-slate-600/50 hover:border-slate-500 transition-colors"
+            className="w-10 h-10 sm:w-8 sm:h-8 rounded-full border-2 border-slate-600/50 hover:border-slate-500 transition-colors min-h-[44px] min-w-[44px] touch-manipulation"
             style={{
               backgroundColor: color,
               outline: selectedColor === color ? "3px solid #0ea5e9" : "none",
@@ -61,8 +63,12 @@ export default function StainedGlassWithPalette() {
       {/* Stained Glass SVG */}
       <svg
         viewBox="0 0 100 100"
-        className="border-4 border-slate-600/50 rounded-md bg-slate-800/30"
-        style={{ width: 250, height: 250, cursor: "pointer" }}
+        className="border-4 border-slate-600/50 rounded-md bg-slate-800/30 w-full max-w-sm sm:max-w-md md:max-w-lg"
+        style={{
+          height: "auto",
+          maxHeight: isSmallMobile ? "250px" : "400px",
+          cursor: "pointer",
+        }}
       >
         {shapes.map((shape) => {
           if (shape.type === "circle") {

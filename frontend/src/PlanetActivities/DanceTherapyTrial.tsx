@@ -70,25 +70,34 @@ export default function DanceTherapyTrial({
   const step = danceSteps[currentStepIdx];
 
   return (
-    <div className="max-w-md p-6 bg-slate-900/95 backdrop-blur-sm border border-slate-700/50 rounded-lg shadow-2xl relative flex flex-col items-center gap-4">
-      <h2 className="text-xl font-semibold text-slate-100">{step.name}</h2>
+    <div className="w-full p-4 sm:p-6 bg-slate-900/95 backdrop-blur-sm border border-slate-700/50 rounded-lg shadow-2xl relative flex flex-col items-center gap-4 sm:gap-6">
+      <h2 className="text-lg sm:text-xl font-semibold text-slate-100 text-center">
+        {step.name}
+      </h2>
 
       <div
-        className={`w-48 h-48 bg-slate-800/60 border border-slate-600/50 rounded-lg flex items-center justify-center ${step.animationClass}`}
+        className={`w-full max-w-xs sm:max-w-sm bg-slate-800/60 border border-slate-600/50 rounded-lg flex items-center justify-center ${step.animationClass}`}
+        style={{ aspectRatio: "1 / 1" }}
       >
         {/* You can add SVG or image here for visualization */}
-        <span className="text-lg italic text-green-400">Dance Move</span>
+        <span className="text-base sm:text-lg italic text-green-400">
+          Dance Move
+        </span>
       </div>
 
-      <p className="text-center text-slate-300">{step.description}</p>
+      <p className="text-center text-slate-300 text-sm sm:text-base px-4">
+        {step.description}
+      </p>
 
-      <div className="text-2xl font-bold text-green-400">{secondsLeft}s</div>
+      <div className="text-xl sm:text-2xl font-bold text-green-400">
+        {secondsLeft}s
+      </div>
 
       <div className="flex justify-center gap-2">
         {danceSteps.map((_, idx) => (
           <span
             key={idx}
-            className={`w-3 h-3 rounded-full cursor-pointer transition-colors ${
+            className={`w-4 h-4 sm:w-3 sm:h-3 rounded-full cursor-pointer transition-colors touch-manipulation ${
               idx === currentStepIdx ? "bg-green-500" : "bg-slate-600"
             }`}
             onClick={() => {
