@@ -21,6 +21,7 @@ import ThinkingTrapBreaker from "@/PlanetActivities/BreakingTraps";
 import StainedGlass from "@/PlanetActivities/StainedGlass2";
 import CalmSoundsMixer from "@/PlanetActivities/CalmSoundsMixer";
 import { useResponsive } from "@/hooks/use-mobile";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
 
 interface PlanetActivity {
   name: string;
@@ -879,25 +880,22 @@ export const SolarSystem: React.FC = () => {
         />
       )}
       {activeActivity && (
-        <div
-          className="fixed inset-0  flex items-center justify-center z-50"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+        <ResponsiveModal
+          isOpen={!!activeActivity}
+          onClose={handleActivityComplete}
+          title={activeActivity.name}
+          description={activeActivity.description}
+          size="lg"
         >
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md">
-            <h3 className="text-lg font-semibold mb-2">
-              {activeActivity.name}
-            </h3>
-            <p className="mb-4">{activeActivity.description}</p>
-            <activeActivity.component onClose={handleActivityComplete} />
-            <Button
-              onClick={handleActivityComplete}
-              variant="outline"
-              className="mt-4 w-full border-green-500 text-green-400 bg-transparent hover:bg-green-500/10 hover:text-green-300 hover:border-green-400"
-            >
-              Complete Mission
-            </Button>
-          </div>
-        </div>
+          <activeActivity.component onClose={handleActivityComplete} />
+          <Button
+            onClick={handleActivityComplete}
+            variant="outline"
+            className="mt-4 w-full border-green-500 text-green-400 bg-transparent hover:bg-green-500/10 hover:text-green-300 hover:border-green-400"
+          >
+            Complete Mission
+          </Button>
+        </ResponsiveModal>
       )}
 
       {/* Journal Modal */}

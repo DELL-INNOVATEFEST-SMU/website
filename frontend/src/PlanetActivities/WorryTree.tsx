@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useResponsive } from "@/hooks/use-mobile";
 
 type Step = {
   question: string;
@@ -55,6 +56,7 @@ const steps: Step[] = [
 ];
 
 export default function WorryTreeModal({ onClose }: { onClose: () => void }) {
+  const { isMobile, isSmallMobile } = useResponsive();
   const [stepIndex, setStepIndex] = useState(0);
   const [answers, setAnswers] = useState<{ [key: number]: string }>({});
 
@@ -75,20 +77,22 @@ export default function WorryTreeModal({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <div className="max-w-md w-full bg-slate-900/95 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6 shadow-2xl relative">
-      <p className="mb-4 text-slate-200">{currentStep.question}</p>
+    <div className="w-full bg-slate-900/95 backdrop-blur-sm border border-slate-700/50 rounded-lg p-4 sm:p-6 shadow-2xl relative">
+      <p className="mb-4 sm:mb-6 text-slate-200 text-sm sm:text-base">
+        {currentStep.question}
+      </p>
 
       {currentStep.type === "yesno" && currentStep.next ? (
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
           <button
             onClick={() => handleYesNo("yes")}
-            className="px-4 py-2 bg-slate-900/95 border border-green-500 text-green-400 rounded shadow hover:bg-green-500/20 hover:text-green-300 hover:border-green-400"
+            className="px-4 py-3 sm:py-2 bg-slate-900/95 border border-green-500 text-green-400 rounded shadow hover:bg-green-500/20 hover:text-green-300 hover:border-green-400 min-h-[44px] touch-manipulation"
           >
             Yes
           </button>
           <button
             onClick={() => handleYesNo("no")}
-            className="px-4 py-2 bg-slate-900/95 border border-red-500 text-red-400 rounded shadow hover:bg-red-500/20 hover:text-red-300 hover:border-red-400"
+            className="px-4 py-3 sm:py-2 bg-slate-900/95 border border-red-500 text-red-400 rounded shadow hover:bg-red-500/20 hover:text-red-300 hover:border-red-400 min-h-[44px] touch-manipulation"
           >
             No
           </button>
@@ -101,7 +105,7 @@ export default function WorryTreeModal({ onClose }: { onClose: () => void }) {
           }}
         >
           <textarea
-            className="w-full p-2 border border-slate-600/50 rounded mb-4 min-h-[80px] bg-slate-800/60 text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50"
+            className="w-full p-3 sm:p-4 border border-slate-600/50 rounded mb-4 min-h-[100px] sm:min-h-[120px] bg-slate-800/60 text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 text-sm sm:text-base resize-none"
             value={answers[stepIndex] || ""}
             onChange={(e) =>
               setAnswers((prev) => ({ ...prev, [stepIndex]: e.target.value }))
@@ -113,14 +117,14 @@ export default function WorryTreeModal({ onClose }: { onClose: () => void }) {
           {!currentStep.next ? (
             <button
               onClick={onClose}
-              className="px-4 py-2 bg-slate-900/95 border border-green-500 text-green-400 rounded mt-2 shadow hover:bg-green-500/20 hover:text-green-300 hover:border-green-400"
+              className="px-4 py-3 sm:py-2 bg-slate-900/95 border border-green-500 text-green-400 rounded mt-2 shadow hover:bg-green-500/20 hover:text-green-300 hover:border-green-400 min-h-[44px] touch-manipulation w-full sm:w-auto"
             >
               Finish
             </button>
           ) : (
             <button
               type="submit"
-              className="px-4 py-2 bg-slate-900/95 border border-green-500 text-green-400 rounded shadow hover:bg-green-500/20 hover:text-green-300 hover:border-green-400"
+              className="px-4 py-3 sm:py-2 bg-slate-900/95 border border-green-500 text-green-400 rounded shadow hover:bg-green-500/20 hover:text-green-300 hover:border-green-400 min-h-[44px] touch-manipulation w-full sm:w-auto"
             >
               Continue
             </button>
