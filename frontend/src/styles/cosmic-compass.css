@@ -111,6 +111,28 @@
   color: var(--cosmic-ink);
 }
 
+.cosmic-question-image {
+  display: flex;
+  justify-content: center;
+  margin: 12px 0 16px;
+}
+
+.question-image {
+  max-width: 100%;
+  max-height: 200px;
+  width: auto;
+  height: auto;
+  border-radius: 12px;
+  border: 1px solid var(--cosmic-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.question-image:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 20px rgba(124, 140, 251, 0.2);
+}
+
 .cosmic-options {
   display: grid;
   gap: 10px;
@@ -387,6 +409,10 @@
   
   .cosmic-question {
     font-size: 16px;
+  }
+  
+  .question-image {
+    max-height: 150px;
   }
   
   .cosmic-nav {

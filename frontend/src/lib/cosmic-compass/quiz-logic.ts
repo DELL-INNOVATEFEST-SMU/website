@@ -18,12 +18,58 @@ export function calculatePHQScore(answers: QuizAnswers): number {
 }
 
 /**
- * Determine PHQ-4 severity band
+ * Extract individual PHQ-4 question scores
  */
-export function getPHQBand(total: number): "normal" | "mild" | "elevated" {
+export function getPHQQuestionScores(answers: QuizAnswers): {
+  q1: number;
+  q2: number;
+  q3: number;
+  q4: number;
+} {
+  return {
+    q1: answers.phq1?.score || 0,
+    q2: answers.phq2?.score || 0,
+    q3: answers.phq3?.score || 0,
+    q4: answers.phq4?.score || 0,
+  };
+}
+
+/**
+ * Calculate anxiety score (Q1 + Q2)
+ */
+export function calculateAnxietyScore(q1: number, q2: number): number {
+  return q1 + q2;
+}
+
+/**
+ * Calculate depression score (Q3 + Q4)
+ */
+export function calculateDepressionScore(q3: number, q4: number): number {
+  return q3 + q4;
+}
+
+/**
+ * Check anxiety risk (≥3)
+ */
+export function hasAnxietyRisk(anxietyScore: number): boolean {
+  return anxietyScore >= 3;
+}
+
+/**
+ * Check depression risk (≥3)
+ */
+export function hasDepressionRisk(depressionScore: number): boolean {
+  return depressionScore >= 3;
+}
+
+/**
+ * Determine PHQ-4 severity band with clinical standards
+ */
+export function getPHQBand(total: number): "normal" | "mild" | "moderate" | "severe" {
   if (total <= 2) return "normal";
   if (total <= 5) return "mild";
-  return "elevated";
+  if (total <= 8) return "moderate";
+  return "severe";
 }
 
 /**
@@ -36,7 +82,7 @@ export function getDominantFlavor(answers: QuizAnswers): string {
   Object.entries(answers).forEach(([id, answer]) => {
     if (id.startsWith("pq") && answer?.tag) {
       const flavor = answer.tag as keyof typeof flavorCounts;
-      if (flavorCounts.hasOwnProperty(flavor)) {
+      if (Object.prototype.hasOwnProperty.call(flavorCounts, flavor)) {
         flavorCounts[flavor]++;
       }
     }
@@ -115,11 +161,12 @@ export function getReferralInfo(referral: "samh" | "comit" | "limitless") {
 /**
  * Get PHQ band label with score range
  */
-export function getPHQBandLabel(band: "normal" | "mild" | "elevated"): string {
+export function getPHQBandLabel(band: "normal" | "mild" | "moderate" | "severe"): string {
   const labels = {
     normal: "Normal (0–2)",
     mild: "Mild (3–5)",
-    elevated: "Elevated (6–12)"
+    moderate: "Moderate (6–8)",
+    severe: "Severe (9–12)"
   };
   
   return labels[band];
@@ -136,8 +183,22 @@ export function capitalize(str: string): string {
  * Process all quiz answers and generate complete result
  */
 export function processQuizAnswers(answers: QuizAnswers): QuizResult {
+  // Extract individual PHQ-4 scores
+  const phqScores = getPHQQuestionScores(answers);
+  
+  // Calculate derived scores
   const phqTotal = calculatePHQScore(answers);
+  const anxietyScore = calculateAnxietyScore(phqScores.q1, phqScores.q2);
+  const depressionScore = calculateDepressionScore(phqScores.q3, phqScores.q4);
+  
+  // Determine risk flags
+  const anxietyRisk = hasAnxietyRisk(anxietyScore);
+  const depressionRisk = hasDepressionRisk(depressionScore);
+  
+  // Get severity band
   const phqBand = getPHQBand(phqTotal);
+  
+  // Rest of the existing logic
   const dominantFlavor = getDominantFlavor(answers);
   const age = getAge(answers);
   const nationality = getNationality(answers);
@@ -149,6 +210,11 @@ export function processQuizAnswers(answers: QuizAnswers): QuizResult {
   return {
     phqTotal,
     phqBand,
+    phqScores,
+    anxietyScore,
+    depressionScore,
+    anxietyRisk,
+    depressionRisk,
     dominantFlavor,
     planet,
     age,
@@ -170,14 +236,16 @@ export function isQuestionAnswered(questionId: string, questionType: string, ans
     case "planet":
       return answer.score !== undefined || answer.tag !== undefined;
       
-    case "input_year":
+    case "input_year": {
       const year = parseInt((answer.year || "").trim(), 10);
       const currentYear = new Date().getFullYear();
       return Number.isInteger(year) && year >= 1900 && year <= currentYear;
+    }
       
-    case "select_nat":
+    case "select_nat": {
       const nat = answer.nat || "";
       return nat === "sg" || nat === "spr" || nat === "non-sg";
+    }
       
     default:
       return true;
@@ -227,6 +295,7 @@ export function buildLeadPayload(
       answers,
       phqTotal: result.phqTotal,
       phqBand: result.phqBand,
+      phqScores: result.phqScores,
       dominantFlavor: result.dominantFlavor,
       planetId: result.planet.id,
       planetName: result.planet.name,

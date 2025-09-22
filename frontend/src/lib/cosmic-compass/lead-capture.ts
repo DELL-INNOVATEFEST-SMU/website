@@ -16,6 +16,12 @@ export interface LeadCapturePayload {
     answers: QuizAnswers;
     phqTotal: number;
     phqBand: string;
+    phqScores: {
+      q1: number;
+      q2: number;
+      q3: number;
+      q4: number;
+    };
     dominantFlavor: string;
     planetId: string;
     planetName: string;
@@ -54,6 +60,10 @@ export async function submitLeadCapture(payload: LeadCapturePayload): Promise<vo
           referral: payload.quiz.referral,
           user_agent: payload.meta.userAgent,
           source: payload.meta.source,
+          q1: payload.quiz.phqScores.q1,
+          q2: payload.quiz.phqScores.q2,
+          q3: payload.quiz.phqScores.q3,
+          q4: payload.quiz.phqScores.q4,
           created_at: payload.meta.timestamp,
         }
       ]);

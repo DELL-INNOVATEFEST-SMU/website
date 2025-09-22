@@ -28,6 +28,10 @@ CREATE TABLE cosmic_compass_leads (
   referral text NOT NULL,
   user_agent text,
   source text DEFAULT 'cosmic-compass-react',
+  q1 integer,
+  q2 integer,
+  q3 integer,
+  q4 integer,
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now()
 );
@@ -71,6 +75,13 @@ The quiz is accessible at `/cosmic-compass` and includes a navigation button in 
 
 The PHQ-4 questions are rendered verbatim to maintain clinical screening integrity. The scoring follows standard PHQ-4 guidelines:
 
-- Normal: 0-2
-- Mild: 3-5
-- Elevated: 6-12
+- **Normal**: 0-2
+- **Mild**: 3-5
+- **Moderate**: 6-8
+- **Severe**: 9-12
+
+**Anxiety and Depression Scoring:**
+
+- **Anxiety Score**: Q1 + Q2 (≥3 indicates anxiety risk)
+- **Depression Score**: Q3 + Q4 (≥3 indicates depression risk)
+- Individual question scores (q1, q2, q3, q4) are stored separately in the database for detailed analytics
