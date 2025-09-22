@@ -29,7 +29,8 @@ export interface PlanetMatrix {
   [flavor: string]: {
     normal: PlanetAssignment;
     mild: PlanetAssignment;
-    elevated: PlanetAssignment;
+    moderate: PlanetAssignment;
+    severe: PlanetAssignment;
   };
 }
 
@@ -44,7 +45,17 @@ export interface QuizAnswers {
 
 export interface QuizResult {
   phqTotal: number;
-  phqBand: "normal" | "mild" | "elevated";
+  phqBand: "normal" | "mild" | "moderate" | "severe";
+  phqScores: {
+    q1: number;
+    q2: number;
+    q3: number;
+    q4: number;
+  };
+  anxietyScore: number;
+  depressionScore: number;
+  anxietyRisk: boolean;
+  depressionRisk: boolean;
   dominantFlavor: string;
   planet: PlanetAssignment;
   age: number | null;
@@ -207,22 +218,26 @@ export const PLANET_MATRIX: PlanetMatrix = {
   fire: {
     normal: { id: "mars", name: "Mars" },
     mild: { id: "mercury", name: "Mercury" },
-    elevated: { id: "venus", name: "Venus" }
+    moderate: { id: "venus", name: "Venus" },
+    severe: { id: "mercury", name: "Mercury" }
   },
   ice: {
     normal: { id: "saturn", name: "Saturn" },
     mild: { id: "uranus", name: "Uranus" },
-    elevated: { id: "pluto", name: "Pluto" }
+    moderate: { id: "pluto", name: "Pluto" },
+    severe: { id: "uranus", name: "Uranus" }
   },
   water: {
     normal: { id: "earth", name: "Earth" },
     mild: { id: "venus", name: "Venus" },
-    elevated: { id: "neptune", name: "Neptune" }
+    moderate: { id: "neptune", name: "Neptune" },
+    severe: { id: "venus", name: "Venus" }
   },
   air: {
     normal: { id: "jupiter", name: "Jupiter" },
     mild: { id: "uranus", name: "Uranus" },
-    elevated: { id: "neptune", name: "Neptune" }
+    moderate: { id: "neptune", name: "Neptune" },
+    severe: { id: "uranus", name: "Uranus" }
   },
 };
 
