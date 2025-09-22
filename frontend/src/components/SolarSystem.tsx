@@ -757,8 +757,8 @@ export const SolarSystem: React.FC = () => {
         {/* Top Controls */}
         <div
           className={`absolute ${
-            isMobile ? "top-2 left-2 right-2" : "top-4 left-4"
-          } pointer-events-auto`}
+            isMobile ? "top-2 left-2" : "top-4 left-4"
+          } pointer-events-auto z-10`}
         >
           <div className={`flex ${isMobile ? "flex-col gap-2" : "gap-2"} mb-4`}>
             <div className={`flex ${isMobile ? "gap-2" : "gap-2"}`}>
@@ -799,9 +799,7 @@ export const SolarSystem: React.FC = () => {
               }}
               variant="default"
               size={isMobile ? "sm" : "sm"}
-              className={`min-h-touch bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-none ${
-                isMobile ? "w-full" : ""
-              }`}
+              className="min-h-touch bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-none"
             >
               🧭 Cosmic Compass Quiz
             </Button>
@@ -815,10 +813,10 @@ export const SolarSystem: React.FC = () => {
         <div
           className={`absolute ${
             isMobile ? "top-2 right-2" : "top-4 right-4"
-          } pointer-events-auto`}
+          } pointer-events-auto z-10`}
         >
           <div className={`flex ${isMobile ? "flex-col gap-2" : "gap-2"}`}>
-            {user ? (
+            {user || isAnonymous ? (
               <>
                 <Button
                   onClick={signOut}
