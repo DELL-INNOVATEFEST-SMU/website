@@ -30,6 +30,14 @@ export default function CalmSoundsMixer({
     });
     setVolumes(initialVolumes);
   }, []);
+  useEffect(() => {
+  return () => {
+    Object.values(audioRefs.current).forEach((audio) => {
+      audio.pause();
+      audio.currentTime = 0;
+    });
+  };
+}, []);
 
   useEffect(() => {
     // Play/pause and update volume on activeSounds or volumes change
