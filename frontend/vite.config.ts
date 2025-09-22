@@ -11,4 +11,8 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    host: true, // This exposes the server to your local network
+    port: 5173, // Default Vite port
+  },
 })
