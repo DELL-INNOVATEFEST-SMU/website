@@ -67,6 +67,10 @@ export function ResultsCard({
 
   return (
     <div className="cosmic-results-card">
+      <div className="cosmic-badge">
+              Dominant vibe:{" "}
+              <strong>{formattedResult.dominantFlavorLabel}</strong>
+            </div>
       <h2 className="cosmic-results-title">Unlock your planet</h2>
       <div className="cosmic-results-subtitle">
         Enter your email or phone number to reveal your result. By doing this,
@@ -116,16 +120,7 @@ export function ResultsCard({
       {/* Results Reveal */}
       {showReveal && (
         <div style={{ marginTop: "12px" }}>
-          {/* Result Badges */}
-          <div className="cosmic-grid2">
-            <div className="cosmic-badge">
-              Dominant vibe:{" "}
-              <strong>{formattedResult.dominantFlavorLabel}</strong>
-            </div>
-            <div className="cosmic-badge">
-              PHQ-4 band: <strong>{formattedResult.phqBandLabel}</strong>
-            </div>
-          </div>
+          
 
           {/* Planet Assignment */}
           <h3 className="cosmic-planet-title">{formattedResult.planet.name}</h3>
@@ -156,6 +151,13 @@ export function ResultsCard({
           <button className="cosmic-cta alt" onClick={handleShare}>
             Share your Cosmic Affinity
           </button>
+          {/* Result Badges */}
+          <div className="cosmic-grid2">
+            
+            <div className="cosmic-badge">
+              PHQ-4 band: <strong>{formattedResult.phqBandLabel}</strong>
+            </div>
+          </div>
 
           {/* PHQ Note */}
           <div className="cosmic-phq-note">
