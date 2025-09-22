@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,8 @@ import {
   ClipboardList,
   X,
   Clock,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useResponsive } from "@/hooks/use-mobile";
@@ -32,6 +34,100 @@ interface MissionLogProps {
   isOpen: boolean;
   onToggle: () => void;
 }
+
+// Scroll Navigation Component for Mobile
+const ScrollNavigation: React.FC<{
+  onScrollUp: () => void;
+  onScrollDown: () => void;
+}> = ({ onScrollUp, onScrollDown }) => {
+  const { isMobile } = useResponsive();
+  const [isScrollingUp, setIsScrollingUp] = useState(false);
+  const [isScrollingDown, setIsScrollingDown] = useState(false);
+  const scrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Cleanup on unmount
+  React.useEffect(() => {
+    return () => {
+      if (scrollIntervalRef.current) {
+        clearInterval(scrollIntervalRef.current);
+      }
+    };
+  }, []);
+
+  if (!isMobile) return null;
+
+  const startScrolling = (direction: "up" | "down") => {
+    if (scrollIntervalRef.current) return; // Prevent multiple intervals
+
+    if (direction === "up") {
+      setIsScrollingUp(true);
+    } else {
+      setIsScrollingDown(true);
+    }
+
+    // Initial scroll
+    if (direction === "up") {
+      onScrollUp();
+    } else {
+      onScrollDown();
+    }
+
+    // Continuous scrolling
+    scrollIntervalRef.current = setInterval(() => {
+      if (direction === "up") {
+        onScrollUp();
+      } else {
+        onScrollDown();
+      }
+    }, 100); // Scroll every 100ms for smooth continuous scrolling
+  };
+
+  const stopScrolling = () => {
+    if (scrollIntervalRef.current) {
+      clearInterval(scrollIntervalRef.current);
+      scrollIntervalRef.current = null;
+    }
+    setIsScrollingUp(false);
+    setIsScrollingDown(false);
+  };
+
+  return (
+    <div className="fixed z-50 pointer-events-auto bottom-24 left-4 flex flex-col gap-2">
+      <Button
+        onMouseDown={() => startScrolling("up")}
+        onMouseUp={stopScrolling}
+        onMouseLeave={stopScrolling}
+        onTouchStart={() => startScrolling("up")}
+        onTouchEnd={stopScrolling}
+        size="sm"
+        className={`h-10 w-10 p-0 rounded-full border border-slate-600/50 backdrop-blur-sm transition-all duration-200 hover:scale-105 ${
+          isScrollingUp
+            ? "bg-green-600/90 hover:bg-green-600/90"
+            : "bg-slate-800/90 hover:bg-slate-700/90"
+        }`}
+        aria-label="Scroll up"
+      >
+        <ChevronUp className="h-5 w-5 text-white" />
+      </Button>
+      <Button
+        onMouseDown={() => startScrolling("down")}
+        onMouseUp={stopScrolling}
+        onMouseLeave={stopScrolling}
+        onTouchStart={() => startScrolling("down")}
+        onTouchEnd={stopScrolling}
+        size="sm"
+        className={`h-10 w-10 p-0 rounded-full border border-slate-600/50 backdrop-blur-sm transition-all duration-200 hover:scale-105 ${
+          isScrollingDown
+            ? "bg-green-600/90 hover:bg-green-600/90"
+            : "bg-slate-800/90 hover:bg-slate-700/90"
+        }`}
+        aria-label="Scroll down"
+      >
+        <ChevronDown className="h-5 w-5 text-white" />
+      </Button>
+    </div>
+  );
+};
 
 // Mission Log Bubble Component (similar to ChatBubble)
 const MissionLogBubble: React.FC<{
@@ -287,6 +383,14 @@ export const MissionLog: React.FC<MissionLogProps> = ({
     window.open("https://t.me/CommanderSam_bot", "_blank");
   };
 
+  const handleScrollUp = () => {
+    window.scrollBy({ top: -window.innerHeight * 0.8, behavior: "smooth" });
+  };
+
+  const handleScrollDown = () => {
+    window.scrollBy({ top: window.innerHeight * 0.8, behavior: "smooth" });
+  };
+
   const handleTaskClick = (task: MissionTask) => {
     if (!task.completed) {
       // Handle cosmic compass navigation specially
@@ -303,6 +407,14 @@ export const MissionLog: React.FC<MissionLogProps> = ({
 
   return (
     <>
+      {/* Scroll Navigation - only show when mission log is closed on mobile */}
+      {!isOpen && (
+        <ScrollNavigation
+          onScrollUp={handleScrollUp}
+          onScrollDown={handleScrollDown}
+        />
+      )}
+
       {/* Mission Log Panel */}
       {isOpen && (
         <div

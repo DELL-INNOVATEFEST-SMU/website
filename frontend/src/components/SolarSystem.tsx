@@ -22,7 +22,6 @@ import StainedGlass from "@/PlanetActivities/StainedGlass2";
 import CalmSoundsMixer from "@/PlanetActivities/CalmSoundsMixer";
 import { useResponsive } from "@/hooks/use-mobile";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { TrendingUp } from "lucide-react";
 
 interface PlanetActivity {
   name: string;
@@ -416,7 +415,7 @@ const GuestModeIndicator: React.FC<{ onUpgrade: () => void }> = ({
 export const SolarSystem: React.FC = () => {
   const { user, signOut, isAnonymous } = useAuthContext();
   const navigate = useNavigate();
-  const { isMobile, isSmallMobile } = useResponsive();
+  const { isMobile } = useResponsive();
   const [showSavePrompt, setShowSavePrompt] = useState(false);
   const [activeActivity, setActiveActivity] = useState<PlanetActivity | null>(
     null
