@@ -11,6 +11,7 @@ import {
   Clock,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useResponsive } from "@/hooks/use-mobile";
 
 interface MissionTask {
   id: string;
@@ -39,10 +40,16 @@ const MissionLogBubble: React.FC<{
   totalTasks: number;
   onClick: () => void;
 }> = ({ isOpen, completedCount, totalTasks, onClick }) => {
+  const { isMobile } = useResponsive();
+
   if (isOpen) return null;
 
   return (
-    <div className="fixed bottom-6 left-6 z-50 pointer-events-auto transition-all duration-300 ease-in-out hover:scale-105 active:scale-95">
+    <div
+      className={`fixed z-50 pointer-events-auto transition-all duration-300 ease-in-out hover:scale-105 active:scale-95 ${
+        isMobile ? "bottom-4 left-4" : "bottom-6 left-6"
+      }`}
+    >
       {/* Pulsing Ring Effect for completed tasks */}
       {completedCount > 0 && (
         <div
@@ -60,9 +67,11 @@ const MissionLogBubble: React.FC<{
           console.log("MissionLogBubble clicked!");
           onClick();
         }}
-        size="lg"
+        size={isMobile ? "default" : "lg"}
         className={cn(
-          "relative h-14 w-14 rounded-full shadow-lg z-10",
+          `relative rounded-full shadow-lg z-10 min-h-touch ${
+            isMobile ? "h-16 w-16" : "h-14 w-14"
+          }`,
           "bg-gradient-to-br from-green-600 via-emerald-600 to-teal-700",
           "hover:from-green-500 hover:via-emerald-500 hover:to-teal-600",
           "border-2 border-white/20",
@@ -70,11 +79,17 @@ const MissionLogBubble: React.FC<{
           completedCount === totalTasks && "animate-pulse"
         )}
       >
-        <ClipboardList className="h-6 w-6 text-white" />
+        <ClipboardList
+          className={`${isMobile ? "h-7 w-7" : "h-6 w-6"} text-white`}
+        />
 
         {/* Completion Progress Indicator */}
         {completedCount > 0 && (
-          <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 bg-green-500 hover:bg-green-500 text-white text-xs border-2 border-white">
+          <Badge
+            className={`absolute -top-1 -right-1 p-0 bg-green-500 hover:bg-green-500 text-white text-xs border-2 border-white ${
+              isMobile ? "h-6 w-6" : "h-5 w-5"
+            }`}
+          >
             {completedCount}
           </Badge>
         )}
@@ -173,6 +188,8 @@ const MissionTaskCard: React.FC<{
   isAttempted: boolean;
   onClick: () => void;
 }> = ({ task, isCompleted, isAttempted, onClick }) => {
+  const { isMobile } = useResponsive();
+
   return (
     <Card
       className={`cursor-pointer transition-all duration-300 hover:scale-105 ${
@@ -184,27 +201,45 @@ const MissionTaskCard: React.FC<{
       } backdrop-blur-sm`}
       onClick={onClick}
     >
-      <CardContent className="p-4">
-        <div className="flex items-center gap-3">
+      <CardContent className={isMobile ? "p-3" : "p-4"}>
+        <div className={`flex items-center ${isMobile ? "gap-4" : "gap-3"}`}>
           {/* Planet Color Indicator */}
           <div
-            className="w-4 h-4 rounded-full border-2 border-white/20"
+            className={`${
+              isMobile ? "w-5 h-5" : "w-4 h-4"
+            } rounded-full border-2 border-white/20`}
             style={{ backgroundColor: task.planetColor }}
           />
 
           {/* Task Info */}
           <div className="flex-1">
-            <h3 className="font-semibold text-white text-sm">{task.title}</h3>
-            <p className="text-xs text-slate-400">on {task.planet}</p>
+            <h3
+              className={`font-semibold text-white ${
+                isMobile ? "text-base" : "text-sm"
+              }`}
+            >
+              {task.title}
+            </h3>
+            <p className={`text-slate-400 ${isMobile ? "text-sm" : "text-xs"}`}>
+              on {task.planet}
+            </p>
           </div>
 
           {/* Completion Status */}
           {isCompleted ? (
-            <CheckCircle2 className="h-5 w-5 text-green-400" />
+            <CheckCircle2
+              className={`${isMobile ? "h-6 w-6" : "h-5 w-5"} text-green-400`}
+            />
           ) : isAttempted ? (
-            <Clock className="h-5 w-5 text-yellow-400" />
+            <Clock
+              className={`${isMobile ? "h-6 w-6" : "h-5 w-5"} text-yellow-400`}
+            />
           ) : (
-            <div className="w-5 h-5 border-2 border-slate-400 rounded-full" />
+            <div
+              className={`${
+                isMobile ? "w-6 h-6" : "w-5 h-5"
+              } border-2 border-slate-400 rounded-full`}
+            />
           )}
         </div>
       </CardContent>
@@ -223,6 +258,7 @@ export const MissionLog: React.FC<MissionLogProps> = ({
   onToggle,
 }) => {
   const [tasks] = useState(missionTasks);
+  const { isMobile } = useResponsive();
 
   // Update tasks with completion and attempt status
   const updatedTasks = tasks.map((task) => ({
@@ -269,21 +305,35 @@ export const MissionLog: React.FC<MissionLogProps> = ({
     <>
       {/* Mission Log Panel */}
       {isOpen && (
-        <div className="absolute top-4 right-4 w-80 z-30 pointer-events-auto">
-          <Card className="bg-slate-900/95 border-slate-700 backdrop-blur-sm">
+        <div
+          className={`absolute z-30 pointer-events-auto ${
+            isMobile ? "inset-4 w-auto max-w-sm mx-auto" : "top-4 right-4 w-80"
+          }`}
+        >
+          <Card
+            className={`bg-slate-900/95 border-slate-700 backdrop-blur-sm ${
+              isMobile ? "max-h-[80vh] overflow-y-auto" : ""
+            }`}
+          >
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-xl font-bold text-green-400 flex items-center gap-2">
+                <CardTitle
+                  className={`${
+                    isMobile ? "text-lg" : "text-xl"
+                  } font-bold text-green-400 flex items-center gap-2`}
+                >
                   <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse" />
                   MISSION LOG
                 </CardTitle>
                 <Button
                   variant="ghost"
-                  size="sm"
+                  size={isMobile ? "default" : "sm"}
                   onClick={onToggle}
-                  className="h-8 w-8 p-0 text-slate-400 hover:text-white"
+                  className={`${
+                    isMobile ? "min-h-touch" : "h-8 w-8 p-0"
+                  } text-slate-400 hover:text-white`}
                 >
-                  <X className="h-4 w-4" />
+                  <X className={isMobile ? "h-5 w-5" : "h-4 w-4"} />
                 </Button>
               </div>
             </CardHeader>

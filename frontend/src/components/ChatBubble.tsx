@@ -2,6 +2,7 @@ import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useResponsive } from "@/hooks/use-mobile";
 
 interface ChatBubbleProps {
   isOpen: boolean;
@@ -22,13 +23,16 @@ export function ChatBubble({
   onClick,
   className,
 }: ChatBubbleProps) {
+  const { isMobile } = useResponsive();
+
   if (isOpen) return null;
 
   return (
     <div
       className={cn(
-        "fixed bottom-6 right-6 z-50 transition-all duration-300 ease-in-out",
-        "hover:scale-105 active:scale-95",
+        `fixed z-50 transition-all duration-300 ease-in-out hover:scale-105 active:scale-95 ${
+          isMobile ? "bottom-4 right-4" : "bottom-6 right-6"
+        }`,
         className
       )}
     >
@@ -58,9 +62,11 @@ export function ChatBubble({
           console.log("ChatBubble clicked!");
           onClick();
         }}
-        size="lg"
+        size={isMobile ? "default" : "lg"}
         className={cn(
-          "relative h-14 w-14 rounded-full shadow-lg z-10",
+          `relative rounded-full shadow-lg z-10 min-h-touch ${
+            isMobile ? "h-16 w-16" : "h-14 w-14"
+          }`,
           "bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700",
           "hover:from-blue-500 hover:via-purple-500 hover:to-indigo-600",
           "border-2 border-white/20",
@@ -68,11 +74,17 @@ export function ChatBubble({
           hasUnreadMessages && "animate-pulse"
         )}
       >
-        <MessageCircle className="h-6 w-6 text-white" />
+        <MessageCircle
+          className={`${isMobile ? "h-7 w-7" : "h-6 w-6"} text-white`}
+        />
 
         {/* Unread Message Indicator */}
         {hasUnreadMessages && (
-          <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 bg-red-500 hover:bg-red-500 text-white text-xs border-2 border-white">
+          <Badge
+            className={`absolute -top-1 -right-1 p-0 bg-red-500 hover:bg-red-500 text-white text-xs border-2 border-white ${
+              isMobile ? "h-6 w-6" : "h-5 w-5"
+            }`}
+          >
             !
           </Badge>
         )}

@@ -20,6 +20,7 @@ import DragLeaves from "@/PlanetActivities/DragLeaves";
 import ThinkingTrapBreaker from "@/PlanetActivities/BreakingTraps";
 import StainedGlass from "@/PlanetActivities/StainedGlass2";
 import CalmSoundsMixer from "@/PlanetActivities/CalmSoundsMixer";
+import { useResponsive } from "@/hooks/use-mobile";
 
 interface PlanetActivity {
   name: string;
@@ -55,7 +56,8 @@ const WorryTreeActivity: PlanetActivity = {
 };
 const DanceActivity: PlanetActivity = {
   name: "Dance Therapy",
-  description: "Express yourself through movement and dance. Turn on your favorite song and dance along!",
+  description:
+    "Express yourself through movement and dance. Turn on your favorite song and dance along!",
   component: DanceTherapyTrial, // reference to your component for the modal content
 };
 const StoryRewriteActivity: PlanetActivity = {
@@ -412,6 +414,7 @@ const GuestModeIndicator: React.FC<{ onUpgrade: () => void }> = ({
 export const SolarSystem: React.FC = () => {
   const { user, signOut, isAnonymous } = useAuthContext();
   const navigate = useNavigate();
+  const { isMobile, isSmallMobile } = useResponsive();
   const [showSavePrompt, setShowSavePrompt] = useState(false);
   const [activeActivity, setActiveActivity] = useState<PlanetActivity | null>(
     null
@@ -725,15 +728,22 @@ export const SolarSystem: React.FC = () => {
     <div className="relative w-full h-screen bg-black overflow-hidden">
       {/* Solar System Canvas */}
       <Canvas
-        camera={{ position: [0, 2, 8], fov: 75 }}
+        camera={{
+          position: [0, 2, isMobile ? 10 : 8],
+          fov: isMobile ? 60 : 75,
+        }}
         className="absolute inset-0"
       >
         <OrbitControls
-          enablePan={true}
+          enablePan={!isSmallMobile}
           enableZoom={true}
           enableRotate={true}
-          minDistance={3}
-          maxDistance={50}
+          minDistance={isMobile ? 4 : 3}
+          maxDistance={isMobile ? 40 : 50}
+          touches={{
+            ONE: 1, // Single touch for rotation
+            TWO: 2, // Two touches for zoom and pan
+          }}
         />
         <SolarSystemScene
           onPlanetClick={handlePlanetClick}
@@ -745,37 +755,41 @@ export const SolarSystem: React.FC = () => {
       {/* UI Overlay */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Top Controls */}
-        <div className="absolute top-4 left-4 pointer-events-auto">
-          <div className="flex gap-2 mb-4">
-            <Button
-              onClick={() => setBackgroundType("stars")}
-              variant={backgroundType === "stars" ? "default" : "outline"}
-              size="sm"
-              className={
-                backgroundType === "stars"
-                  ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
-                  : "text-gray-600 border-gray-300 hover:bg-gray-50"
-              }
-            >
-              ✨ Stars
-            </Button>
-            <Button
-              onClick={() => setBackgroundType("milky_way")}
-              variant={backgroundType === "milky_way" ? "default" : "outline"}
-              size="sm"
-              className={
-                backgroundType === "milky_way"
-                  ? "bg-purple-600 hover:bg-purple-700 text-white border-purple-600"
-                  : "text-gray-600 border-gray-300 hover:bg-gray-50"
-              }
-              title="Image by standret on Freepik"
-            >
-              🌌 Nebula
-            </Button>
-          </div>
+        <div
+          className={`absolute ${
+            isMobile ? "top-2 left-2 right-2" : "top-4 left-4"
+          } pointer-events-auto`}
+        >
+          <div className={`flex ${isMobile ? "flex-col gap-2" : "gap-2"} mb-4`}>
+            <div className={`flex ${isMobile ? "gap-2" : "gap-2"}`}>
+              <Button
+                onClick={() => setBackgroundType("stars")}
+                variant={backgroundType === "stars" ? "default" : "outline"}
+                size={isMobile ? "sm" : "sm"}
+                className={`min-h-touch ${
+                  backgroundType === "stars"
+                    ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
+                    : "text-gray-600 border-gray-300 hover:bg-gray-50"
+                }`}
+              >
+                ✨ Stars
+              </Button>
+              <Button
+                onClick={() => setBackgroundType("milky_way")}
+                variant={backgroundType === "milky_way" ? "default" : "outline"}
+                size={isMobile ? "sm" : "sm"}
+                className={`min-h-touch ${
+                  backgroundType === "milky_way"
+                    ? "bg-purple-600 hover:bg-purple-700 text-white border-purple-600"
+                    : "text-gray-600 border-gray-300 hover:bg-gray-50"
+                }`}
+                title="Image by standret on Freepik"
+              >
+                🌌 Nebula
+              </Button>
+            </div>
 
-          {/* Cosmic Compass Quiz Button */}
-          <div className="mb-4">
+            {/* Cosmic Compass Quiz Button */}
             <Button
               onClick={() => {
                 navigate("/cosmic-compass");
@@ -784,8 +798,10 @@ export const SolarSystem: React.FC = () => {
                 handleTaskComplete("find-cosmic-compass");
               }}
               variant="default"
-              size="sm"
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-none"
+              size={isMobile ? "sm" : "sm"}
+              className={`min-h-touch bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-none ${
+                isMobile ? "w-full" : ""
+              }`}
             >
               🧭 Cosmic Compass Quiz
             </Button>
@@ -796,19 +812,35 @@ export const SolarSystem: React.FC = () => {
         </div>
 
         {/* Top Right Controls */}
-        <div className="absolute top-4 right-4 pointer-events-auto">
-          <div className="flex gap-2">
+        <div
+          className={`absolute ${
+            isMobile ? "top-2 right-2" : "top-4 right-4"
+          } pointer-events-auto`}
+        >
+          <div className={`flex ${isMobile ? "flex-col gap-2" : "gap-2"}`}>
             {user ? (
               <>
-                <Button onClick={signOut} variant="outline" size="sm">
-                  {isAnonymous ? "Launch Sequence" : "Leave Spacecraft"}
+                <Button
+                  onClick={signOut}
+                  variant="outline"
+                  size="sm"
+                  className="min-h-touch"
+                >
+                  {isMobile
+                    ? isAnonymous
+                      ? "Launch"
+                      : "Leave"
+                    : isAnonymous
+                    ? "Launch Sequence"
+                    : "Leave Spacecraft"}
                 </Button>
                 <Button
                   onClick={() => setShowJournal(true)}
                   variant="default"
                   size="sm"
+                  className="min-h-touch"
                 >
-                  Space Diary
+                  {isMobile ? "Diary" : "Space Diary"}
                 </Button>
               </>
             ) : (
@@ -818,7 +850,11 @@ export const SolarSystem: React.FC = () => {
         </div>
 
         {/* Bottom Chat */}
-        <div className="absolute bottom-4 left-4 right-4 pointer-events-auto">
+        <div
+          className={`absolute ${
+            isMobile ? "bottom-2 left-2 right-2" : "bottom-4 left-4 right-4"
+          } pointer-events-auto`}
+        >
           <SpaceChatSystem />
         </div>
 
@@ -845,25 +881,25 @@ export const SolarSystem: React.FC = () => {
         />
       )}
       {activeActivity && (
-          <div
-            className="fixed inset-0  flex items-center justify-center z-50"
-            style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-          >
-            <div className="bg-white p-6 rounded-lg shadow-lg max-w-md">
-              <h3 className="text-lg font-semibold mb-2">
-                {activeActivity.name}
-              </h3>
-              <p className="mb-4">{activeActivity.description}</p>
-              <activeActivity.component onClose={handleActivityComplete} />
-              <Button
-                onClick={handleActivityComplete}
-                variant="outline"
-                className="mt-4 w-full border-green-500 text-green-400 bg-transparent hover:bg-green-500/10 hover:text-green-300 hover:border-green-400"
-              >
-                Complete Mission
-              </Button>
-            </div>
+        <div
+          className="fixed inset-0  flex items-center justify-center z-50"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+        >
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md">
+            <h3 className="text-lg font-semibold mb-2">
+              {activeActivity.name}
+            </h3>
+            <p className="mb-4">{activeActivity.description}</p>
+            <activeActivity.component onClose={handleActivityComplete} />
+            <Button
+              onClick={handleActivityComplete}
+              variant="outline"
+              className="mt-4 w-full border-green-500 text-green-400 bg-transparent hover:bg-green-500/10 hover:text-green-300 hover:border-green-400"
+            >
+              Complete Mission
+            </Button>
           </div>
+        </div>
       )}
 
       {/* Journal Modal */}
