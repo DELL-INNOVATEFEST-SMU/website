@@ -24,7 +24,7 @@ export function ResponsiveModal({
   showCloseButton = true,
   className,
 }: ResponsiveModalProps) {
-  const { isMobile, isSmallMobile } = useResponsive();
+  const { isSmallMobile } = useResponsive();
 
   const sizeClasses = {
     sm: "max-w-sm",

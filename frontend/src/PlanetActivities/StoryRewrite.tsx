@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useResponsive } from "@/hooks/use-mobile";
 
 const steps = [
   {
@@ -38,7 +37,6 @@ export default function StoryRewrite({
 }: {
   onClose: () => void;
 }) {
-  const { isMobile, isSmallMobile } = useResponsive();
   const [stepIndex, setStepIndex] = useState(0);
   const [inputs, setInputs] = useState<string[]>(Array(steps.length).fill(""));
 

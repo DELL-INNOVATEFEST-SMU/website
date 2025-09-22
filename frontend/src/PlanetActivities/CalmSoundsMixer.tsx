@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import { useResponsive } from "@/hooks/use-mobile";
 
 interface Sound {
   id: string;
@@ -19,7 +18,6 @@ export default function CalmSoundsMixer({
 }: {
   onClose: () => void;
 }) {
-  const { isMobile, isSmallMobile } = useResponsive();
   const [activeSounds, setActiveSounds] = useState<Record<string, boolean>>({});
   const [volumes, setVolumes] = useState<Record<string, number>>({});
   const audioRefs = useRef<Record<string, HTMLAudioElement>>({});

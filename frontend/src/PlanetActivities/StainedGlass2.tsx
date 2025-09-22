@@ -34,7 +34,7 @@ const shapes = [
 ];
 
 export default function StainedGlassWithPalette() {
-  const { isMobile, isSmallMobile } = useResponsive();
+  const { isSmallMobile } = useResponsive();
   const [selectedColor, setSelectedColor] = useState(COLORS[0]);
   const [fills, setFills] = useState<{ [key: string]: string }>({});
 

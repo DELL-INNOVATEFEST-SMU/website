@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import { useResponsive } from "@/hooks/use-mobile";
 
 interface DanceStep {
   name: string;
@@ -44,7 +43,6 @@ export default function DanceTherapyTrial({
 }: {
   onClose: () => void;
 }) {
-  const { isMobile, isSmallMobile } = useResponsive();
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
   const [secondsLeft, setSecondsLeft] = useState(danceSteps[0].durationSeconds);
 

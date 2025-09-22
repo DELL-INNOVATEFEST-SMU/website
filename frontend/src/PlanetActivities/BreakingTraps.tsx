@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useResponsive } from "@/hooks/use-mobile";
 
 interface Trap {
   id: number;
@@ -35,7 +34,6 @@ export default function ThinkingTrapBreaker({
 }: {
   onClose: () => void;
 }) {
-  const { isMobile, isSmallMobile } = useResponsive();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [clickCount, setClickCount] = useState(0);
   const [score, setScore] = useState(0);

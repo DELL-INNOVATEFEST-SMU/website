@@ -9,7 +9,7 @@ export default function BoxBreathingModal({
 }: {
   onClose: () => void;
 }) {
-  const { isMobile, isSmallMobile } = useResponsive();
+  const { isSmallMobile } = useResponsive();
   const [running, setRunning] = useState(false);
   const [sideSeconds, setSideSeconds] = useState(DEFAULT_SIDE_SECONDS);
   const [startTime, setStartTime] = useState<number | null>(null);

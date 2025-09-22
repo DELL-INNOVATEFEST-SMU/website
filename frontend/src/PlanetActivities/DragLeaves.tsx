@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useResponsive } from "@/hooks/use-mobile";
 
 interface Leaf {
   id: number;
@@ -15,7 +14,6 @@ export default function DragLeaves({
 }: {
   onClose: () => void;
 }) {
-  const { isMobile, isSmallMobile } = useResponsive();
   const [leaves, setLeaves] = useState<Leaf[]>([]);
   const [droppedLeaves, setDroppedLeaves] = useState<Leaf[]>([]);
   const [inputText, setInputText] = useState("");

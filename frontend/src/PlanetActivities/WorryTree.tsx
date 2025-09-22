@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useResponsive } from "@/hooks/use-mobile";
 
 type Step = {
   question: string;
@@ -56,7 +55,6 @@ const steps: Step[] = [
 ];
 
 export default function WorryTreeModal({ onClose }: { onClose: () => void }) {
-  const { isMobile, isSmallMobile } = useResponsive();
   const [stepIndex, setStepIndex] = useState(0);
   const [answers, setAnswers] = useState<{ [key: number]: string }>({});
 
