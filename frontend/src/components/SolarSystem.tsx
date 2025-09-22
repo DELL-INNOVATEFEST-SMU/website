@@ -22,6 +22,7 @@ import StainedGlass from "@/PlanetActivities/StainedGlass2";
 import CalmSoundsMixer from "@/PlanetActivities/CalmSoundsMixer";
 import { useResponsive } from "@/hooks/use-mobile";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { X } from "lucide-react";
 
 interface PlanetActivity {
   name: string;
@@ -1111,9 +1112,9 @@ export const SolarSystem: React.FC = () => {
                         <Button
                           onClick={() => setShowImageModal(false)}
                           size="sm"
-                          className="bg-transparent border border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100 hover:border-slate-500"
+                          className="bg-transparent border border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:text-slate-100 hover:border-slate-500 h-8 w-8 p-0"
                         >
-                          Close
+                          <X className="h-4 w-4" />
                         </Button>
                       </div>
                       <img
