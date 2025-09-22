@@ -441,6 +441,58 @@
     background: rgba(255, 255, 255, 0.15);
     transform: translateY(-1px);
   }
+
+  /* Mobile results card styling */
+  .cosmic-results-card {
+    padding: 12px;
+    margin-top: 8px;
+  }
+
+  .cosmic-results-title {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .cosmic-results-subtitle {
+    font-size: 11px;
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+
+  .cosmic-input-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .cosmic-cta {
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  .cosmic-planet-title {
+    font-size: 18px;
+    margin: 8px 0;
+  }
+
+  .cosmic-planet-mascot {
+    max-width: 90%;
+    max-height: 250px;
+  }
+
+  .cosmic-grid2 {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .cosmic-badge {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  .cosmic-phq-note {
+    font-size: 11px;
+    margin-top: 8px;
+  }
 }
 
 /* Loading States */
