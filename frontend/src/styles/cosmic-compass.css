@@ -111,6 +111,28 @@
   color: var(--cosmic-ink);
 }
 
+.cosmic-question-image {
+  display: flex;
+  justify-content: center;
+  margin: 12px 0 16px;
+}
+
+.question-image {
+  max-width: 100%;
+  max-height: 200px;
+  width: auto;
+  height: auto;
+  border-radius: 12px;
+  border: 1px solid var(--cosmic-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.question-image:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 20px rgba(124, 140, 251, 0.2);
+}
+
 .cosmic-options {
   display: grid;
   gap: 10px;
@@ -389,6 +411,10 @@
     font-size: 16px;
   }
   
+  .question-image {
+    max-height: 150px;
+  }
+  
   .cosmic-nav {
     flex-direction: column;
   }
@@ -440,8 +466,8 @@
 }
 
 .cosmic-planet-mascot {
-  max-width: 120px;
-  max-height: 120px;
+  max-width: 200px;
+  max-height: 200px;
   width: auto;
   height: auto;
   border-radius: 50%;
@@ -478,8 +504,8 @@
 /* Responsive adjustments for planet images */
 @media (max-width: 768px) {
   .cosmic-planet-mascot {
-    max-width: 100px;
-    max-height: 100px;
+    max-width: 160px;
+    max-height: 160px;
   }
   
   .planet-image-fallback {

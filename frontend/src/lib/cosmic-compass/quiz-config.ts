@@ -18,6 +18,7 @@ export interface QuizQuestion {
   text: string;
   options?: QuizOption[];
   placeholder?: string;
+  image?: string; // Optional image path for the question
 }
 
 export interface PlanetAssignment {
@@ -101,6 +102,7 @@ export const PLANET_QUESTIONS: QuizQuestion[] = [
     id: "pq1",
     type: "planet",
     text: "You're about to launch your rocket. What's going through your head?",
+    image: "/cosmic-compass/pq1.png",
     options: [
       { label: "Let's goooo, can't wait to blast off!", tag: "fire" },
       { label: "I'm calculating every possible failure point", tag: "ice" },
@@ -112,6 +114,7 @@ export const PLANET_QUESTIONS: QuizQuestion[] = [
     id: "pq2",
     type: "planet",
     text: "As your ship drifts into an asteroid field, how do you react?",
+    image: "/cosmic-compass/pq2.png",
     options: [
       { label: "Treat it like an obstacle course", tag: "air" },
       { label: "Stress over every possible crash", tag: "ice" },
@@ -123,6 +126,7 @@ export const PLANET_QUESTIONS: QuizQuestion[] = [
     id: "pq3",
     type: "planet",
     text: "A new alien festival invites you to join. What's your vibe?",
+    image: "/cosmic-compass/pq3.png",
     options: [
       { label: "Jump in and dance with everyone", tag: "fire" },
       { label: "Observe quietly, not sure if I want to join", tag: "ice" },
@@ -134,6 +138,7 @@ export const PLANET_QUESTIONS: QuizQuestion[] = [
     id: "pq4",
     type: "planet",
     text: "You're floating alone in deep space, stars all around. What's your thought?",
+    image: "/cosmic-compass/pq4.png",
     options: [
       { label: "I feel so small… kinda heavy", tag: "ice" },
       { label: "It's peaceful, I could stay here forever", tag: "water" },
@@ -145,6 +150,7 @@ export const PLANET_QUESTIONS: QuizQuestion[] = [
     id: "pq5",
     type: "planet",
     text: "If your personality was a type of star, you'd be…",
+    image: "/cosmic-compass/pq5.png",
     options: [
       { label: "A distant cold white dwarf", tag: "ice" },
       { label: "A blazing supernova", tag: "fire" },
@@ -156,6 +162,7 @@ export const PLANET_QUESTIONS: QuizQuestion[] = [
     id: "pq6",
     type: "planet",
     text: "When you look at the night sky, what grabs your attention most?",
+    image: "/cosmic-compass/pq6.png",
     options: [
       { label: "The quiet, dark patches", tag: "ice" },
       { label: "The brightest stars", tag: "fire" },
@@ -167,6 +174,7 @@ export const PLANET_QUESTIONS: QuizQuestion[] = [
     id: "pq7",
     type: "planet",
     text: "Imagine discovering a new planet. What would it be like?",
+    image: "/cosmic-compass/pq7.jpg",
     options: [
       { label: "A volcanic, stormy world", tag: "fire" },
       { label: "A frozen crystal landscape", tag: "ice" },
@@ -178,6 +186,7 @@ export const PLANET_QUESTIONS: QuizQuestion[] = [
     id: "pq8",
     type: "planet",
     text: "The universe grants you a spaceship name — what's it called?",
+    image: "/cosmic-compass/pq8.jpg",
     options: [
       { label: "Blaze Voyager", tag: "fire" },
       { label: "Silent Horizon", tag: "ice" },
