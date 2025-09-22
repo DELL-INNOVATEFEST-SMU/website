@@ -91,7 +91,6 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
   const [otpToken, setOtpToken] = useState("");
   const [showOTPInput, setShowOTPInput] = useState(false);
   const [isResending, setIsResending] = useState(false);
-  const [isNewUser, setIsNewUser] = useState(false);
 
   const { login, verifyOTP, resendOTP, loading } = useAuthContext();
   const { toast } = useToast();
@@ -118,15 +117,12 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
     }
 
     try {
-      const result = await login(email);
-      setIsNewUser(result.isNewUser);
+      await login(email);
       setShowOTPInput(true);
 
       toast({
-        title: result.isNewUser ? "Welcome!" : "Welcome back!",
-        description: result.isNewUser
-          ? "We sent a 6-digit verification code to your email to complete your signup"
-          : "We sent a 6-digit verification code to your email to sign you in",
+        title: "Verification Code Sent",
+        description: "We sent a 6-digit verification code to your email",
       });
     } catch (error) {
       toast({
@@ -157,9 +153,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
 
       toast({
         title: "Success!",
-        description: isNewUser
-          ? "Account created successfully! Welcome to our platform."
-          : "You have been signed in successfully",
+        description: "You have been signed in successfully",
       });
     } catch (error) {
       toast({
@@ -174,8 +168,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
   const handleResendOTP = async () => {
     setIsResending(true);
     try {
-      const result = await resendOTP(email);
-      setIsNewUser(result.isNewUser);
+      await resendOTP(email);
 
       toast({
         title: "Code Resent",
@@ -219,11 +212,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {showOTPInput
-              ? isNewUser
-                ? "Complete Your Signup"
-                : "Verify Your Email"
-              : "Sign In / Sign Up"}
+            {showOTPInput ? "Verify Your Email" : "Sign In / Sign Up"}
           </DialogTitle>
         </DialogHeader>
 
@@ -265,9 +254,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
               <div className="space-y-4">
                 <div className="text-center">
                   <div className="text-sm text-gray-600 mb-2">
-                    {isNewUser
-                      ? "We sent a 6-digit code to complete initiation:"
-                      : "We sent a 6-digit code to your email:"}
+                    "We sent a 6-digit code to your email:"
                   </div>
                   <div className="font-medium text-blue-600">{email}</div>
                 </div>
@@ -300,11 +287,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
                   disabled={loading || otpToken.length !== 6}
                   className="flex-1"
                 >
-                  {loading
-                    ? "Verifying..."
-                    : isNewUser
-                    ? "Initiate Launch!"
-                    : "Launch!"}
+                  {loading ? "Verifying..." : "Launch!"}
                 </Button>
               </div>
 
@@ -324,9 +307,7 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
 
         {showOTPInput && (
           <div className="text-xs text-gray-500 text-center mt-4 border-t pt-4">
-            {isNewUser
-              ? "🎉 Creating your new account..."
-              : "👋 Welcome back! Signing you in..."}
+            "👋 Signing you in..."
           </div>
         )}
       </DialogContent>

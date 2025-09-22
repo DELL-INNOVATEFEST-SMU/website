@@ -96,7 +96,6 @@ export function AuthGate() {
   const [showOTPInput, setShowOTPInput] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isResending, setIsResending] = useState(false);
-  const [isNewUser, setIsNewUser] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -158,15 +157,12 @@ export function AuthGate() {
     setIsSubmitting(true);
 
     try {
-      const result = await login(email);
-      setIsNewUser(result.isNewUser);
+      await login(email);
       setShowOTPInput(true);
 
       toast({
-        title: result.isNewUser ? "Welcome!" : "Welcome back!",
-        description: result.isNewUser
-          ? "We sent a 6-digit verification code to your email to complete your signup"
-          : "We sent a 6-digit verification code to your email to sign you in",
+        title: "Verification Code Sent",
+        description: "We sent a 6-digit verification code to your email",
       });
     } catch (error) {
       toast({
@@ -202,9 +198,7 @@ export function AuthGate() {
 
       toast({
         title: "Success!",
-        description: isNewUser
-          ? "Account created successfully! Welcome to Interstellar."
-          : "You have been signed in successfully",
+        description: "You have been signed in successfully",
       });
     } catch (error) {
       toast({
@@ -221,8 +215,7 @@ export function AuthGate() {
   const handleResendOTP = async () => {
     setIsResending(true);
     try {
-      const result = await resendOTP(email);
-      setIsNewUser(result.isNewUser);
+      await resendOTP(email);
 
       toast({
         title: "Code Resent",
@@ -263,11 +256,7 @@ export function AuthGate() {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-center">
-            {showOTPInput
-              ? isNewUser
-                ? "Complete Your Signup"
-                : "Verify Your Email"
-              : "Welcome to Interstellar"}
+            {showOTPInput ? "Verify Your Email" : "Welcome to Interstellar"}
           </DialogTitle>
         </DialogHeader>
 
@@ -343,9 +332,7 @@ export function AuthGate() {
               <div className="text-center space-y-4">
                 <div>
                   <p className="text-sm text-muted-foreground mb-2">
-                    {isNewUser
-                      ? "We sent a 6-digit verification code to complete your signup:"
-                      : "We sent a 6-digit verification code to sign you in:"}
+                    "We sent a 6-digit verification code to sign you in:"
                   </p>
                   <p className="font-medium text-blue-600">{email}</p>
                 </div>
@@ -378,11 +365,7 @@ export function AuthGate() {
                   disabled={isSubmitting || otpToken.length !== 6}
                   className="flex-1"
                 >
-                  {isSubmitting
-                    ? "Verifying..."
-                    : isNewUser
-                    ? "Create Account"
-                    : "Sign In"}
+                  {isSubmitting ? "Verifying..." : "Sign In"}
                 </Button>
               </div>
 
@@ -398,9 +381,7 @@ export function AuthGate() {
               </Button>
 
               <div className="text-xs text-muted-foreground text-center border-t pt-4">
-                {isNewUser
-                  ? "🎉 Creating your new account..."
-                  : "👋 Welcome back! Signing you in..."}
+                "👋 Signing you in..."
               </div>
             </>
           )}

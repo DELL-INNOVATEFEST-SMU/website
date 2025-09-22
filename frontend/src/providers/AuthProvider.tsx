@@ -14,9 +14,9 @@ type AuthContextType = {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  login: (email: string) => Promise<{ isNewUser: boolean }>;
+  login: (email: string) => Promise<void>;
   verifyOTP: (email: string, token: string) => Promise<void>;
-  resendOTP: (email: string) => Promise<{ isNewUser: boolean }>;
+  resendOTP: (email: string) => Promise<void>;
   signOut: () => Promise<void>;
   continueAsGuest: () => Promise<void>;
   isAnonymous: boolean;
@@ -66,9 +66,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   /**
    * Send OTP token to email for authentication
    */
-  const login = async (email: string): Promise<{ isNewUser: boolean }> => {
-    const result = await AuthService.sendOTP(email);
-    return result;
+  const login = async (email: string): Promise<void> => {
+    await AuthService.sendOTP(email);
   };
 
   /**
@@ -82,9 +81,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   /**
    * Resend OTP token
    */
-  const resendOTP = async (email: string): Promise<{ isNewUser: boolean }> => {
-    const result = await AuthService.sendOTP(email);
-    return result;
+  const resendOTP = async (email: string): Promise<void> => {
+    await AuthService.sendOTP(email);
   };
 
   /**

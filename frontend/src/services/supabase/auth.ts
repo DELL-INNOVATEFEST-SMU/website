@@ -6,66 +6,27 @@ const ANONYMOUS_SESSION_KEY = "supabase_anonymous_session_temp";
 
 export class AuthService {
   /**
-   * Send 6-digit OTP token to email for authentication
-   * Uses smart detection to send appropriate email type
+   * Send OTP for authentication (creates user if needed)
+   * Works for both existing and new users
    */
-  static async sendOTP(email: string): Promise<{ isNewUser: boolean }> {
-    return this.sendSmartOTP(email);
-  }
+  static async sendOTP(email: string): Promise<void> {
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        shouldCreateUser: true, // Allow user creation
+      },
+    });
 
-  /**
-   * Smart OTP sending - detects if user exists and sends appropriate email
-   */
-  static async sendSmartOTP(email: string): Promise<{ isNewUser: boolean }> {
-    try {
-      // First try to send OTP for existing user
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          shouldCreateUser: false, // Only existing users
-        },
-      });
-
-      if (!error) {
-        console.log("OTP sent to existing user");
-        return { isNewUser: false };
-      }
-
-      // If error indicates user doesn't exist, create new user
-      if (error.message.includes("User not found") || 
-          error.message.includes("Invalid login credentials") ||
-          error.message.includes("Email not confirmed")) {
-        
-        console.log("User not found, creating new user account");
-        
-        const { error: signupError } = await supabase.auth.signInWithOtp({
-          email,
-          options: {
-            shouldCreateUser: true,
-          },
-        });
-
-        if (signupError) {
-          throw new Error(`Failed to send OTP to new user: ${signupError.message}`);
-        }
-
-        console.log("OTP sent to new user");
-        return { isNewUser: true };
-      }
-
-      // Other errors (rate limiting, invalid email, etc.)
+    if (error) {
       throw new Error(error.message);
-      
-    } catch (error) {
-      console.error("Error in sendSmartOTP:", error);
-      throw error instanceof Error ? error : new Error("Failed to send OTP");
     }
   }
 
   /**
-   * Send OTP for existing users only
+   * Send OTP specifically for existing users
+   * Use when you know the user exists (e.g., forgot password flow)
    */
-  static async sendExistingUserOTP(email: string): Promise<void> {
+  static async sendOTPForExistingUser(email: string): Promise<void> {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
@@ -79,9 +40,10 @@ export class AuthService {
   }
 
   /**
-   * Send OTP for new user signup
+   * Send OTP specifically for new user signup
+   * Use when you know it's a new user (e.g., registration flow)
    */
-  static async sendNewUserOTP(email: string): Promise<void> {
+  static async sendOTPForNewUser(email: string): Promise<void> {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
