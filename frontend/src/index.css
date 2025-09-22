@@ -117,4 +117,26 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Mobile viewport height fix */
+  html, body {
+    height: 100%;
+    overflow-x: hidden;
+  }
+  
+  #root {
+    height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
+  }
+  
+  /* Ensure proper mobile scrolling */
+  @media (max-width: 768px) {
+    #root {
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
 }
