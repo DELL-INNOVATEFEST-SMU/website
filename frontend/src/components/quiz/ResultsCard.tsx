@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useFormattedResult } from "@/hooks/use-quiz-state";
 import { PlanetImage } from "./PlanetImage";
-import { X } from "lucide-react";
+import { X, Download } from "lucide-react";
 
 interface ResultsCardProps {
   result: any;
@@ -67,6 +67,26 @@ export function ResultsCard({
       } else {
         alert(shareText);
       }
+    }
+  };
+
+  const handleDownloadImage = async () => {
+    try {
+      const imageUrl = `/quizResults/${formattedResult.planet.id}.png`;
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${formattedResult.planet.name}-planet.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Failed to download image:', error);
+      alert('Failed to download image. Please try again.');
     }
   };
 
@@ -203,18 +223,41 @@ export function ResultsCard({
               />
             </div>
 
-            {/* Share Button */}
-            <div className="text-center mb-4">
-              <button className="cosmic-cta alt w-full" onClick={handleShare}>
+            {/* Action Buttons */}
+            <div className="flex gap-3 mb-4">
+              <a
+                href={formattedResult.referralInfo.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="cosmic-cta flex-1 flex items-center justify-center h-12 px-3 py-3 m-0 text-center"
+                style={{ padding: '12px', margin: '0', height: '48px', lineHeight: '1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                {formattedResult.referralInfo.label}
+              </a>
+
+              <button
+                className="cosmic-cta alt flex-1 flex items-center justify-center h-12 px-3 py-3 m-0"
+                onClick={handleShare}
+                style={{ padding: '12px', margin: '0', height: '48px', lineHeight: '1' }}
+              >
                 Share your Cosmic Affinity
+              </button>
+            </div>
+
+            {/* Download Button */}
+            <div className="mb-4">
+              <button
+                onClick={handleDownloadImage}
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 hover:scale-105 flex items-center justify-center gap-2"
+                style={{ height: '48px' }}
+              >
+                <Download className="h-5 w-5" />
+                Download
               </button>
             </div>
 
             {/* Close Instructions */}
             <div className="text-center text-slate-300">
-              <p className="text-sm">
-                Click anywhere outside to close
-              </p>
             </div>
           </div>
         </div>

@@ -142,7 +142,7 @@ export function getReferralRoute(age: number | null, nationality: string): "samh
 export function getReferralInfo(referral: "samh" | "comit" | "limitless") {
   const routes = {
     samh: {
-      label: "Proceed to SAMH Telegram bot",
+      label: "Explore SAMH Telegram bot",
       url: "https://t.me/CommanderSam_bot"
     },
     comit: {
