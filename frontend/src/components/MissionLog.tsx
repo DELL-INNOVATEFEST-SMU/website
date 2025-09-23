@@ -101,8 +101,8 @@ const ScrollNavigation: React.FC<{
         onTouchEnd={stopScrolling}
         size="sm"
         className={`h-10 w-10 p-0 rounded-full border border-slate-600/50 backdrop-blur-sm transition-all duration-200 hover:scale-105 ${isScrollingUp
-            ? "bg-green-600/90 hover:bg-green-600/90"
-            : "bg-slate-800/90 hover:bg-slate-700/90"
+          ? "bg-green-600/90 hover:bg-green-600/90"
+          : "bg-slate-800/90 hover:bg-slate-700/90"
           }`}
         aria-label="Scroll up"
       >
@@ -116,8 +116,8 @@ const ScrollNavigation: React.FC<{
         onTouchEnd={stopScrolling}
         size="sm"
         className={`h-10 w-10 p-0 rounded-full border border-slate-600/50 backdrop-blur-sm transition-all duration-200 hover:scale-105 ${isScrollingDown
-            ? "bg-green-600/90 hover:bg-green-600/90"
-            : "bg-slate-800/90 hover:bg-slate-700/90"
+          ? "bg-green-600/90 hover:bg-green-600/90"
+          : "bg-slate-800/90 hover:bg-slate-700/90"
           }`}
         aria-label="Scroll down"
       >
@@ -284,10 +284,10 @@ const MissionTaskCard: React.FC<{
   return (
     <Card
       className={`cursor-pointer transition-all duration-300 hover:scale-105 ${isCompleted
-          ? "bg-green-900/30 border-green-500/50"
-          : isAttempted
-            ? "bg-yellow-900/30 border-yellow-500/50"
-            : "bg-slate-900/95 border-slate-700 hover:border-slate-500"
+        ? "bg-green-900/30 border-green-500/50"
+        : isAttempted
+          ? "bg-yellow-900/30 border-yellow-500/50"
+          : "bg-slate-900/95 border-slate-700 hover:border-slate-500"
         } backdrop-blur-sm`}
       onClick={onClick}
     >
@@ -502,23 +502,47 @@ export const MissionLog: React.FC<MissionLogProps> = ({
         totalTasks={tasks.length}
         onClick={onToggle}
       />
+      {/* Replace your modal JSX with this */}
       {showCongratsModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-80 " style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-          <div className="bg-white rounded-lg p-6 max-w-sm shadow-lg text-center">
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            zIndex: 9999,             // strong inline z-index
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            pointerEvents: "auto",
+            textAlign: "center",    // ensure overlay accepts clicks (but modal is on top)
+          }}
+        >
+          <div
+            style={{
+              zIndex: 10000,          // higher than overlay
+              pointerEvents: "auto",  // allow clicks within modal
+              position: "relative",
+              background: "white",
+              borderRadius: 8,
+              padding: 24,
+              maxWidth: 480,
+              boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+            }}
+          >
             <h3 className="text-xl font-bold mb-4">Congratulations!</h3>
-            <p className="mb-4">Good job commander. You have completed your daily mission. To continue your space exploration, Commander Sam H on Telegram will provide you with your next missions.</p>
+            <p className="mb-6">Good job commander. You have completed your daily mission. To continue your space exploration, Commander Sam H on Telegram will provide you with your next missions.</p>
+
             <button
-              onClick={() => {
-    console.log("Button clicked");
-    handleTelegramLaunch();
-  }}
-              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+              onPointerDown={() => console.log("pointerDown button 1")}
+              onClick={() => { console.log("click button 1"); handleTelegramLaunch(); }}
+              className="px-4 py-2 bg-green-600 text-white rounded mr-2"
             >
               Open Telegram
             </button>
           </div>
         </div>
       )}
+
     </>
   );
 };

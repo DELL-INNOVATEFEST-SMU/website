@@ -1082,8 +1082,7 @@ export const SolarSystem: React.FC = () => {
                   )}
                   {isAnonymous && (
                     <div className="text-xs text-amber-300 mt-1 bg-amber-900/20 border border-amber-500/30 rounded p-2">
-                      🔒 Guest mode: Generated images are temporary and won't be
-                      saved permanently
+                      🔒 Guest mode: Log in to convert your journal into an image!
                     </div>
                   )}
                 </div>
