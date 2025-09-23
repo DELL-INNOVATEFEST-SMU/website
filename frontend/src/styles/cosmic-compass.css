@@ -111,6 +111,28 @@
   color: var(--cosmic-ink);
 }
 
+.cosmic-question-image {
+  display: flex;
+  justify-content: center;
+  margin: 12px 0 16px;
+}
+
+.question-image {
+  max-width: 100%;
+  max-height: 200px;
+  width: auto;
+  height: auto;
+  border-radius: 12px;
+  border: 1px solid var(--cosmic-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.question-image:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 20px rgba(124, 140, 251, 0.2);
+}
+
 .cosmic-options {
   display: grid;
   gap: 10px;
@@ -389,6 +411,10 @@
     font-size: 16px;
   }
   
+  .question-image {
+    max-height: 150px;
+  }
+  
   .cosmic-nav {
     flex-direction: column;
   }
@@ -415,6 +441,58 @@
     background: rgba(255, 255, 255, 0.15);
     transform: translateY(-1px);
   }
+
+  /* Mobile results card styling */
+  .cosmic-results-card {
+    padding: 12px;
+    margin-top: 8px;
+  }
+
+  .cosmic-results-title {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .cosmic-results-subtitle {
+    font-size: 11px;
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+
+  .cosmic-input-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .cosmic-cta {
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  .cosmic-planet-title {
+    font-size: 18px;
+    margin: 8px 0;
+  }
+
+  .cosmic-planet-mascot {
+    max-width: 90%;
+    max-height: 250px;
+  }
+
+  .cosmic-grid2 {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .cosmic-badge {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  .cosmic-phq-note {
+    font-size: 11px;
+    margin-top: 8px;
+  }
 }
 
 /* Loading States */
@@ -440,11 +518,11 @@
 }
 
 .cosmic-planet-mascot {
-  max-width: 120px;
-  max-height: 120px;
+  max-width: 80%;
+  max-height: 400px;
   width: auto;
   height: auto;
-  border-radius: 50%;
+  border-radius: 12px;
   border: 3px solid var(--cosmic-border);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -478,8 +556,8 @@
 /* Responsive adjustments for planet images */
 @media (max-width: 768px) {
   .cosmic-planet-mascot {
-    max-width: 100px;
-    max-height: 100px;
+    max-width: 85%;
+    max-height: 300px;
   }
   
   .planet-image-fallback {

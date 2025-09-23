@@ -1,14 +1,15 @@
 import { QuestionRenderer } from "./QuestionRenderer";
+import { QuizQuestion, QuizAnswers } from "@/lib/cosmic-compass/quiz-config";
 
 interface QuizCardProps {
   currentStep: number;
-  currentQuestion: any;
+  currentQuestion: QuizQuestion | null;
   progress: number;
-  questions: any[];
-  answers: any;
+  questions: QuizQuestion[];
+  answers: QuizAnswers;
   isCurrentAnswered: boolean;
   canProceed: boolean;
-  selectAnswer: (questionId: string, answer: any) => void;
+  selectAnswer: (questionId: string, answer: QuizAnswers[string]) => void;
   goNext: () => void;
   goBack: () => void;
 }
@@ -75,6 +76,17 @@ export function QuizCard({
 
       {/* Question Text */}
       <div className="cosmic-question">{currentQuestion.text}</div>
+
+      {/* Question Image */}
+      {currentQuestion.image && (
+        <div className="cosmic-question-image">
+          <img
+            src={currentQuestion.image}
+            alt="Question illustration"
+            className="question-image"
+          />
+        </div>
+      )}
 
       {/* Question Renderer */}
       <QuestionRenderer

@@ -15,15 +15,14 @@ export function PlanetImage({
 }: PlanetImageProps) {
   // Map planet IDs to mascot image filenames
   const planetImageMap: Record<string, string> = {
-    earth: "earth_art.JPG",
-    jupiter: "jupiter_art.JPG",
-    mars: "mars_art.JPG",
-    mercury: "mercury_art.JPG",
-    neptune: "neptune_art.JPG",
-    saturn: "saturn_art.jpg",
-    uranus: "uranus_art.JPG",
-    venus: "venus_art.jpg",
-    pluto: "pluto_art.jpg",
+    earth: "earth.png",
+    jupiter: "jupiter.png",
+    mars: "mars.png",
+    mercury: "mercury.png",
+    neptune: "neptune.png",
+    saturn: "saturn.png",
+    uranus: "uranus.png",
+    venus: "venus.png",
   };
 
   const imageFilename = planetImageMap[planetId];
@@ -42,7 +41,7 @@ export function PlanetImage({
 
   return (
     <img
-      src={`/mascots/${imageFilename}`}
+      src={`/quizResults/${imageFilename}`}
       alt={defaultAlt}
       className={`planet-image ${className}`}
       loading="lazy"
