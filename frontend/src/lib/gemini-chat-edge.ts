@@ -27,7 +27,7 @@ interface ChatResponse {
  * Uses the main authentication system - no duplicate auth logic
  */
 export class EdgeChatService {
-  private readonly functionName = "space-chat"
+  private readonly functionName = "space-chat-guarded"
 
   /**
    * Send a message to the Edge Function and get a response
