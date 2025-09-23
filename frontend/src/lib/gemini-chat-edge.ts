@@ -87,7 +87,7 @@ export class EdgeChatService {
         }
       }
       
-      return "Commander Sam H. reporting - I'm having trouble processing that request right now. Perhaps you could rephrase your question about space exploration, or ask me about any of the planets in our solar system?"
+      return "Hey... I'm having trouble processing that request right now. Maybe you could rephrase your thought?"
     }
   }
 

@@ -349,3 +349,14 @@ entrypoint = "./functions/hello-world/index.ts"
 enabled = true
 verify_jwt = true
 entrypoint = "./functions/journal-image-generator/index.ts"
+
+[functions.space-chat-streaming]
+enabled = true
+verify_jwt = true
+import_map = "./functions/space-chat-streaming/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/space-chat-streaming/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/space-chat-streaming/*.html" ]
