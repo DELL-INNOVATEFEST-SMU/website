@@ -45,7 +45,7 @@ Always stay in character as Commander Sam H. and maintain the space exploration 
     try {
       // Log conversation for monitoring (optional)
       const userType = isAnonymous ? "anonymous" : "authenticated"
-      console.log(`Chat request from ${userType} user${userId ? ` (${userId})` : ""}, message length: ${message.length}`)
+      // console.log(`Chat request from ${userType} user${userId ? ` (${userId})` : ""}, message length: ${message.length}`)
 
       // Prepare the conversation context
       const messages = [

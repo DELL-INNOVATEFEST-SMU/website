@@ -203,7 +203,7 @@ If unsafe, set isSafe to false and list the specific categories violated.`
    */
   private parseModerationResult(geminiResponse: string): ModerationResult {
     try {
-      console.log("Raw moderation response:", geminiResponse)
+      // console.log("Raw moderation response:", geminiResponse)
       
       // Clean the response - remove any markdown formatting or extra text
       let cleanedResponse = geminiResponse
@@ -223,7 +223,7 @@ If unsafe, set isSafe to false and list the specific categories violated.`
         }
       }
 
-      console.log("Cleaned JSON response:", cleanedResponse)
+      // console.log("Cleaned JSON response:", cleanedResponse)
 
       const result = JSON.parse(cleanedResponse)
       
@@ -240,7 +240,7 @@ If unsafe, set isSafe to false and list the specific categories violated.`
         reason: result.reason || undefined
       }
 
-      console.log("Parsed moderation result:", moderationResult)
+      // console.log("Parsed moderation result:", moderationResult)
       return moderationResult
 
     } catch (error) {

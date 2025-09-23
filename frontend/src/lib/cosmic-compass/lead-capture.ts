@@ -72,7 +72,7 @@ export async function submitLeadCapture(payload: LeadCapturePayload): Promise<vo
       throw error;
     }
 
-    console.log("Lead capture submitted successfully");
+    // console.log("Lead capture submitted successfully");
   } catch (error) {
     console.error("Error submitting lead capture:", error);
     throw new Error("Failed to save contact information. Please try again.");
@@ -102,7 +102,7 @@ export async function submitToWebhook(
       throw new Error(`HTTP ${response.status}`);
     }
 
-    console.log("Webhook submission successful");
+    // console.log("Webhook submission successful");
   } catch (error) {
     console.error("Error submitting to webhook:", error);
     throw new Error("Failed to save contact information. Please try again.");

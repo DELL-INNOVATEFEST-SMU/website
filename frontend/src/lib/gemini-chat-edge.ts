@@ -53,7 +53,7 @@ export class EdgeChatService {
         isAnonymous: user.is_anonymous || false
       }
 
-      console.log(`Making Edge Function call for ${user.is_anonymous ? 'anonymous' : 'authenticated'} user`)
+      // console.log(`Making Edge Function call for ${user.is_anonymous ? 'anonymous' : 'authenticated'} user`)
       
       // Call Edge Function using Supabase client
       const { data, error } = await supabase.functions.invoke(this.functionName, {

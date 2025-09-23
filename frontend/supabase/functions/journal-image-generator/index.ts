@@ -128,7 +128,7 @@ Deno.serve(async (req: Request) => {
     // Create enhanced prompt based on journal entry and thinking traps
     const prompt = createImagePrompt(journalEntry, thinkingTraps)
     
-    console.log(`Making request to Gemini API with prompt: "${prompt.substring(0, 100)}..."`)
+    // console.log(`Making request to Gemini API with prompt: "${prompt.substring(0, 100)}..."`)
 
     // Use REST API format that matches the Python SDK behavior
     const requestBody = {
@@ -173,7 +173,7 @@ Deno.serve(async (req: Request) => {
       )
     }
 
-    console.log("Gemini API response received, parsing...")
+    // console.log("Gemini API response received, parsing...")
     const geminiData: GeminiImageResponse = await geminiResponse.json()
     
     if (!geminiData.candidates || geminiData.candidates.length === 0) {
@@ -189,7 +189,7 @@ Deno.serve(async (req: Request) => {
 
     // Extract image data matching Python implementation logic
     const candidate = geminiData.candidates[0]
-    console.log("Searching for image data in response parts...")
+    // console.log("Searching for image data in response parts...")
     
     // Look for inlineData in the response parts (matching Python: part.inline_data.data)
     const imageParts = candidate.content.parts.filter(part => part.inlineData)
@@ -210,7 +210,7 @@ Deno.serve(async (req: Request) => {
 
     // Get the first image part (matching Python: image_parts[0])
     const imageBase64 = imageParts[0].inlineData!.data
-    console.log(`Image generated successfully, base64 length: ${imageBase64.length}`)
+    // console.log(`Image generated successfully, base64 length: ${imageBase64.length}`)
 
     // Record that user has generated an image today
     const { error: recordError } = await supabase

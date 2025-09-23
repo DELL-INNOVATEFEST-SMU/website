@@ -247,14 +247,14 @@ export function useChat() {
    * Toggle chat active state
    */
   const toggleChat = useCallback(() => {
-    console.log("toggleChat called - current isActive:", session.isActive)
+    // console.log("toggleChat called - current isActive:", session.isActive)
     setSession(prev => {
       const newState = {
         ...prev,
         isActive: !prev.isActive,
         lastActivity: new Date(),
       }
-      console.log("toggleChat - new isActive:", newState.isActive)
+      // console.log("toggleChat - new isActive:", newState.isActive)
       return newState
     })
   }, [session.isActive])

@@ -45,11 +45,11 @@ Deno.serve(async (req: Request) => {
     const chatService = new GeminiChatService()
 
     // Step 1: Input Moderation
-    console.log("🔍 Moderating user input...")
+    // console.log("🔍 Moderating user input...")
     const inputModeration = await moderationService.moderateInput(message, conversationHistory)
     
     if (!inputModeration.isSafe) {
-      console.log("❌ Input blocked:", inputModeration.reason)
+      // console.log("❌ Input blocked:", inputModeration.reason)
       
       const response: ChatResponse = {
         success: false,
@@ -68,7 +68,7 @@ Deno.serve(async (req: Request) => {
       })
     }
 
-    console.log("✅ Input approved, processing with Gemini...")
+    // console.log("✅ Input approved, processing with Gemini...")
 
     // Step 2: Process with Gemini Chat Service
     const aiResponse = await chatService.sendMessage(
@@ -79,11 +79,11 @@ Deno.serve(async (req: Request) => {
     )
 
     // Step 3: Output Moderation
-    console.log("🔍 Moderating AI output...")
+    // console.log("🔍 Moderating AI output...")
     const outputModeration = await moderationService.moderateOutput(aiResponse)
     
     if (!outputModeration.isSafe) {
-      console.log("❌ Output blocked:", outputModeration.reason)
+      // console.log("❌ Output blocked:", outputModeration.reason)
       
       const response: ChatResponse = {
         success: true,
@@ -101,7 +101,7 @@ Deno.serve(async (req: Request) => {
       })
     }
 
-    console.log("✅ Output approved, delivering response...")
+    // console.log("✅ Output approved, delivering response...")
 
     // Step 4: Return safe response
     const responseMessage: ChatMessage = {

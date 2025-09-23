@@ -100,10 +100,11 @@ const ScrollNavigation: React.FC<{
         onTouchStart={() => startScrolling("up")}
         onTouchEnd={stopScrolling}
         size="sm"
-        className={`h-10 w-10 p-0 rounded-full border border-slate-600/50 backdrop-blur-sm transition-all duration-200 hover:scale-105 ${isScrollingUp
-          ? "bg-green-600/90 hover:bg-green-600/90"
-          : "bg-slate-800/90 hover:bg-slate-700/90"
-          }`}
+        className={`h-10 w-10 p-0 rounded-full border border-slate-600/50 backdrop-blur-sm transition-all duration-200 hover:scale-105 ${
+          isScrollingUp
+            ? "bg-green-600/90 hover:bg-green-600/90"
+            : "bg-slate-800/90 hover:bg-slate-700/90"
+        }`}
         aria-label="Scroll up"
       >
         <ChevronUp className="h-5 w-5 text-white" />
@@ -115,10 +116,11 @@ const ScrollNavigation: React.FC<{
         onTouchStart={() => startScrolling("down")}
         onTouchEnd={stopScrolling}
         size="sm"
-        className={`h-10 w-10 p-0 rounded-full border border-slate-600/50 backdrop-blur-sm transition-all duration-200 hover:scale-105 ${isScrollingDown
-          ? "bg-green-600/90 hover:bg-green-600/90"
-          : "bg-slate-800/90 hover:bg-slate-700/90"
-          }`}
+        className={`h-10 w-10 p-0 rounded-full border border-slate-600/50 backdrop-blur-sm transition-all duration-200 hover:scale-105 ${
+          isScrollingDown
+            ? "bg-green-600/90 hover:bg-green-600/90"
+            : "bg-slate-800/90 hover:bg-slate-700/90"
+        }`}
         aria-label="Scroll down"
       >
         <ChevronDown className="h-5 w-5 text-white" />
@@ -140,8 +142,9 @@ const MissionLogBubble: React.FC<{
 
   return (
     <div
-      className={`fixed z-50 pointer-events-auto transition-all duration-300 ease-in-out hover:scale-105 active:scale-95 ${isMobile ? "bottom-4 left-4" : "bottom-6 left-6"
-        }`}
+      className={`fixed z-50 pointer-events-auto transition-all duration-300 ease-in-out hover:scale-105 active:scale-95 ${
+        isMobile ? "bottom-4 left-4" : "bottom-6 left-6"
+      }`}
     >
       {/* Pulsing Ring Effect for completed tasks */}
       {completedCount > 0 && (
@@ -157,12 +160,13 @@ const MissionLogBubble: React.FC<{
       {/* Main Mission Log Bubble */}
       <Button
         onClick={() => {
-          console.log("MissionLogBubble clicked!");
+          // console.log("MissionLogBubble clicked!");
           onClick();
         }}
         size={isMobile ? "default" : "lg"}
         className={cn(
-          `relative rounded-full shadow-lg z-10 min-h-touch ${isMobile ? "h-16 w-16" : "h-14 w-14"
+          `relative rounded-full shadow-lg z-10 min-h-touch ${
+            isMobile ? "h-16 w-16" : "h-14 w-14"
           }`,
           "bg-gradient-to-br from-green-600 via-emerald-600 to-teal-700",
           "hover:from-green-500 hover:via-emerald-500 hover:to-teal-600",
@@ -178,8 +182,9 @@ const MissionLogBubble: React.FC<{
         {/* Completion Progress Indicator */}
         {completedCount > 0 && (
           <Badge
-            className={`absolute -top-1 -right-1 p-0 bg-green-500 hover:bg-green-500 text-white text-xs border-2 border-white ${isMobile ? "h-6 w-6" : "h-5 w-5"
-              }`}
+            className={`absolute -top-1 -right-1 p-0 bg-green-500 hover:bg-green-500 text-white text-xs border-2 border-white ${
+              isMobile ? "h-6 w-6" : "h-5 w-5"
+            }`}
           >
             {completedCount}
           </Badge>
@@ -196,7 +201,7 @@ const missionTasks: MissionTask[] = [
     planet: "Jupiter",
     planetColor: "#D8CA9D",
     completed: false,
-    onStart: () => { },
+    onStart: () => {},
   },
   {
     id: "calm-storm",
@@ -204,7 +209,7 @@ const missionTasks: MissionTask[] = [
     planet: "Mercury",
     planetColor: "#8C7853",
     completed: false,
-    onStart: () => { },
+    onStart: () => {},
   },
   {
     id: "break-traps",
@@ -212,7 +217,7 @@ const missionTasks: MissionTask[] = [
     planet: "Neptune",
     planetColor: "#4B70DD",
     completed: false,
-    onStart: () => { },
+    onStart: () => {},
   },
   {
     id: "find-cosmic-compass",
@@ -220,7 +225,7 @@ const missionTasks: MissionTask[] = [
     planet: "CosmicCompass",
     planetColor: "#9333EA",
     completed: false,
-    onStart: () => { },
+    onStart: () => {},
   },
 ];
 
@@ -283,28 +288,31 @@ const MissionTaskCard: React.FC<{
 
   return (
     <Card
-      className={`cursor-pointer transition-all duration-300 hover:scale-105 ${isCompleted
-        ? "bg-green-900/30 border-green-500/50"
-        : isAttempted
+      className={`cursor-pointer transition-all duration-300 hover:scale-105 ${
+        isCompleted
+          ? "bg-green-900/30 border-green-500/50"
+          : isAttempted
           ? "bg-yellow-900/30 border-yellow-500/50"
           : "bg-slate-900/95 border-slate-700 hover:border-slate-500"
-        } backdrop-blur-sm`}
+      } backdrop-blur-sm`}
       onClick={onClick}
     >
       <CardContent className={isMobile ? "p-3" : "p-4"}>
         <div className={`flex items-center ${isMobile ? "gap-4" : "gap-3"}`}>
           {/* Planet Color Indicator */}
           <div
-            className={`${isMobile ? "w-5 h-5" : "w-4 h-4"
-              } rounded-full border-2 border-white/20`}
+            className={`${
+              isMobile ? "w-5 h-5" : "w-4 h-4"
+            } rounded-full border-2 border-white/20`}
             style={{ backgroundColor: task.planetColor }}
           />
 
           {/* Task Info */}
           <div className="flex-1">
             <h3
-              className={`font-semibold text-white ${isMobile ? "text-base" : "text-sm"
-                }`}
+              className={`font-semibold text-white ${
+                isMobile ? "text-base" : "text-sm"
+              }`}
             >
               {task.title}
             </h3>
@@ -324,8 +332,9 @@ const MissionTaskCard: React.FC<{
             />
           ) : (
             <div
-              className={`${isMobile ? "w-6 h-6" : "w-5 h-5"
-                } border-2 border-slate-400 rounded-full`}
+              className={`${
+                isMobile ? "w-6 h-6" : "w-5 h-5"
+              } border-2 border-slate-400 rounded-full`}
             />
           )}
         </div>
@@ -371,14 +380,14 @@ export const MissionLog: React.FC<MissionLogProps> = ({
   const isFuelFull = fuelProgress >= 100;
 
   const handleLaunch = () => {
-    setShowCongratsModal(true)
+    setShowCongratsModal(true);
     // Temporary link - replace with actual telegram bot integration
     // window.open("https://t.me/CommanderSam_bot", "_blank");
   };
   const handleTelegramLaunch = () => {
-    console.log("Opening Telegram bot...");
+    // console.log("Opening Telegram bot...");
     window.open("https://t.me/CommanderSam_bot", "_blank");
-  }
+  };
 
   const handleScrollUp = () => {
     window.scrollBy({ top: -window.innerHeight * 0.8, behavior: "smooth" });
@@ -415,18 +424,21 @@ export const MissionLog: React.FC<MissionLogProps> = ({
       {/* Mission Log Panel */}
       {isOpen && (
         <div
-          className={`absolute z-30 pointer-events-auto ${isMobile ? "inset-4 w-auto max-w-sm mx-auto" : "top-4 right-4 w-80"
-            }`}
+          className={`absolute z-30 pointer-events-auto ${
+            isMobile ? "inset-4 w-auto max-w-sm mx-auto" : "top-4 right-4 w-80"
+          }`}
         >
           <Card
-            className={`bg-slate-900/95 border-slate-700 backdrop-blur-sm ${isMobile ? "max-h-[80vh]" : "max-h-[85vh]"
-              } overflow-y-auto`}
+            className={`bg-slate-900/95 border-slate-700 backdrop-blur-sm ${
+              isMobile ? "max-h-[80vh]" : "max-h-[85vh]"
+            } overflow-y-auto`}
           >
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle
-                  className={`${isMobile ? "text-lg" : "text-xl"
-                    } font-bold text-green-400 flex items-center gap-2`}
+                  className={`${
+                    isMobile ? "text-lg" : "text-xl"
+                  } font-bold text-green-400 flex items-center gap-2`}
                 >
                   <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse" />
                   MISSION LOG
@@ -435,14 +447,16 @@ export const MissionLog: React.FC<MissionLogProps> = ({
                   variant="ghost"
                   size={isMobile ? "default" : "sm"}
                   onClick={onToggle}
-                  className={`${isMobile ? "min-h-touch" : "h-8 w-8 p-0"
-                    } text-slate-400 hover:text-white`}
+                  className={`${
+                    isMobile ? "min-h-touch" : "h-8 w-8 p-0"
+                  } text-slate-400 hover:text-white`}
                 >
                   <X className={isMobile ? "h-5 w-5" : "h-4 w-4"} />
                 </Button>
               </div>
               <p className="text-sm text-slate-400 mt-2">
-                Tap on a planet to start a mission. Each completed mission fuels your tank and helps you feel better along the way.
+                Tap on a planet to start a mission. Each completed mission fuels
+                your tank and helps you feel better along the way.
               </p>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -509,18 +523,18 @@ export const MissionLog: React.FC<MissionLogProps> = ({
             position: "fixed",
             inset: 0,
             backgroundColor: "rgba(0,0,0,0.5)",
-            zIndex: 9999,             // strong inline z-index
+            zIndex: 9999, // strong inline z-index
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             pointerEvents: "auto",
-            textAlign: "center",    // ensure overlay accepts clicks (but modal is on top)
+            textAlign: "center", // ensure overlay accepts clicks (but modal is on top)
           }}
         >
           <div
             style={{
-              zIndex: 10000,          // higher than overlay
-              pointerEvents: "auto",  // allow clicks within modal
+              zIndex: 10000, // higher than overlay
+              pointerEvents: "auto", // allow clicks within modal
               position: "relative",
               background: "white",
               borderRadius: 8,
@@ -530,11 +544,19 @@ export const MissionLog: React.FC<MissionLogProps> = ({
             }}
           >
             <h3 className="text-xl font-bold mb-4">Congratulations!</h3>
-            <p className="mb-6">Good job commander. You have completed your daily mission. To continue your space exploration, Commander Sam H on Telegram will provide you with your next missions.</p>
+            <p className="mb-6">
+              Good job commander. You have completed your daily mission. To
+              continue your space exploration, Commander Sam H on Telegram will
+              provide you with your next missions.
+            </p>
 
             <button
-              onPointerDown={() => console.log("pointerDown button 1")}
-              onClick={() => { console.log("click button 1"); handleTelegramLaunch(); }}
+              onPointerDown={() => {
+                /* console.log("pointerDown button 1") */
+              }}
+              onClick={() => {
+                /* console.log("click button 1"); */ handleTelegramLaunch();
+              }}
               className="px-4 py-2 bg-green-600 text-white rounded mr-2"
             >
               Open Telegram
@@ -542,7 +564,6 @@ export const MissionLog: React.FC<MissionLogProps> = ({
           </div>
         </div>
       )}
-
     </>
   );
 };

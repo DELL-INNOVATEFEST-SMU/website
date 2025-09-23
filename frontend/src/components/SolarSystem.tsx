@@ -520,9 +520,9 @@ export const SolarSystem: React.FC = () => {
       console.error("Error checking generation limit:", error);
       // For anonymous users, allow generation if database has issues
       if (user.is_anonymous) {
-        console.log(
-          "Anonymous user - allowing generation despite database error"
-        );
+        // console.log(
+        //   "Anonymous user - allowing generation despite database error"
+        // );
         return true;
       }
       return false; // For authenticated users, be more cautious

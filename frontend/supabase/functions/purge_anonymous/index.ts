@@ -59,13 +59,13 @@ Deno.serve(async (req: Request) => {
       try {
         await supabase.auth.admin.deleteUser(user.id);
         deletedCount++;
-        console.log(`Deleted anonymous user: ${user.id}`);
+        // console.log(`Deleted anonymous user: ${user.id}`);
       } catch (deleteError) {
         console.error(`Failed to delete user ${user.id}:`, deleteError);
       }
     }
 
-    console.log(`Purged ${deletedCount} anonymous users`);
+    // console.log(`Purged ${deletedCount} anonymous users`);
 
     return new Response(
       JSON.stringify({ 
