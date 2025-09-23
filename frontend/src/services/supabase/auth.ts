@@ -83,7 +83,7 @@ export class AuthService {
     // Check if we have a stored anonymous session that's still valid
     const storedSession = this.getStoredAnonymousSession();
     if (storedSession && this.isSessionValid(storedSession)) {
-      console.log("Using stored anonymous session from sessionStorage");
+      // console.log("Using stored anonymous session from sessionStorage");
       
       try {
         // Set the session in Supabase client
@@ -108,7 +108,7 @@ export class AuthService {
     }
 
     // Create new anonymous session
-    console.log("Creating new anonymous session for guest experience");
+    // console.log("Creating new anonymous session for guest experience");
     const { data, error } = await supabase.auth.signInAnonymously();
     
     if (error) {
@@ -138,7 +138,7 @@ export class AuthService {
     if (!session) {
       const storedSession = this.getStoredAnonymousSession();
       if (storedSession && this.isSessionValid(storedSession)) {
-        console.log("Restoring anonymous session from sessionStorage");
+        // console.log("Restoring anonymous session from sessionStorage");
         
         try {
           // Try to restore the session
@@ -264,7 +264,7 @@ export class AuthService {
           user: session.user,
         }));
         
-        console.log("Anonymous session stored in sessionStorage (clears on tab close)");
+        // console.log("Anonymous session stored in sessionStorage (clears on tab close)");
       }
     } catch (error) {
       console.error("Failed to store anonymous session:", error);
@@ -307,7 +307,7 @@ export class AuthService {
   private static clearAnonymousSessionData(): void {
     try {
       sessionStorage.removeItem(ANONYMOUS_SESSION_KEY);
-      console.log("Anonymous session data cleared from sessionStorage");
+      // console.log("Anonymous session data cleared from sessionStorage");
     } catch (error) {
       console.error("Failed to clear anonymous session data:", error);
     }

@@ -27,7 +27,7 @@ interface ChatResponse {
  * Uses the main authentication system - no duplicate auth logic
  */
 export class EdgeChatService {
-  private readonly functionName = "space-chat"
+  private readonly functionName = "space-chat-guarded"
 
   /**
    * Send a message to the Edge Function and get a response
@@ -53,7 +53,7 @@ export class EdgeChatService {
         isAnonymous: user.is_anonymous || false
       }
 
-      console.log(`Making Edge Function call for ${user.is_anonymous ? 'anonymous' : 'authenticated'} user`)
+      // console.log(`Making Edge Function call for ${user.is_anonymous ? 'anonymous' : 'authenticated'} user`)
       
       // Call Edge Function using Supabase client
       const { data, error } = await supabase.functions.invoke(this.functionName, {
@@ -87,7 +87,7 @@ export class EdgeChatService {
         }
       }
       
-      return "Commander Sam H. reporting - I'm having trouble processing that request right now. Perhaps you could rephrase your question about space exploration, or ask me about any of the planets in our solar system?"
+      return "Hey... I'm having trouble processing that request right now. Maybe you could rephrase your thought?"
     }
   }
 

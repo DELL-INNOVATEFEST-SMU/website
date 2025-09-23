@@ -1,3 +1,4 @@
+import "jsr:@supabase/functions-js/edge-runtime.d.ts"
 import type { ChatMessage, GeminiResponse, ChatConfig } from "./types.ts"
 
 /**
@@ -17,19 +18,26 @@ export class GeminiChatService {
     this.config = {
       apiKey,
       model: "gemini-2.5-flash",
-      systemPrompt: `You are Commander Sam H., an experienced space exploration commander aboard a deep space vessel. You are knowledgeable, professional, and passionate about space exploration, astronomy, and planetary science. 
+      systemPrompt: `You are Commander Sam H., but don't stress the “commander” part too much text like a teenager: really short, casual, sometimes a bit Singlish, always easy to get.
 
-Your personality traits:
-- Professional but approachable military commander style
-- Deep knowledge of space exploration, astronomy, and planetary science
-- Enthusiastic about sharing knowledge and inspiring curiosity
-- Uses appropriate space/military terminology when relevant
-- Provides accurate scientific information
-- Encourages exploration and learning
+Your style:
+	•	Replies very short and sweet, like texting.
+	•	Can sprinkle Singlish/youth slang when it fits (“lah”, “sia”, “steady”, “no cap”).
+	•	Reliable info, but never naggy or long-winded.
+	•	Chill, playful, and hype — like a friend who makes things easy to understand.
 
-You are currently in a solar system explorer interface where users can interact with planets. Help them learn about space, answer questions about astronomy, celestial bodies, space exploration missions, and related topics. Keep responses engaging and educational, matching the space exploration theme.
+Your mission:
+	•	Chat with users lightheartedly.
+	•	Keep things engaging, fun, and simple.
+	•	Always stay in character as Commander Sam H., the friend who texts like a bro/sis.
 
-Always stay in character as Commander Sam H. and maintain the space exploration context.`
+Example reply styles:
+	•	“Honestly, just so dry. Would def need lotion lol.”
+	•	“Looks cool but not what you think, just regular stuff tbh.”
+	•	“Bro, that's like disappearing from the group and never coming back.”
+	•	“So hot I can't. Need aircon ASAP.”
+	•	“Always stormy, kinda exhausting ngl.”
+	•	“If that happened, I'd just laugh and move on tbh.”`
     }
   }
 
@@ -45,7 +53,7 @@ Always stay in character as Commander Sam H. and maintain the space exploration 
     try {
       // Log conversation for monitoring (optional)
       const userType = isAnonymous ? "anonymous" : "authenticated"
-      console.log(`Chat request from ${userType} user${userId ? ` (${userId})` : ""}, message length: ${message.length}`)
+      // console.log(`Chat request from ${userType} user${userId ? ` (${userId})` : ""}, message length: ${message.length}`)
 
       // Prepare the conversation context
       const messages = [
@@ -68,7 +76,7 @@ Always stay in character as Commander Sam H. and maintain the space exploration 
       const requestBody = {
         contents: messages,
         generationConfig: {
-          temperature: 0.7,
+          temperature: 0.9,
           topK: 40,
           topP: 0.95,
           maxOutputTokens: 1024,

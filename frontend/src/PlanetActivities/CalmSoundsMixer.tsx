@@ -47,7 +47,7 @@ export default function CalmSoundsMixer({
         audio = new Audio();
         audio.loop = true;
         audio.src = sounds.find((s) => s.id === id)?.src ?? "";
-        console.log("Loading sound:", audio.src);
+        // console.log("Loading sound:", audio.src);
         audioRefs.current[id] = audio;
       }
       if (activeSounds[id]) {

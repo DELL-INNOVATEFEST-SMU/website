@@ -38,7 +38,7 @@ export function ChatWindow({
   const [inputMessage, setInputMessage] = useState("");
   const { isMobile } = useResponsive();
 
-  console.log("ChatWindow render - isOpen:", isOpen);
+  // console.log("ChatWindow render - isOpen:", isOpen);
 
   if (!isOpen) return null;
 

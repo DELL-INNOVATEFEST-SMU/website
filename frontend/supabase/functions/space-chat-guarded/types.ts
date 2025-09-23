@@ -1,5 +1,5 @@
 /**
- * Type definitions for the Space Chat Edge Function
+ * Type definitions for the Guarded Space Chat Edge Function
  */
 
 /**
@@ -64,4 +64,14 @@ export interface ChatConfig {
   apiKey: string
   model: string
   systemPrompt: string
+}
+
+/**
+ * Moderation result interface
+ */
+export interface ModerationResult {
+  isSafe: boolean
+  riskLevel: "low" | "medium" | "high"
+  categories: string[]
+  reason?: string
 }

@@ -59,7 +59,7 @@ export function ChatBubble({
       {/* Main Chat Bubble */}
       <Button
         onClick={() => {
-          console.log("ChatBubble clicked!");
+          // console.log("ChatBubble clicked!");
           onClick();
         }}
         size={isMobile ? "default" : "lg"}
