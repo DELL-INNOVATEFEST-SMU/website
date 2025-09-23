@@ -188,7 +188,13 @@ If unsafe, set isSafe to false and list the specific categories violated.`
       throw new Error("No response generated from Gemini Moderation API")
     }
 
-    const responseText = data.candidates[0].content.parts[0].text
+    // Add proper checks for content and parts
+    const candidate = data.candidates[0]
+    if (!candidate.content || !candidate.content.parts || candidate.content.parts.length === 0) {
+      throw new Error("Invalid response structure from Gemini Moderation API")
+    }
+
+    const responseText = candidate.content.parts[0].text
 
     // Validate response is not empty or too short
     if (!responseText || responseText.length < 10) {
