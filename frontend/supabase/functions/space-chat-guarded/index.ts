@@ -89,7 +89,7 @@ Deno.serve(async (req: Request) => {
         success: true,
         message: {
           id: chatService.generateMessageId(),
-          content: "I apologize, but I need to keep our conversation appropriate and focused on space exploration topics. Let me help you with something else about astronomy or space science!",
+          content: "Sorry! Let's keep the conversation chill and appropriate, alright?",
           role: "assistant",
           timestamp: new Date().toISOString(),
         },
