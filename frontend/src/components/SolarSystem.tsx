@@ -794,7 +794,7 @@ export const SolarSystem: React.FC = () => {
             {/* Cosmic Compass Quiz Button */}
             <Button
               onClick={() => {
-                navigate("/cosmic-compass");
+                navigate("/planet-quiz");
                 // Mark as both attempted and completed for proper fuel calculation
                 handleTaskAttempt("find-cosmic-compass");
                 handleTaskComplete("find-cosmic-compass");

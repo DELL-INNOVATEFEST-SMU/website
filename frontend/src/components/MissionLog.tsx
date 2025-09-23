@@ -395,7 +395,7 @@ export const MissionLog: React.FC<MissionLogProps> = ({
     if (!task.completed) {
       // Handle cosmic compass navigation specially
       if (task.id === "find-cosmic-compass") {
-        onNavigate("/cosmic-compass");
+        onNavigate("/planet-quiz");
         // Mark as both attempted and completed for proper fuel calculation
         onTaskAttempt(task.id);
         onTaskComplete(task.id);

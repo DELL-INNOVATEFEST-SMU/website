@@ -15,7 +15,7 @@ function Main() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/cosmic-compass" element={<CosmicCompass />} />
+          <Route path="/planet-quiz" element={<CosmicCompass />} />
         </Routes>
       </BrowserRouter>
     </>
