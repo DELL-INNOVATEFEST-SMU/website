@@ -3,6 +3,7 @@ import { useAuthContext } from "@/providers/AuthProvider";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -256,6 +257,11 @@ export function AuthGate() {
           <DialogTitle className="text-center">
             {showOTPInput ? "Verify Your Email" : "Welcome to Interstellar"}
           </DialogTitle>
+          <DialogDescription className="text-center">
+            {showOTPInput
+              ? "Enter the 6-digit verification code sent to your email"
+              : "Choose how you'd like to continue your journey"}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
