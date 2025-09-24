@@ -31,7 +31,7 @@ export class EdgeChatService {
 
   /**
    * Send a message to the Edge Function and get a response
-   * Assumes user is already authenticated (anonymous or regular) via main auth system
+   * Enhanced with better error handling for authentication issues
    */
   async sendMessage(
     message: string,
@@ -41,7 +41,12 @@ export class EdgeChatService {
       // Get current user from main auth system
       const { data: { user }, error: userError } = await supabase.auth.getUser()
       
-      if (userError || !user) {
+      if (userError) {
+        console.error("Authentication error:", userError.message)
+        throw new Error(`Authentication error: ${userError.message}`)
+      }
+      
+      if (!user) {
         throw new Error("Authentication required for chat functionality")
       }
 
@@ -79,8 +84,11 @@ export class EdgeChatService {
       
       // Return fallback response that stays in character
       if (error instanceof Error) {
-        if (error.message.includes("Authentication required")) {
-          return "Commander Sam H. reporting - Authentication systems are initializing. Please try again in a moment!"
+        if (error.message.includes("Authentication") || 
+            error.message.includes("401") || 
+            error.message.includes("unauthorized") ||
+            error.message.includes("Invalid JWT")) {
+          throw new Error("Authentication error detected")
         }
         if (error.message.includes("Edge Function") || error.message.includes("network")) {
           return "Commander Sam H. here - I'm experiencing some communication difficulties with the main computer. Please try again in a moment, or feel free to ask me about any specific planets or space phenomena you'd like to explore!"
