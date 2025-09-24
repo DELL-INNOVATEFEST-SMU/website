@@ -312,4 +312,113 @@ export class AuthService {
       console.error("Failed to clear anonymous session data:", error);
     }
   }
+
+  /**
+   * Validate if current session is still valid on the server
+   */
+  static async validateSessionOnServer(currentSession: SupabaseSession | null): Promise<boolean> {
+    if (!currentSession) return false;
+    
+    try {
+      // Try to get user info using the current token
+      const { data: { user }, error } = await supabase.auth.getUser(currentSession.access_token);
+      
+      if (error || !user) {
+        console.log("Session validation failed:", error?.message || "User not found");
+        return false;
+      }
+      
+      return true;
+    } catch (error) {
+      console.log("Session validation error:", error);
+      return false;
+    }
+  }
+
+  /**
+   * Ensure user has a valid session, creating anonymous session if needed
+   * This handles the case where anonymous sessions are deleted by cron job
+   */
+  static async ensureValidSession(): Promise<SupabaseSession | null> {
+    try {
+      // Get current session
+      const { data: { session }, error } = await supabase.auth.getSession();
+      
+      if (error) {
+        console.error("Error getting session:", error);
+        return null;
+      }
+
+      // If no session, create anonymous one
+      if (!session) {
+        console.log("No session found, creating anonymous session");
+        const { data, error: signInError } = await supabase.auth.signInAnonymously();
+        
+        if (signInError) {
+          console.error("Failed to create anonymous session:", signInError);
+          return null;
+        }
+        
+        if (data.session) {
+          console.log("Successfully created anonymous session");
+          return data.session;
+        }
+      }
+
+      // Validate existing session
+      const isValid = await this.validateSessionOnServer(session);
+      if (!isValid) {
+        console.log("Session invalid (likely deleted by cron job), recreating");
+        
+        // Clear invalid session
+        await supabase.auth.signOut();
+        
+        // Create new anonymous session
+        const { data, error: signInError } = await supabase.auth.signInAnonymously();
+        
+        if (signInError) {
+          console.error("Failed to create new anonymous session:", signInError);
+          return null;
+        }
+        
+        if (data.session) {
+          console.log("Successfully recreated anonymous session");
+          return data.session;
+        }
+      }
+
+      return session;
+    } catch (error) {
+      console.error("Error ensuring valid session:", error);
+      return null;
+    }
+  }
+
+  /**
+   * Get session with automatic validation and recreation for anonymous users
+   */
+  static async getValidSession(): Promise<SupabaseSession | null> {
+    const { data: { session }, error } = await supabase.auth.getSession();
+    
+    if (error) {
+      console.error("Error getting session:", error);
+      return null;
+    }
+
+    // If no session, try to create one
+    if (!session) {
+      return await this.ensureValidSession();
+    }
+
+    // For anonymous users, validate session periodically
+    if (session.user?.is_anonymous) {
+      const isValid = await this.validateSessionOnServer(session);
+      if (!isValid) {
+        console.log("Anonymous session invalid, recreating");
+        return await this.ensureValidSession();
+      }
+    }
+
+    return session;
+  }
 }

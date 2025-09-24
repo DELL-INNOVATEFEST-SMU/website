@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useEffect } from "react"
 import type { ChatMessage, ChatSession } from "@/types/chat"
 import { edgeChatService } from "@/lib/gemini-chat-edge"
 import { useAuthContext } from "@/providers/AuthProvider"
+import { AuthService } from "@/services/supabase/auth"
 
 /**
  * Custom hook for managing chat functionality with Edge Function
@@ -108,6 +109,7 @@ export function useChatEdge() {
 
   /**
    * Send a message and get AI response via Edge Function
+   * Enhanced with session validation and retry logic
    */
   const sendMessage = useCallback(async (content: string) => {
     if (!content.trim() || isLoading) return
@@ -115,9 +117,11 @@ export function useChatEdge() {
     setIsLoading(true)
 
     try {
-      // Check if user is authenticated (AuthGate ensures this, but good to verify)
-      if (!user) {
-        console.error("User not authenticated - this should not happen with AuthGate")
+      // Ensure we have a valid session before sending message
+      const validSession = await AuthService.getValidSession()
+      if (!validSession) {
+        console.error("No valid session available")
+        await simulateTyping("I'm having trouble connecting. Please try again, Commander!")
         return
       }
 
@@ -145,13 +149,34 @@ export function useChatEdge() {
     } catch (error) {
       console.error("Error sending message:", error)
       
+      // Check if it's an auth-related error
+      if (error instanceof Error && (
+        error.message.includes("Authentication") || 
+        error.message.includes("401") ||
+        error.message.includes("unauthorized") ||
+        error.message.includes("Invalid JWT")
+      )) {
+        console.log("Authentication error detected, attempting to fix session")
+        try {
+          // Try to get a valid session and retry
+          const validSession = await AuthService.ensureValidSession()
+          if (validSession) {
+            const aiResponse = await edgeChatService.sendMessage(content.trim(), session.messages.filter(msg => !msg.isTyping))
+            await simulateTyping(aiResponse)
+            return // Success after retry
+          }
+        } catch (retryError) {
+          console.error("Failed to send message after session fix:", retryError)
+        }
+      }
+      
       // Add error message with typing simulation
       await simulateTyping("I'm experiencing some technical difficulties. Please try again, Commander!")
       
     } finally {
       setIsLoading(false)
     }
-  }, [isLoading, session.messages, showTypingIndicator, simulateTyping, user])
+  }, [isLoading, session.messages, showTypingIndicator, simulateTyping])
 
   /**
    * Clear chat history
@@ -187,8 +212,16 @@ export function useChatEdge() {
 
   /**
    * Handle action button clicks
+   * Enhanced with session validation
    */
   const handleActionButtonClick = useCallback(async (action: string) => {
+    // Ensure we have a valid session before handling actions
+    const validSession = await AuthService.getValidSession()
+    if (!validSession) {
+      console.error("No valid session available for action")
+      return
+    }
+
     if (action === "where_are_we") {
       // Add user message showing the button click
       const userMessage: ChatMessage = {
@@ -269,14 +302,24 @@ export function useChatEdge() {
   }, [])
 
   /**
-   * Check Edge Function health
+   * Check Edge Function health and session validity
    */
   const checkHealth = useCallback(async () => {
     try {
+      // First check if we have a valid session
+      const validSession = await AuthService.getValidSession()
+      if (!validSession) {
+        console.log("Health check: No valid session")
+        setIsOnline(false)
+        return false
+      }
+
+      // Then check Edge Function health
       const healthy = await edgeChatService.healthCheck()
       setIsOnline(healthy)
       return healthy
-    } catch {
+    } catch (error) {
+      console.error("Health check failed:", error)
       setIsOnline(false)
       return false
     }
@@ -292,15 +335,60 @@ export function useChatEdge() {
     checkHealth()
   }, [checkHealth])
 
-  // Monitor user authentication state
+  // Periodic session health check to detect cron job deletions
   useEffect(() => {
-    if (!user) {
-      console.warn("User authentication lost - AuthGate should handle this")
-      setIsOnline(false)
-    } else {
-      // User is authenticated, ensure we're online for chat
-      checkHealth()
+    // Set up periodic health check every 10 minutes
+    const healthCheckInterval = setInterval(async () => {
+      if (user?.is_anonymous) {
+        // For anonymous users, validate session periodically
+        try {
+          const validSession = await AuthService.getValidSession()
+          if (!validSession) {
+            console.log("Periodic check: Anonymous session invalid, will be recreated on next interaction")
+            setIsOnline(false)
+          } else {
+            // Also check Edge Function health
+            await checkHealth()
+          }
+        } catch (error) {
+          console.error("Periodic health check failed:", error)
+          setIsOnline(false)
+        }
+      }
+    }, 10 * 60 * 1000) // 10 minutes
+
+    return () => {
+      clearInterval(healthCheckInterval)
     }
+  }, [user, checkHealth])
+
+  // Monitor user authentication state with proactive session validation
+  useEffect(() => {
+    const validateAndSetOnline = async () => {
+      if (!user) {
+        console.log("User authentication lost - attempting to restore session")
+        setIsOnline(false)
+        
+        // Try to get a valid session
+        try {
+          const validSession = await AuthService.getValidSession()
+          if (validSession) {
+            console.log("Session restored successfully")
+            setIsOnline(true)
+            return
+          }
+        } catch (error) {
+          console.error("Failed to restore session:", error)
+        }
+        
+        console.warn("Could not restore session - AuthGate should handle this")
+      } else {
+        // User is authenticated, ensure we're online for chat
+        checkHealth()
+      }
+    }
+
+    validateAndSetOnline()
   }, [user, checkHealth])
 
   return {
