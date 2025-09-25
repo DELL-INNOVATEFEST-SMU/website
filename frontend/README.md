@@ -67,3 +67,14 @@ export default tseslint.config([
   },
 ])
 ```
+
+
+
+```bash
+docker run -p 8080:80 website:latest
+
+docker login ihl-harbor.apps.innovate.sg-cna.com
+docker build -t website:latest .
+docker tag website:latest ihl-harbor.apps.innovate.sg-cna.com/smu/website:latest
+docker push ihl-harbor.apps.innovate.sg-cna.com/smu/website:latest
+```
