@@ -23,6 +23,7 @@ import CalmSoundsMixer from "@/PlanetActivities/CalmSoundsMixer";
 import { useResponsive } from "@/hooks/use-mobile";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { X } from "lucide-react";
+import { CollapsibleBox } from "./CollapsibleInstructions";
 
 interface PlanetActivity {
   name: string;
@@ -758,9 +759,8 @@ export const SolarSystem: React.FC = () => {
       <div className="absolute inset-0 pointer-events-none">
         {/* Top Controls */}
         <div
-          className={`absolute ${
-            isMobile ? "top-2 left-2" : "top-4 left-4"
-          } pointer-events-auto z-10`}
+          className={`absolute ${isMobile ? "top-2 left-2" : "top-4 left-4"
+            } pointer-events-auto z-10`}
         >
           <div className={`flex ${isMobile ? "flex-col gap-2" : "gap-2"} mb-4`}>
             <div className={`flex ${isMobile ? "gap-2" : "gap-2"}`}>
@@ -768,11 +768,10 @@ export const SolarSystem: React.FC = () => {
                 onClick={() => setBackgroundType("stars")}
                 variant={backgroundType === "stars" ? "default" : "outline"}
                 size={isMobile ? "sm" : "sm"}
-                className={`min-h-touch ${
-                  backgroundType === "stars"
-                    ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
-                    : "text-gray-600 border-gray-300 hover:bg-gray-50"
-                }`}
+                className={`min-h-touch ${backgroundType === "stars"
+                  ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
+                  : "text-gray-600 border-gray-300 hover:bg-gray-50"
+                  }`}
               >
                 ✨ Stars
               </Button>
@@ -780,11 +779,10 @@ export const SolarSystem: React.FC = () => {
                 onClick={() => setBackgroundType("milky_way")}
                 variant={backgroundType === "milky_way" ? "default" : "outline"}
                 size={isMobile ? "sm" : "sm"}
-                className={`min-h-touch ${
-                  backgroundType === "milky_way"
-                    ? "bg-purple-600 hover:bg-purple-700 text-white border-purple-600"
-                    : "text-gray-600 border-gray-300 hover:bg-gray-50"
-                }`}
+                className={`min-h-touch ${backgroundType === "milky_way"
+                  ? "bg-purple-600 hover:bg-purple-700 text-white border-purple-600"
+                  : "text-gray-600 border-gray-300 hover:bg-gray-50"
+                  }`}
                 title="Image by standret on Freepik"
               >
                 🌌 Nebula
@@ -813,11 +811,20 @@ export const SolarSystem: React.FC = () => {
 
         {/* Top Right Controls */}
         <div
-          className={`absolute ${
-            isMobile ? "top-2 right-2" : "top-4 right-4"
-          } pointer-events-auto z-10`}
+          className={`absolute ${isMobile ? "top-2 right-2" : "top-4 right-4"
+            } pointer-events-auto z-10`}
         >
+          
+        
           <div className={`flex ${isMobile ? "flex-col gap-2" : "gap-2"}`}>
+          <CollapsibleBox title="Instructions">
+            <ul className="list-disc ml-5">
+              <li>Use the mission log in the botton left to see available missions. </li>
+              <li>Click on planets for interactive activities.</li>
+              <li>Sign in to save your journal automatically.</li>
+              <li>Interact with our AI chatbot to reach out for help!</li>
+            </ul>
+          </CollapsibleBox>
             {user || isAnonymous ? (
               <>
                 <Button
@@ -831,8 +838,8 @@ export const SolarSystem: React.FC = () => {
                       ? "Launch"
                       : "Leave"
                     : isAnonymous
-                    ? "Launch Sequence"
-                    : "Leave Spacecraft"}
+                      ? "Launch Sequence"
+                      : "Leave Spacecraft"}
                 </Button>
                 <Button
                   onClick={() => setShowJournal(true)}
@@ -848,12 +855,17 @@ export const SolarSystem: React.FC = () => {
             )}
           </div>
         </div>
+        <div
+          className={`absolute ${isMobile ? "top-25 left-2" : "top-20 left-4"
+            } pointer-events-auto z-10`}
+        >
+          
+        </div>
 
         {/* Bottom Chat */}
         <div
-          className={`absolute ${
-            isMobile ? "bottom-2 left-2 right-2" : "bottom-4 left-4 right-4"
-          } pointer-events-auto`}
+          className={`absolute ${isMobile ? "bottom-2 left-2 right-2" : "bottom-4 left-4 right-4"
+            } pointer-events-auto`}
         >
           <SpaceChatSystem />
         </div>
@@ -956,7 +968,7 @@ export const SolarSystem: React.FC = () => {
                     {startDate.toDateString()} -{" "}
                     {new Date(
                       startDate.getTime() +
-                        (daysToShow - 1) * 24 * 60 * 60 * 1000
+                      (daysToShow - 1) * 24 * 60 * 60 * 1000
                     ).toDateString()}
                   </span>
                   <Button
@@ -980,15 +992,13 @@ export const SolarSystem: React.FC = () => {
                         key={day.toDateString()}
                         onClick={() => setSelectedDay(day)}
                         size="sm"
-                        className={`h-12 sm:h-16 flex flex-col border ${
-                          isSelected
-                            ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-500"
-                            : "bg-slate-800/60 border-slate-600 text-slate-300 hover:bg-slate-700/60 hover:text-slate-100 hover:border-slate-500"
-                        } ${
-                          hasEntry
+                        className={`h-12 sm:h-16 flex flex-col border ${isSelected
+                          ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-500"
+                          : "bg-slate-800/60 border-slate-600 text-slate-300 hover:bg-slate-700/60 hover:text-slate-100 hover:border-slate-500"
+                          } ${hasEntry
                             ? "bg-purple-600/20 text-purple-300 border-purple-500/30"
                             : ""
-                        } ${isFuture ? "opacity-50 cursor-not-allowed" : ""}`}
+                          } ${isFuture ? "opacity-50 cursor-not-allowed" : ""}`}
                         disabled={isFuture}
                       >
                         <span className="text-xs">

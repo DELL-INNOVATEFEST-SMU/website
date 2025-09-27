@@ -68,7 +68,7 @@ export default function DragLeaves({
         const newDropped = prev
           .map((leaf) => {
             if (leaf.x === undefined) return { ...leaf, x: 0 };
-            return { ...leaf, x: leaf.x + 0.005 }; // move 0.5% per frame (adjust speed)
+            return { ...leaf, x: leaf.x + 0.5 }; // move 0.5% per frame (adjust speed)
           })
           .filter((leaf) => leaf.x !== undefined && leaf.x < 100); // remove past 100%
 

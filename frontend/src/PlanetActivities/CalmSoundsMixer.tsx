@@ -75,9 +75,10 @@ export default function CalmSoundsMixer({
 
   return (
     <div className="w-full p-4 sm:p-6 bg-slate-900/95 backdrop-blur-sm border border-slate-700/50 rounded-lg shadow-2xl">
-      <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-slate-100">
+      <h2 className="text-lg sm:text-xl font-semibold sm:mb-6 text-slate-100">
         Calm Sounds Mixer
       </h2>
+      <p className="mb-4 text-slate-200 text-sm sm:text-base">Press the icon to select your sound(s) and slide to adjust volume!</p>
       {sounds.map(({ id, name, icon }) => (
         <div
           key={id}
