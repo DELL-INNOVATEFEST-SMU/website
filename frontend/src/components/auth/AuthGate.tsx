@@ -84,12 +84,12 @@ const TokenInput: React.FC<{
  * Users can either "Continue as guest" or "Sign in" with email
  *
  * Gate rules:
- * - Show when no session exists and interstellar-gate-choice not set
- * - Hide if a session exists (anon or logged-in) OR if the user just chose an option
+ * - Show when no choice has been made (interstellar-gate-choice not set)
+ * - Hide if the user has already made a choice (guest or email)
  * - After sign out, clear the choice so the gate returns
  */
 export function AuthGate() {
-  const { session, login, verifyOTP, resendOTP, continueAsGuest, loading } =
+  const { login, verifyOTP, resendOTP, continueAsGuest, loading } =
     useAuthContext();
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
@@ -102,8 +102,8 @@ export function AuthGate() {
   useEffect(() => {
     if (loading) return;
     const choice = localStorage.getItem("interstellar-gate-choice");
-    setOpen(!session && !choice);
-  }, [session, loading]);
+    setOpen(!choice);
+  }, [loading]);
 
   const handleGuest = async () => {
     if (isSubmitting) return;
