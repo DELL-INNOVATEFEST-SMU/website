@@ -40,6 +40,10 @@ jobs:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY }}
 
+      - name: Copy dist/ for Docker build
+        run: |
+          cp -r frontend/dist frontend/nginx.conf frontend/Dockerfile .
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -62,6 +66,9 @@ jobs:
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.APP_NAME }}:buildcache
           cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.APP_NAME }}:buildcache,mode=max
           provenance: false
+    
+      - name: Cleanup temporary build context
+        run: rm -rf ./temp-build
 
   deploy:
     name: Deploy to OpenShift
