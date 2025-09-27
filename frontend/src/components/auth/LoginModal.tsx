@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 interface LoginModalProps {
   open: boolean;
   onClose: () => void;
+  isConvertingSession?: boolean;
 }
 
 // Token Input Component for better UX
@@ -86,7 +87,11 @@ const TokenInput: React.FC<{
 /**
  * Enhanced Login modal component with token-based OTP authentication and smart detection
  */
-export function LoginModal({ open, onClose }: LoginModalProps) {
+export function LoginModal({
+  open,
+  onClose,
+  isConvertingSession = false,
+}: LoginModalProps) {
   const [email, setEmail] = useState("");
   const [otpToken, setOtpToken] = useState("");
   const [showOTPInput, setShowOTPInput] = useState(false);
@@ -210,7 +215,11 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {showOTPInput ? "Verify Your Email" : "Sign In / Sign Up"}
+            {showOTPInput
+              ? "Verify Your Email"
+              : isConvertingSession
+              ? "Save Your Session"
+              : "Sign In / Sign Up"}
           </DialogTitle>
         </DialogHeader>
 
@@ -218,8 +227,9 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
           {!showOTPInput ? (
             <>
               <div className="text-sm text-gray-600 mb-4">
-                Enter your email address and we'll send you a verification code
-                to sign in or create your account.
+                {isConvertingSession
+                  ? "Enter your email to save your current progress and session data. We'll send you a verification code to convert your guest session."
+                  : "Enter your email address and we'll send you a verification code to sign in or create your account."}
               </div>
 
               <div className="space-y-2">
@@ -244,7 +254,11 @@ export function LoginModal({ open, onClose }: LoginModalProps) {
                 disabled={loading}
                 className="w-full"
               >
-                {loading ? "Sending..." : "Send Launch Code"}
+                {loading
+                  ? "Sending..."
+                  : isConvertingSession
+                  ? "Save Session"
+                  : "Send Launch Code"}
               </Button>
             </>
           ) : (

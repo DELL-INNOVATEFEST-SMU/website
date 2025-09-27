@@ -9,6 +9,7 @@ import { Background } from "./Background";
 import { Moon } from "./Moon";
 import { Button } from "./ui/button";
 import { useAuthContext } from "@/providers/AuthProvider";
+import { LoginModal } from "./auth/LoginModal";
 import { SpaceChatSystem } from "./SpaceChatSystem";
 import { MissionLog } from "./MissionLog";
 import { supabase } from "@/lib/supabase";
@@ -397,20 +398,32 @@ const SaveProgressPrompt: React.FC<{
 );
 
 // Guest Mode Indicator Component
-const GuestModeIndicator: React.FC<{ onUpgrade: () => void }> = ({
-  onUpgrade,
-}) => (
+const GuestModeIndicator: React.FC<{
+  onUpgrade: () => void;
+  onSignIn: () => void;
+}> = ({ onUpgrade, onSignIn }) => (
   <div className="text-xs w-[180px] sm:w-auto text-gray-500 flex items-center gap-2 bg-gray-50 px-2 py-1 rounded">
     <span>🔒</span>
     <span>Guest mode - data saves for this session only</span>
-    <Button
-      variant="link"
-      size="sm"
-      onClick={onUpgrade}
-      className="text-xs p-0 h-auto text-blue-600 hover:text-blue-800"
-    >
-      Sign in to save
-    </Button>
+    <div className="flex gap-1">
+      <Button
+        variant="link"
+        size="sm"
+        onClick={onSignIn}
+        className="text-xs p-0 h-auto text-blue-600 hover:text-blue-800"
+      >
+        Sign in
+      </Button>
+      <span>•</span>
+      <Button
+        variant="link"
+        size="sm"
+        onClick={onUpgrade}
+        className="text-xs p-0 h-auto text-blue-600 hover:text-blue-800"
+      >
+        Save progress
+      </Button>
+    </div>
   </div>
 );
 
@@ -433,6 +446,8 @@ export const SolarSystem: React.FC = () => {
   const [backgroundType, setBackgroundType] = useState<"stars" | "milky_way">(
     "milky_way"
   );
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showSaveSessionModal, setShowSaveSessionModal] = useState(false);
 
   // Mission completion state - persisted in localStorage
   const [completedTasks, setCompletedTasks] = useState<Set<string>>(() => {
@@ -759,19 +774,25 @@ export const SolarSystem: React.FC = () => {
       <div className="absolute inset-0 pointer-events-none">
         {/* Top Controls */}
         <div
-          className={`absolute ${isMobile ? "top-2 left-2" : "top-4 left-4"
-            } pointer-events-auto z-10`}
+          className={`absolute ${
+            isMobile ? "top-2 left-2" : "top-4 left-4"
+          } pointer-events-auto z-10`}
         >
-          <div className={`flex ${isMobile ? "flex-col gap-2 max-w-xs mx-auto" : "gap-2"} mb-4`}>
+          <div
+            className={`flex ${
+              isMobile ? "flex-col gap-2 max-w-xs mx-auto" : "gap-2"
+            } mb-4`}
+          >
             <div className={`flex ${isMobile ? "gap-2" : "gap-2"}`}>
               <Button
                 onClick={() => setBackgroundType("stars")}
                 variant={backgroundType === "stars" ? "default" : "outline"}
                 size={isMobile ? "sm" : "sm"}
-                className={`min-h-touch ${backgroundType === "stars"
-                  ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
-                  : "text-gray-600 border-gray-300 hover:bg-gray-50"
-                  }`}
+                className={`min-h-touch ${
+                  backgroundType === "stars"
+                    ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
+                    : "text-gray-600 border-gray-300 hover:bg-gray-50"
+                }`}
               >
                 ✨ Stars
               </Button>
@@ -779,10 +800,11 @@ export const SolarSystem: React.FC = () => {
                 onClick={() => setBackgroundType("milky_way")}
                 variant={backgroundType === "milky_way" ? "default" : "outline"}
                 size={isMobile ? "sm" : "sm"}
-                className={`min-h-touch ${backgroundType === "milky_way"
-                  ? "bg-purple-600 hover:bg-purple-700 text-white border-purple-600"
-                  : "text-gray-600 border-gray-300 hover:bg-gray-50"
-                  }`}
+                className={`min-h-touch ${
+                  backgroundType === "milky_way"
+                    ? "bg-purple-600 hover:bg-purple-700 text-white border-purple-600"
+                    : "text-gray-600 border-gray-300 hover:bg-gray-50"
+                }`}
                 title="Image by standret on Freepik"
               >
                 🌌 Nebula
@@ -801,46 +823,54 @@ export const SolarSystem: React.FC = () => {
               size={isMobile ? "sm" : "sm"}
               className="min-h-touch w-[180px] sm:w-auto bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-none"
             >
-              
               🧭 Cosmic Compass Quiz
             </Button>
           </div>
 
           {/* Guest Mode Indicator */}
-          {isAnonymous && <GuestModeIndicator onUpgrade={signOut} />}
+          {isAnonymous && (
+            <GuestModeIndicator
+              onUpgrade={signOut}
+              onSignIn={() => setShowLoginModal(true)}
+            />
+          )}
         </div>
 
         {/* Top Right Controls */}
         <div
-          className={`absolute ${isMobile ? "top-2 right-2" : "top-4 right-4"
-            } pointer-events-auto z-10`}
+          className={`absolute ${
+            isMobile ? "top-2 right-2" : "top-4 right-4"
+          } pointer-events-auto z-10`}
         >
-          
-        
           <div className={`flex ${isMobile ? "flex-col gap-2" : "gap-2"}`}>
-          <CollapsibleBox title="Instructions">
-            <ul className="list-disc ml-5">
-              <li>Use the mission log in the botton left to see available missions. </li>
-              <li>Click on planets for interactive activities.</li>
-              <li>Sign in to save your journal automatically.</li>
-              <li>Interact with our AI chatbot to reach out for help!</li>
-            </ul>
-          </CollapsibleBox>
+            <CollapsibleBox title="Instructions">
+              <ul className="list-disc ml-5">
+                <li>
+                  Use the mission log in the botton left to see available
+                  missions.{" "}
+                </li>
+                <li>Click on planets for interactive activities.</li>
+                <li>Sign in to save your journal automatically.</li>
+                <li>Interact with our AI chatbot to reach out for help!</li>
+              </ul>
+            </CollapsibleBox>
             {user || isAnonymous ? (
               <>
                 <Button
-                  onClick={signOut}
+                  onClick={
+                    isAnonymous ? () => setShowSaveSessionModal(true) : signOut
+                  }
                   variant="outline"
                   size="sm"
                   className="min-h-touch"
                 >
                   {isMobile
                     ? isAnonymous
-                      ? "Launch"
+                      ? "Save Session"
                       : "Leave"
                     : isAnonymous
-                      ? "Launch Sequence"
-                      : "Leave Spacecraft"}
+                    ? "Save Session"
+                    : "Leave Spacecraft"}
                 </Button>
                 <Button
                   onClick={() => setShowJournal(true)}
@@ -857,16 +887,16 @@ export const SolarSystem: React.FC = () => {
           </div>
         </div>
         <div
-          className={`absolute ${isMobile ? "top-25 left-2" : "top-20 left-4"
-            } pointer-events-auto z-10`}
-        >
-          
-        </div>
+          className={`absolute ${
+            isMobile ? "top-25 left-2" : "top-20 left-4"
+          } pointer-events-auto z-10`}
+        ></div>
 
         {/* Bottom Chat */}
         <div
-          className={`absolute ${isMobile ? "bottom-2 left-2 right-2" : "bottom-4 left-4 right-4"
-            } pointer-events-auto`}
+          className={`absolute ${
+            isMobile ? "bottom-2 left-2 right-2" : "bottom-4 left-4 right-4"
+          } pointer-events-auto`}
         >
           <SpaceChatSystem />
         </div>
@@ -969,7 +999,7 @@ export const SolarSystem: React.FC = () => {
                     {startDate.toDateString()} -{" "}
                     {new Date(
                       startDate.getTime() +
-                      (daysToShow - 1) * 24 * 60 * 60 * 1000
+                        (daysToShow - 1) * 24 * 60 * 60 * 1000
                     ).toDateString()}
                   </span>
                   <Button
@@ -993,13 +1023,15 @@ export const SolarSystem: React.FC = () => {
                         key={day.toDateString()}
                         onClick={() => setSelectedDay(day)}
                         size="sm"
-                        className={`h-12 sm:h-16 flex flex-col border ${isSelected
-                          ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-500"
-                          : "bg-slate-800/60 border-slate-600 text-slate-300 hover:bg-slate-700/60 hover:text-slate-100 hover:border-slate-500"
-                          } ${hasEntry
+                        className={`h-12 sm:h-16 flex flex-col border ${
+                          isSelected
+                            ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-500"
+                            : "bg-slate-800/60 border-slate-600 text-slate-300 hover:bg-slate-700/60 hover:text-slate-100 hover:border-slate-500"
+                        } ${
+                          hasEntry
                             ? "bg-purple-600/20 text-purple-300 border-purple-500/30"
                             : ""
-                          } ${isFuture ? "opacity-50 cursor-not-allowed" : ""}`}
+                        } ${isFuture ? "opacity-50 cursor-not-allowed" : ""}`}
                         disabled={isFuture}
                       >
                         <span className="text-xs">
@@ -1093,7 +1125,8 @@ export const SolarSystem: React.FC = () => {
                   )}
                   {isAnonymous && (
                     <div className="text-xs text-amber-300 mt-1 bg-amber-900/20 border border-amber-500/30 rounded p-2">
-                      🔒 Guest mode: Log in to convert your journal into an image!
+                      🔒 Guest mode: Log in to convert your journal into an
+                      image!
                     </div>
                   )}
                 </div>
@@ -1222,6 +1255,19 @@ export const SolarSystem: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Login Modal for anonymous users */}
+      <LoginModal
+        open={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+      />
+
+      {/* Save Session Modal for anonymous users */}
+      <LoginModal
+        open={showSaveSessionModal}
+        onClose={() => setShowSaveSessionModal(false)}
+        isConvertingSession={true}
+      />
     </div>
   );
 };
