@@ -36,6 +36,9 @@ jobs:
       - name: Build Vite
         working-directory: frontend
         run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -150,6 +153,8 @@ jobs:
             template:
               metadata:
                 labels: { app: website }
+                annotations:
+                  redeploy-hash: "${{ github.sha }}"
               spec:
                 containers:
                   - name: website
