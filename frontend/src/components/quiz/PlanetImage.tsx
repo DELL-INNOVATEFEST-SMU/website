@@ -23,6 +23,7 @@ export function PlanetImage({
     saturn: "saturn.png",
     uranus: "uranus.png",
     venus: "venus.png",
+    pluto: "pluto.png",
   };
 
   const imageFilename = planetImageMap[planetId];
