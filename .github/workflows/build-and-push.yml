@@ -159,8 +159,13 @@ jobs:
                 containers:
                   - name: website
                     image: REPLACE_IMAGE
-                    imagePullPolicy: IfNotPresent
+                    imagePullPolicy: Always
                     ports: [ { containerPort: 80 } ]
+                    env:
+                      - name: VITE_SUPABASE_URL
+                        value: ${{ secrets.VITE_SUPABASE_URL }}
+                      - name: VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY
+                        value: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY }}
                     resources:
                       requests:
                         cpu: "50m"
