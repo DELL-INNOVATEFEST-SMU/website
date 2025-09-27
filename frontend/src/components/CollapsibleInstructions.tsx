@@ -9,7 +9,7 @@ export const CollapsibleBox: React.FC<CollapsibleBoxProps> = ({ title, children 
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="border border-slate-300 rounded-lg shadow bg-white max-w-md mx-auto px-1.5 " style={{ opacity: 0.6 }}>
+    <div className="border border-slate-300 rounded-lg shadow bg-white max-w-md mx-auto px-1.5 ">
       <button
         className="w-full flex justify-between items-center px-4 py-0.5 font-semibold text-slate-700 bg-slate-50 rounded-t-lg focus:outline-none "
         

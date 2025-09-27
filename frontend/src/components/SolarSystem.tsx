@@ -400,7 +400,7 @@ const SaveProgressPrompt: React.FC<{
 const GuestModeIndicator: React.FC<{ onUpgrade: () => void }> = ({
   onUpgrade,
 }) => (
-  <div className="text-xs text-gray-500 flex items-center gap-2 bg-gray-50 px-2 py-1 rounded">
+  <div className="text-xs w-[180px] sm:w-auto text-gray-500 flex items-center gap-2 bg-gray-50 px-2 py-1 rounded">
     <span>🔒</span>
     <span>Guest mode - data saves for this session only</span>
     <Button
@@ -762,7 +762,7 @@ export const SolarSystem: React.FC = () => {
           className={`absolute ${isMobile ? "top-2 left-2" : "top-4 left-4"
             } pointer-events-auto z-10`}
         >
-          <div className={`flex ${isMobile ? "flex-col gap-2" : "gap-2"} mb-4`}>
+          <div className={`flex ${isMobile ? "flex-col gap-2 max-w-xs mx-auto" : "gap-2"} mb-4`}>
             <div className={`flex ${isMobile ? "gap-2" : "gap-2"}`}>
               <Button
                 onClick={() => setBackgroundType("stars")}
@@ -799,8 +799,9 @@ export const SolarSystem: React.FC = () => {
               }}
               variant="default"
               size={isMobile ? "sm" : "sm"}
-              className="min-h-touch bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-none"
+              className="min-h-touch w-[180px] sm:w-auto bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-none"
             >
+              
               🧭 Cosmic Compass Quiz
             </Button>
           </div>
