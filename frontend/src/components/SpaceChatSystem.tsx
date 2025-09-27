@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { ChatWindow } from "./ChatWindow";
 import { ChatBubble } from "./ChatBubble";
+import { Button } from "./ui/button";
 import { useChatEdge } from "@/hooks/use-chat-edge";
+import { useAuthContext } from "@/providers/AuthProvider";
+import { LoginModal } from "./auth/LoginModal";
 import { cn } from "@/lib/utils";
 
 interface SpaceChatSystemProps {
@@ -13,6 +16,9 @@ interface SpaceChatSystemProps {
  * Integrates seamlessly with the 3D space environment
  */
 export function SpaceChatSystem({ className }: SpaceChatSystemProps) {
+  const { user } = useAuthContext();
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
   const {
     session,
     isLoading,
@@ -27,6 +33,9 @@ export function SpaceChatSystem({ className }: SpaceChatSystemProps) {
   } = useChatEdge();
 
   const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
+
+  // Check if user has a valid session (either guest or authenticated)
+  const hasValidSession = !!user;
 
   /**
    * Track unread messages when chat is closed
@@ -60,8 +69,26 @@ export function SpaceChatSystem({ className }: SpaceChatSystemProps) {
     return lastAssistantMessage?.content;
   };
 
-  // console.log("SpaceChatSystem render - session.isActive:", session.isActive);
+  // If no valid session, show Launch Sequence button instead of chat
+  if (!hasValidSession) {
+    return (
+      <div className={cn("flex items-center justify-center", className)}>
+        <Button
+          onClick={() => setShowLoginModal(true)}
+          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-none px-6 py-3 rounded-full shadow-lg"
+        >
+          🚀 Launch Sequence
+        </Button>
 
+        <LoginModal
+          open={showLoginModal}
+          onClose={() => setShowLoginModal(false)}
+        />
+      </div>
+    );
+  }
+
+  // Original chat system when user has valid session
   return (
     <div className={cn("relative", className)}>
       {/* Status Indicators */}

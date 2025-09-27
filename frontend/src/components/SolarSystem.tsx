@@ -863,10 +863,10 @@ export const SolarSystem: React.FC = () => {
                 >
                   {isMobile
                     ? isAnonymous
-                      ? "Launch"
+                      ? "Sign Out"
                       : "Leave"
                     : isAnonymous
-                    ? "Launch Sequence"
+                    ? "Sign Out"
                     : "Leave Spacecraft"}
                 </Button>
                 <Button
