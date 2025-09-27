@@ -74,7 +74,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
    * Verify OTP token and complete authentication
    */
   const verifyOTP = async (email: string, token: string): Promise<void> => {
+    const wasAnonymous = !!user?.is_anonymous;
+
     await AuthService.verifyOTP(email, token);
+
+    if (wasAnonymous) {
+      console.log("Session converted from anonymous to authenticated");
+    }
+
     // The session will be updated via onAuthStateChange
   };
 

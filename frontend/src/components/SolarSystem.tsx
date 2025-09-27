@@ -447,6 +447,7 @@ export const SolarSystem: React.FC = () => {
     "milky_way"
   );
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showSaveSessionModal, setShowSaveSessionModal] = useState(false);
 
   // Mission completion state - persisted in localStorage
   const [completedTasks, setCompletedTasks] = useState<Set<string>>(() => {
@@ -856,17 +857,19 @@ export const SolarSystem: React.FC = () => {
             {user || isAnonymous ? (
               <>
                 <Button
-                  onClick={signOut}
+                  onClick={
+                    isAnonymous ? () => setShowSaveSessionModal(true) : signOut
+                  }
                   variant="outline"
                   size="sm"
                   className="min-h-touch"
                 >
                   {isMobile
                     ? isAnonymous
-                      ? "Sign Out"
+                      ? "Save Session"
                       : "Leave"
                     : isAnonymous
-                    ? "Sign Out"
+                    ? "Save Session"
                     : "Leave Spacecraft"}
                 </Button>
                 <Button
@@ -1257,6 +1260,13 @@ export const SolarSystem: React.FC = () => {
       <LoginModal
         open={showLoginModal}
         onClose={() => setShowLoginModal(false)}
+      />
+
+      {/* Save Session Modal for anonymous users */}
+      <LoginModal
+        open={showSaveSessionModal}
+        onClose={() => setShowSaveSessionModal(false)}
+        isConvertingSession={true}
       />
     </div>
   );
